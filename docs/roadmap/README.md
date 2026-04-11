@@ -53,7 +53,7 @@ Exit criteria:
 Goal:
 Napraviti stvarne projekte i reference prema ciljnoj arhitekturi.
 
-Status: In progress
+Status: Completed
 
 Tasks:
 
@@ -62,9 +62,9 @@ Tasks:
 - `[x]` Kreirati `CoreKit.AppHost.Contracts`
 - `[x]` Dodati projekte u solution
 - `[x]` Podesiti project references izmedju AppHost projekata
-- `[>]` Kreirati `BuildingBlocks` foldere i prazne projekte
-- `[ ]` Kreirati `Modules/Identity` strukturu sa 4 projekta
-- `[ ]` Kreirati `Modules/Tenancy` strukturu sa 4 projekta
+- `[x]` Kreirati `BuildingBlocks` foldere i prazne projekte
+- `[x]` Kreirati `Modules/Identity` strukturu sa 4 projekta
+- `[x]` Kreirati `Modules/Tenancy` strukturu sa 4 projekta
 - `[x]` Proveriti da solution build prolazi bez poslovne logike
 
 Exit criteria:
@@ -79,11 +79,11 @@ Exit criteria:
 Goal:
 Podesiti server, klijent i osnovni startup tok bez pune poslovne logike.
 
-Status: Planned
+Status: In progress
 
 Tasks:
 
-- `[ ]` Podesiti Minimal API server startup
+- `[>]` Podesiti Minimal API server startup
 - `[ ]` Odrzati `Program.cs` cistim kroz extension metode
 - `[ ]` Podesiti osnovni Blazor WASM host
 - `[ ]` Ukljuciti PWA konfiguraciju
@@ -300,11 +300,11 @@ Exit criteria:
 
 Now:
 - `Phase 0` je zavrsena
-- Aktivna je `Phase 1`
-- `AppHost` skeleton je zavrsen
-- Sledece napraviti `BuildingBlocks` skeleton
+- `Phase 1` je zavrsena
+- Aktivna je `Phase 2`
+- Sledece srediti startup i osnovni host tok
 
 After that:
-- Pokrenuti `AppHost`
-- Tek onda raditi auth
-- Tek posle toga uvoditi tenancy i RPC
+- Uvesti auth
+- Posle toga tenancy
+- Zatim RPC i CQRS

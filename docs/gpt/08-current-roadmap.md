@@ -4,18 +4,18 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 1 - Solution Skeleton
+Phase 2 - App Host And Vertical Slice Bootstrap
 
 ## Current Task
 
-Kreirati `BuildingBlocks` skeleton projekte.
+Podesiti Minimal API server startup i osnovni AppHost tok.
 
 ## Next Tasks
 
-- Kreirati `BuildingBlocks` projekte
-- Dodati ih u solution
-- Kreirati `Modules/Identity` skeleton
-- Kreirati `Modules/Tenancy` skeleton
+- Odrzati `Program.cs` cistim kroz extension metode
+- Podesiti osnovni Blazor WASM host
+- Ukljuciti PWA konfiguraciju
+- Dodati health endpoint
 
 ## After That
 
