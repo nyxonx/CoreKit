@@ -4,12 +4,16 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CoreKit.AppHost.Client</title>
+    <title>CoreKit</title>
     <base href="/" />
+    <meta name="theme-color" content="#173752" />
+    <meta name="description" content="CoreKit AppHost client shell." />
     <link rel="preload" id="webassembly" />
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
     <link href="CoreKit.AppHost.Client.styles.css" rel="stylesheet" />
     <script type="importmap"></script>
 </head>
@@ -24,11 +28,16 @@
     </div>
 
     <div id="blazor-error-ui">
-        An unhandled error has occurred.
+        An unexpected client error has occurred.
         <a href="." class="reload">Reload</a>
-        <span class="dismiss">🗙</span>
+        <span class="dismiss">x</span>
     </div>
     <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("./service-worker.js");
+        }
+    </script>
 </body>
 
 </html>

@@ -1,7 +1,10 @@
 .page {
-    position: relative;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top left, rgba(193, 233, 255, 0.9), transparent 28%),
+        linear-gradient(180deg, #f5efe4 0%, #f8f8f5 42%, #f2f4f8 100%);
 }
 
 main {
@@ -9,40 +12,43 @@ main {
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background: linear-gradient(180deg, #12263a 0%, #173752 100%);
 }
 
 .top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
-    justify-content: flex-end;
-    height: 3.5rem;
+    justify-content: space-between;
     display: flex;
     align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem 0;
 }
 
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
-        text-decoration: none;
-    }
+.eyebrow {
+    margin: 0 0 0.2rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #6b7280;
+}
 
-    .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-        text-decoration: underline;
-    }
+.environment-badge {
+    padding: 0.45rem 0.75rem;
+    border: 1px solid #d8dde6;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #173752;
+}
 
-    .top-row ::deep a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+.content {
+    padding: 1.5rem;
+}
 
 @media (max-width: 640.98px) {
     .top-row {
-        justify-content: space-between;
-    }
-
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        margin-left: 0;
+        padding: 1rem 1rem 0;
     }
 }
 
@@ -52,7 +58,7 @@ main {
     }
 
     .sidebar {
-        width: 250px;
+        width: 290px;
         height: 100vh;
         position: sticky;
         top: 0;
@@ -62,16 +68,10 @@ main {
         position: sticky;
         top: 0;
         z-index: 1;
+        padding: 1.5rem 2rem 0;
     }
 
-    .top-row.auth ::deep a:first-child {
-        flex: 1;
-        text-align: right;
-        width: 0;
-    }
-
-    .top-row, article {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
+    .content {
+        padding: 1.5rem 2rem 2rem;
     }
 }

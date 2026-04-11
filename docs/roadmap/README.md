@@ -79,18 +79,18 @@ Exit criteria:
 Goal:
 Podesiti server, klijent i osnovni startup tok bez pune poslovne logike.
 
-Status: In progress
+Status: Completed
 
 Tasks:
 
-- `[>]` Podesiti Minimal API server startup
-- `[ ]` Odrzati `Program.cs` cistim kroz extension metode
-- `[ ]` Podesiti osnovni Blazor WASM host
-- `[ ]` Ukljuciti PWA konfiguraciju
-- `[ ]` Dodati osnovni layout i shell stranicu
-- `[ ]` Dodati health endpoint
-- `[ ]` Dodati osnovni config loading za app settings
-- `[ ]` Definisati startup registraciju modula
+- `[x]` Podesiti Minimal API server startup
+- `[x]` Odrzati `Program.cs` cistim kroz extension metode
+- `[x]` Podesiti osnovni Blazor WASM host
+- `[x]` Ukljuciti PWA konfiguraciju
+- `[x]` Dodati osnovni layout i shell stranicu
+- `[x]` Dodati health endpoint
+- `[x]` Dodati osnovni config loading za app settings
+- `[x]` Definisati startup registraciju modula
 
 Exit criteria:
 - Server i client se pokrecu
@@ -104,11 +104,11 @@ Exit criteria:
 Goal:
 Napraviti prvi kompletan login/logout tok prema ADR-004.
 
-Status: Planned
+Status: In progress
 
 Tasks:
 
-- `[ ]` Uvesti ASP.NET Core Identity u server
+- `[>]` Uvesti ASP.NET Core Identity u server
 - `[ ]` Definisati `AppUser`
 - `[ ]` Definisati `AppRole`
 - `[ ]` Podesiti cookie authentication
@@ -301,10 +301,10 @@ Exit criteria:
 Now:
 - `Phase 0` je zavrsena
 - `Phase 1` je zavrsena
-- Aktivna je `Phase 2`
-- Sledece srediti startup i osnovni host tok
+- `Phase 2` je zavrsena
+- Aktivna je `Phase 3`
+- Sledece uvodimo Identity i cookie auth
 
 After that:
-- Uvesti auth
 - Posle toga tenancy
 - Zatim RPC i CQRS

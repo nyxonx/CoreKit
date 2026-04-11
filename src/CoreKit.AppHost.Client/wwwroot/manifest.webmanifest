@@ -1,0 +1,16 @@
+{
+  "name": "CoreKit",
+  "short_name": "CoreKit",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f2f4f8",
+  "theme_color": "#173752",
+  "description": "CoreKit AppHost client shell.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+}

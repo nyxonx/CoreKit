@@ -4,18 +4,18 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 2 - App Host And Vertical Slice Bootstrap
+Phase 3 - Identity And Cookie Authentication
 
 ## Current Task
 
-Podesiti Minimal API server startup i osnovni AppHost tok.
+Uvesti ASP.NET Core Identity u server i pripremiti login/logout tok.
 
 ## Next Tasks
 
-- Odrzati `Program.cs` cistim kroz extension metode
-- Podesiti osnovni Blazor WASM host
-- Ukljuciti PWA konfiguraciju
-- Dodati health endpoint
+- Definisati `AppUser`
+- Definisati `AppRole`
+- Podesiti cookie authentication
+- Dodati login endpoint
 
 ## After That
 
