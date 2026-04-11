@@ -1,0 +1,17 @@
+.vs/
+
+# Build output
+[Bb]in/
+[Oo]bj/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+
+# Logs
+*.log
+
+# NuGet packages
+packages/
+*.nupkg
