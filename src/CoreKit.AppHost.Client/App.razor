@@ -1,3 +1,5 @@
+@inject NavigationManager NavigationManager
+
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
         <Found Context="routeData">
@@ -8,7 +10,7 @@
                             <p class="eyebrow">Authorization</p>
                             <h1>Sign in required</h1>
                             <p>You need to sign in before accessing this page.</p>
-                            <p><a href="/login">Go to login</a></p>
+                            <p><a href="@BuildLoginUrl()">Go to login</a></p>
                         </section>
                     </LayoutView>
                 </NotAuthorized>
@@ -17,3 +19,17 @@
         </Found>
     </Router>
 </CascadingAuthenticationState>
+
+@code {
+    private string BuildLoginUrl()
+    {
+        var currentPath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+
+        if (string.IsNullOrWhiteSpace(currentPath))
+        {
+            return "/login";
+        }
+
+        return $"/login?returnUrl={Uri.EscapeDataString($"/{currentPath}")}";
+    }
+}

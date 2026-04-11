@@ -11,7 +11,16 @@
                 <p class="eyebrow">CoreKit</p>
                 <strong>AppHost Client</strong>
             </div>
-            <span class="environment-badge">Bootstrap</span>
+            <div>
+                <AuthorizeView>
+                    <Authorized>
+                        <span class="environment-badge">Signed in as @context.User.Identity?.Name</span>
+                    </Authorized>
+                    <NotAuthorized>
+                        <span class="environment-badge">Phase 3 complete</span>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
         </header>
 
         <article class="content">

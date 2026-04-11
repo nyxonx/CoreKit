@@ -4,19 +4,19 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 3 - Identity And Cookie Authentication
+Phase 4 - Tenant Catalog And Tenant Resolution
 
 ## Current Task
 
-Verifikovati hosted login/logout tok i auth state ponasanje kroz `CoreKit.AppHost.Server`.
+Pokrenuti multi-tenant osnovu kroz tenant catalog, resolution i `TenantContext`.
 
 ## Next Tasks
 
-- Potvrditi da auth state prezivljava refresh
-- Uraditi zavrsni auth UX polish po potrebi
-- Zatvoriti `Phase 3` commit granicu
+- Definisati model tenant kataloga
+- Kreirati catalog DbContext
+- Implementirati tenant resolution po host/header strategiji
 
 ## After That
 
-- Tenant catalog + tenant resolution
 - Unified RPC + CQRS pipeline
+- Module framework + prvi pravi modul

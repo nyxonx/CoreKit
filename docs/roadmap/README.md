@@ -104,7 +104,7 @@ Exit criteria:
 Goal:
 Napraviti prvi kompletan login/logout tok prema ADR-004.
 
-Status: In progress
+Status: Completed
 
 Tasks:
 
@@ -126,9 +126,9 @@ Exit criteria:
 - Auth state prezivljava refresh
 
 Current focus:
-- `[>]` Verifikovati hosted login/logout tok kroz `AppHost.Server`
-- `[ ]` Potvrditi da auth state prezivljava refresh u browser-u
-- `[ ]` Dodati eventualni auth UX polish posle prve manualne provere
+- `[x]` Verifikovati hosted login/logout tok kroz `AppHost.Server`
+- `[x]` Potvrditi da auth state prezivljava refresh u browser-u
+- `[x]` Dodati zavrsni auth UX polish posle prve provere
 
 ---
 
@@ -307,9 +307,9 @@ Now:
 - `Phase 0` je zavrsena
 - `Phase 1` je zavrsena
 - `Phase 2` je zavrsena
-- Aktivna je `Phase 3`
-- Identity i cookie auth osnova su uvedeni
-- Trenutno proveravamo hosted auth tok i zavrsni polish
+- `Phase 3` je zavrsena
+- Identity i cookie auth tok su zatvoreni
+- Aktivna je priprema za `Phase 4`
 
 After that:
 - Posle toga tenancy

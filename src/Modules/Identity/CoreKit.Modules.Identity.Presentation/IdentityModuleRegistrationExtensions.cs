@@ -61,9 +61,12 @@ public static class IdentityModuleRegistrationExtensions
         group.MapGet(
             "/state",
             async (
+                HttpContext httpContext,
                 ClaimsPrincipal principal,
                 UserManager<AppUser> userManager) =>
             {
+                ApplyNoStoreHeaders(httpContext.Response);
+
                 if (principal.Identity?.IsAuthenticated != true)
                 {
                     return Results.Ok(new AuthStateResponse(false, null, Array.Empty<string>()));
@@ -82,5 +85,12 @@ public static class IdentityModuleRegistrationExtensions
             });
 
         return endpoints;
+    }
+
+    private static void ApplyNoStoreHeaders(HttpResponse response)
+    {
+        response.Headers.CacheControl = "no-store, no-cache, max-age=0";
+        response.Headers.Pragma = "no-cache";
+        response.Headers.Expires = "0";
     }
 }
