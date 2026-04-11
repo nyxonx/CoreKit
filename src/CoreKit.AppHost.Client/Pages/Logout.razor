@@ -1,0 +1,21 @@
+@page "/logout"
+@inject AuthApiClient AuthApiClient
+@inject ServerAuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<PageTitle>Logout</PageTitle>
+
+<section class="panel">
+    <p class="eyebrow">Authentication</p>
+    <h1>Signing out</h1>
+    <p>Ending the current session.</p>
+</section>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthApiClient.LogoutAsync();
+        await AuthenticationStateProvider.RefreshUserStateAsync();
+        NavigationManager.NavigateTo("/");
+    }
+}

@@ -1,3 +1,5 @@
+using CoreKit.Modules.Identity.Infrastructure;
+
 namespace CoreKit.AppHost.Server.Extensions;
 
 public static class ServiceCollectionExtensions
@@ -10,6 +12,7 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(configuration);
 
         services.AddHealthChecks();
+        services.AddIdentityInfrastructure(configuration);
         services.AddCoreKitModules();
 
         return services;

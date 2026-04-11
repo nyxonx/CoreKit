@@ -8,17 +8,15 @@ Phase 3 - Identity And Cookie Authentication
 
 ## Current Task
 
-Uvesti ASP.NET Core Identity u server i pripremiti login/logout tok.
+Verifikovati hosted login/logout tok i auth state ponasanje kroz `CoreKit.AppHost.Server`.
 
 ## Next Tasks
 
-- Definisati `AppUser`
-- Definisati `AppRole`
-- Podesiti cookie authentication
-- Dodati login endpoint
+- Potvrditi da auth state prezivljava refresh
+- Uraditi zavrsni auth UX polish po potrebi
+- Zatvoriti `Phase 3` commit granicu
 
 ## After That
 
-- Identity + cookie auth
 - Tenant catalog + tenant resolution
 - Unified RPC + CQRS pipeline

@@ -1,0 +1,89 @@
+@page "/login"
+@inject AuthApiClient AuthApiClient
+@inject ServerAuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<PageTitle>Login</PageTitle>
+
+<section class="panel login-panel">
+    <p class="eyebrow">Authentication</p>
+    <h1>Sign in to CoreKit</h1>
+    <p>Use the seeded bootstrap account to test the first cookie auth flow.</p>
+
+    <EditForm Model="@loginRequest" OnValidSubmit="@HandleLoginAsync" class="login-form">
+        <DataAnnotationsValidator />
+
+        <label>
+            <span>User name</span>
+            <InputText @bind-Value="loginRequest.UserName" />
+        </label>
+
+        <label>
+            <span>Password</span>
+            <InputText @bind-Value="loginRequest.Password" type="password" />
+        </label>
+
+        <label class="checkbox-row">
+            <InputCheckbox @bind-Value="loginRequest.RememberMe" />
+            <span>Remember me</span>
+        </label>
+
+        <button class="primary-button" type="submit" disabled="@isSubmitting">
+            @(isSubmitting ? "Signing in..." : "Sign in")
+        </button>
+    </EditForm>
+
+    @if (!string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <p class="error-text">@errorMessage</p>
+    }
+
+    <div class="seed-box">
+        <strong>Seed account</strong>
+        <p>User name: <code>admin</code></p>
+        <p>Password: <code>Admin1234</code></p>
+    </div>
+</section>
+
+@code {
+    private LoginFormModel loginRequest = new()
+    {
+        UserName = "admin",
+        Password = "Admin1234"
+    };
+
+    private bool isSubmitting;
+    private string? errorMessage;
+
+    private async Task HandleLoginAsync()
+    {
+        isSubmitting = true;
+        errorMessage = null;
+
+        var success = await AuthApiClient.LoginAsync(
+            new LoginRequest(
+                loginRequest.UserName,
+                loginRequest.Password,
+                loginRequest.RememberMe));
+
+        isSubmitting = false;
+
+        if (!success)
+        {
+            errorMessage = "Sign in failed. Check the credentials and try again.";
+            return;
+        }
+
+        await AuthenticationStateProvider.RefreshUserStateAsync();
+        NavigationManager.NavigateTo("/system");
+    }
+
+    private sealed class LoginFormModel
+    {
+        public string UserName { get; set; } = string.Empty;
+
+        public string Password { get; set; } = string.Empty;
+
+        public bool RememberMe { get; set; }
+    }
+}

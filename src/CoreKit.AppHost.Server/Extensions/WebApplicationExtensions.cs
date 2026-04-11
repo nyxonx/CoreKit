@@ -11,7 +11,15 @@ public static class WebApplicationExtensions
             app.UseDeveloperExceptionPage();
         }
 
-        app.UseHttpsRedirection();
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseHttpsRedirection();
+        }
+
+        app.UseBlazorFrameworkFiles();
+        app.UseStaticFiles();
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         return app;
     }
@@ -46,6 +54,7 @@ public static class WebApplicationExtensions
 
         app.MapHealthChecks("/health").WithTags("System");
         app.MapCoreKitModules();
+        app.MapFallbackToFile("index.html");
 
         return app;
     }

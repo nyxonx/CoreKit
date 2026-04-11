@@ -108,22 +108,27 @@ Status: In progress
 
 Tasks:
 
-- `[>]` Uvesti ASP.NET Core Identity u server
-- `[ ]` Definisati `AppUser`
-- `[ ]` Definisati `AppRole`
-- `[ ]` Podesiti cookie authentication
-- `[ ]` Dodati login endpoint
-- `[ ]` Dodati logout endpoint
-- `[ ]` Dodati endpoint za proveru auth state-a
-- `[ ]` Napraviti login stranicu u client-u
-- `[ ]` Dodati auth state provider ili odgovarajuci klijentski mehanizam
-- `[ ]` Obezbediti protected routes
-- `[ ]` Dodati seed za admin korisnika i osnovnu rolu
+- `[x]` Uvesti ASP.NET Core Identity u server
+- `[x]` Definisati `AppUser`
+- `[x]` Definisati `AppRole`
+- `[x]` Podesiti cookie authentication
+- `[x]` Dodati login endpoint
+- `[x]` Dodati logout endpoint
+- `[x]` Dodati endpoint za proveru auth state-a
+- `[x]` Napraviti login stranicu u client-u
+- `[x]` Dodati auth state provider ili odgovarajuci klijentski mehanizam
+- `[x]` Obezbediti protected routes
+- `[x]` Dodati seed za admin korisnika i osnovnu rolu
 
 Exit criteria:
 - Korisnik moze da se prijavi i odjavi
 - Zasticene rute rade
 - Auth state prezivljava refresh
+
+Current focus:
+- `[>]` Verifikovati hosted login/logout tok kroz `AppHost.Server`
+- `[ ]` Potvrditi da auth state prezivljava refresh u browser-u
+- `[ ]` Dodati eventualni auth UX polish posle prve manualne provere
 
 ---
 
@@ -303,7 +308,8 @@ Now:
 - `Phase 1` je zavrsena
 - `Phase 2` je zavrsena
 - Aktivna je `Phase 3`
-- Sledece uvodimo Identity i cookie auth
+- Identity i cookie auth osnova su uvedeni
+- Trenutno proveravamo hosted auth tok i zavrsni polish
 
 After that:
 - Posle toga tenancy

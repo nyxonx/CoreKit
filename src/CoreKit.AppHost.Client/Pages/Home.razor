@@ -1,4 +1,5 @@
 @page "/"
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>CoreKit</PageTitle>
 
@@ -24,6 +25,18 @@
 
 <section class="grid">
     <article class="panel">
+        <h2>Authentication</h2>
+        @if (isAuthenticated)
+        {
+            <p>Signed in as <strong>@userName</strong>.</p>
+        }
+        else
+        {
+            <p>Not signed in yet. Use the login page to test the new auth flow.</p>
+        }
+    </article>
+
+    <article class="panel">
         <h2>Client role</h2>
         <p>
             The client will host routing, layout, auth state, and user-facing workflows across modules.
@@ -33,7 +46,19 @@
     <article class="panel">
         <h2>Next milestone</h2>
         <p>
-            Wire the hosted application flow more tightly and prepare the first authentication screens.
+            Extend the hosted flow and continue into tenancy and RPC after the bootstrap auth pass.
         </p>
     </article>
 </section>
+
+@code {
+    private bool isAuthenticated;
+    private string? userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isAuthenticated = authState.User.Identity?.IsAuthenticated == true;
+        userName = authState.User.Identity?.Name;
+    }
+}
