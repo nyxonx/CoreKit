@@ -25,6 +25,9 @@ packages/
 # Temporary files
 *.tmp
 *.temp
+*.db
+*.db-shm
+*.db-wal
 
 # OS files
 .DS_Store
