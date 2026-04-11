@@ -8,13 +8,13 @@ Phase 4 - Tenant Catalog And Tenant Resolution
 
 ## Current Task
 
-Pokrenuti multi-tenant osnovu kroz tenant catalog, resolution i `TenantContext`.
+Pokrenuti tenant catalog bazu, resolution middleware i `TenantContext` kroz `CoreKit.AppHost.Server`.
 
 ## Next Tasks
 
-- Definisati model tenant kataloga
-- Kreirati catalog DbContext
-- Implementirati tenant resolution po host/header strategiji
+- Verifikovati resolution tok za `localhost` i `X-Tenant` header
+- Dodati EF migraciju za tenant katalog
+- Uvesti prve test scenarije za tenant resolution
 
 ## After That
 

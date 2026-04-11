@@ -137,18 +137,18 @@ Current focus:
 Goal:
 Postaviti multi-tenant osnovu prema ADR-002 pre tenant-aware poslovne logike.
 
-Status: Planned
+Status: In progress
 
 Tasks:
 
-- `[ ]` Definisati model tenant kataloga
-- `[ ]` Kreirati catalog DbContext
+- `[x]` Definisati model tenant kataloga
+- `[x]` Kreirati catalog DbContext
 - `[ ]` Dodati migraciju za tenant katalog
-- `[ ]` Implementirati tenant resolution po host/header strategiji
-- `[ ]` Uvesti `TenantContext`
-- `[ ]` Obezbediti da se tenant razresi pre autentikacije
-- `[ ]` Obezbediti da se tenant razresi pre DbContext kreiranja
-- `[ ]` Dodati validaciju za nepostojeci ili neaktivan tenant
+- `[x]` Implementirati tenant resolution po host/header strategiji
+- `[x]` Uvesti `TenantContext`
+- `[x]` Obezbediti da se tenant razresi pre autentikacije
+- `[x]` Obezbediti da se tenant razresi pre DbContext kreiranja
+- `[x]` Dodati validaciju za nepostojeci ili neaktivan tenant
 - `[ ]` Dodati test scenarije za tenant resolution
 
 Exit criteria:

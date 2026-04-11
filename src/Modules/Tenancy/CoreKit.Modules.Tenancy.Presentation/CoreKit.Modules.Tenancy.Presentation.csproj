@@ -10,4 +10,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CoreKit.Modules.Tenancy.Infrastructure\CoreKit.Modules.Tenancy.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

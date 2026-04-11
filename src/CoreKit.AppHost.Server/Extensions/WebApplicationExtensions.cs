@@ -1,3 +1,5 @@
+using CoreKit.Modules.Tenancy.Infrastructure;
+
 namespace CoreKit.AppHost.Server.Extensions;
 
 public static class WebApplicationExtensions
@@ -18,6 +20,7 @@ public static class WebApplicationExtensions
 
         app.UseBlazorFrameworkFiles();
         app.UseStaticFiles();
+        app.UseMiddleware<TenantResolutionMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
 

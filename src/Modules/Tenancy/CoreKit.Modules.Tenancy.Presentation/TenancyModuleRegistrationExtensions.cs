@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using CoreKit.Modules.Tenancy.Infrastructure;
 
 namespace CoreKit.Modules.Tenancy.Presentation;
 
@@ -22,11 +23,19 @@ public static class TenancyModuleRegistrationExtensions
 
         group.MapGet(
             "/status",
-            () => Results.Ok(
+            (ITenantContextAccessor tenantContextAccessor) => Results.Ok(
                 new
                 {
                     module = "Tenancy",
-                    status = "registered"
+                    status = "registered",
+                    tenant = tenantContextAccessor.TenantContext is null
+                        ? null
+                        : new
+                        {
+                            tenantContextAccessor.TenantContext.Identifier,
+                            tenantContextAccessor.TenantContext.Name,
+                            tenantContextAccessor.TenantContext.Host
+                        }
                 }));
 
         return endpoints;
