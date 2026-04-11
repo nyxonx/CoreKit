@@ -29,6 +29,11 @@ packages/
 *.db-shm
 *.db-wal
 
+# CoreKit local databases
+src/CoreKit.AppHost.Server/corekit*.db
+src/CoreKit.AppHost.Server/corekit*.db-shm
+src/CoreKit.AppHost.Server/corekit*.db-wal
+
 # OS files
 .DS_Store
 Thumbs.db

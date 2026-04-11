@@ -21,40 +21,66 @@ public static class TenancyBootstrapExtensions
 
         await dbContext.Database.MigrateAsync(cancellationToken);
 
-        var identifier = configuration["Tenancy:Seed:Identifier"] ?? "bootstrap";
-        var name = configuration["Tenancy:Seed:Name"] ?? "Bootstrap Tenant";
-        var host = configuration["Tenancy:Seed:Host"] ?? "localhost";
-        var connectionString =
-            configuration.GetConnectionString("DefaultTenantDatabase")
-            ?? "Data Source=corekit.bootstrap.tenant.db";
+        var tenants = BuildSeedTenants(configuration);
 
-        var existingTenant = await dbContext.Tenants.SingleOrDefaultAsync(
-            tenant => tenant.Identifier == identifier,
-            cancellationToken);
+        foreach (var seedTenant in tenants)
+        {
+            var existingTenant = await dbContext.Tenants.SingleOrDefaultAsync(
+                tenant => tenant.Identifier == seedTenant.Identifier,
+                cancellationToken);
 
-        if (existingTenant is null)
-        {
-            dbContext.Tenants.Add(
-                new TenantCatalogEntry
-                {
-                    Identifier = identifier,
-                    Name = name,
-                    Host = host,
-                    IsActive = true,
-                    ConnectionString = connectionString
-                });
-        }
-        else
-        {
-            existingTenant.Name = name;
-            existingTenant.Host = host;
-            existingTenant.IsActive = true;
-            existingTenant.ConnectionString = connectionString;
+            if (existingTenant is null)
+            {
+                dbContext.Tenants.Add(seedTenant);
+                continue;
+            }
+
+            existingTenant.Name = seedTenant.Name;
+            existingTenant.Host = seedTenant.Host;
+            existingTenant.IsActive = seedTenant.IsActive;
+            existingTenant.ConnectionString = seedTenant.ConnectionString;
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
         var validator = scope.ServiceProvider.GetRequiredService<TenantConfigurationValidator>();
         await validator.ValidateAsync(cancellationToken);
+    }
+
+    private static IReadOnlyList<TenantCatalogEntry> BuildSeedTenants(IConfiguration configuration)
+    {
+        return
+        [
+            new TenantCatalogEntry
+            {
+                Identifier = configuration["Tenancy:Seed:Identifier"] ?? "bootstrap",
+                Name = configuration["Tenancy:Seed:Name"] ?? "Bootstrap Tenant",
+                Host = configuration["Tenancy:Seed:Host"] ?? "localhost",
+                IsActive = true,
+                ConnectionString =
+                    configuration.GetConnectionString("DefaultTenantDatabase")
+                    ?? "Data Source=corekit.bootstrap.tenant.db"
+            },
+            new TenantCatalogEntry
+            {
+                Identifier = "contoso",
+                Name = "Contoso",
+                Host = "contoso.local",
+                IsActive = true,
+                ConnectionString =
+                    configuration.GetConnectionString("ContosoTenantDatabase")
+                    ?? "Data Source=corekit.contoso.tenant.db"
+            },
+            new TenantCatalogEntry
+            {
+                Identifier = "fabrikam",
+                Name = "Fabrikam",
+                Host = "fabrikam.local",
+                IsActive = true,
+                ConnectionString =
+                    configuration.GetConnectionString("FabrikamTenantDatabase")
+                    ?? "Data Source=corekit.fabrikam.tenant.db"
+            }
+        ];
     }
 }
