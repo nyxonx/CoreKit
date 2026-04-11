@@ -143,13 +143,13 @@ Tasks:
 
 - `[x]` Definisati model tenant kataloga
 - `[x]` Kreirati catalog DbContext
-- `[ ]` Dodati migraciju za tenant katalog
+- `[x]` Dodati migraciju za tenant katalog
 - `[x]` Implementirati tenant resolution po host/header strategiji
 - `[x]` Uvesti `TenantContext`
 - `[x]` Obezbediti da se tenant razresi pre autentikacije
 - `[x]` Obezbediti da se tenant razresi pre DbContext kreiranja
 - `[x]` Dodati validaciju za nepostojeci ili neaktivan tenant
-- `[ ]` Dodati test scenarije za tenant resolution
+- `[x]` Dodati test scenarije za tenant resolution
 
 Exit criteria:
 - Tenant moze pouzdano da se razresi po request-u

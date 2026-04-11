@@ -8,13 +8,13 @@ Phase 4 - Tenant Catalog And Tenant Resolution
 
 ## Current Task
 
-Pokrenuti tenant catalog bazu, resolution middleware i `TenantContext` kroz `CoreKit.AppHost.Server`.
+Rucno potvrditi host-level tenant resolution tok kroz `CoreKit.AppHost.Server`.
 
 ## Next Tasks
 
-- Verifikovati resolution tok za `localhost` i `X-Tenant` header
-- Dodati EF migraciju za tenant katalog
-- Uvesti prve test scenarije za tenant resolution
+- Potvrditi `localhost` i `X-Tenant` resolution kroz stvarni host
+- Zatvoriti `Phase 4` commit granicu
+- Preci na tenant-aware data access
 
 ## After That
 
