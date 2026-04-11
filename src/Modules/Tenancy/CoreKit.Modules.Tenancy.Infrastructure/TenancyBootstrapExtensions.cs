@@ -53,5 +53,8 @@ public static class TenancyBootstrapExtensions
         }
 
         await dbContext.SaveChangesAsync(cancellationToken);
+
+        var validator = scope.ServiceProvider.GetRequiredService<TenantConfigurationValidator>();
+        await validator.ValidateAsync(cancellationToken);
     }
 }

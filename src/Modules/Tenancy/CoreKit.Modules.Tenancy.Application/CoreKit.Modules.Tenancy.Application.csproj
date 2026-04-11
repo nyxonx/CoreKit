@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CoreKit.Modules.Tenancy.Infrastructure\CoreKit.Modules.Tenancy.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

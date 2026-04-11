@@ -137,7 +137,7 @@ Current focus:
 Goal:
 Postaviti multi-tenant osnovu prema ADR-002 pre tenant-aware poslovne logike.
 
-Status: In progress
+Status: Completed
 
 Tasks:
 
@@ -162,17 +162,17 @@ Exit criteria:
 Goal:
 Podesiti tenant-aware persistence i otkloniti rizik mesanja podataka.
 
-Status: Planned
+Status: In progress
 
 Tasks:
 
-- `[ ]` Dizajnirati tenant connection string provider
-- `[ ]` Napraviti tenant DbContext factory
-- `[ ]` Podesiti tenant-specific DbContext registraciju
-- `[ ]` Obezbediti izolaciju konekcija po tenant-u
-- `[ ]` Dodati startup proveru tenant konfiguracije
-- `[ ]` Dodati prvi integration test za izolaciju tenant podataka
-- `[ ]` Dokumentovati pravila za tenant-aware persistence
+- `[x]` Dizajnirati tenant connection string provider
+- `[x]` Napraviti tenant DbContext factory
+- `[x]` Podesiti tenant-specific DbContext registraciju
+- `[x]` Obezbediti izolaciju konekcija po tenant-u
+- `[x]` Dodati startup proveru tenant konfiguracije
+- `[x]` Dodati prvi integration test za izolaciju tenant podataka
+- `[x]` Dokumentovati pravila za tenant-aware persistence
 
 Exit criteria:
 - Svaki tenant koristi svoju bazu
@@ -308,9 +308,11 @@ Now:
 - `Phase 1` je zavrsena
 - `Phase 2` je zavrsena
 - `Phase 3` je zavrsena
-- Identity i cookie auth tok su zatvoreni
-- Aktivna je priprema za `Phase 4`
+- `Phase 4` je zavrsena
+- `Phase 5` je aktivna
+- Tenant catalog, resolution i tenant-aware persistence osnova su uvedeni
+- Sledece zatvaramo prvi `Phase 5` slice i spremamo prelaz ka `Phase 6`
 
 After that:
-- Posle toga tenancy
-- Zatim RPC i CQRS
+- Posle toga RPC i CQRS
+- Zatim module framework i prvi pravi modul

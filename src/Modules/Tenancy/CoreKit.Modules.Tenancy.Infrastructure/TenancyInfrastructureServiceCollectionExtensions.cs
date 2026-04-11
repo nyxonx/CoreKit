@@ -22,6 +22,12 @@ public static class TenancyInfrastructureServiceCollectionExtensions
 
         services.AddScoped<TenantResolutionService>();
         services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();
+        services.AddScoped<ITenantConnectionStringProvider, TenantConnectionStringProvider>();
+        services.AddScoped<ITenantDbContextFactory, TenantDbContextFactory>();
+        services.AddScoped(
+            serviceProvider => serviceProvider.GetRequiredService<ITenantDbContextFactory>().CreateDbContext());
+        services.AddScoped<TenantDatabaseBootstrapper>();
+        services.AddScoped<TenantConfigurationValidator>();
 
         return services;
     }

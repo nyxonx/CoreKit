@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Modules\Tenancy\CoreKit.Modules.Tenancy.Application\CoreKit.Modules.Tenancy.Application.csproj" />
     <ProjectReference Include="..\..\src\Modules\Tenancy\CoreKit.Modules.Tenancy.Infrastructure\CoreKit.Modules.Tenancy.Infrastructure.csproj" />
   </ItemGroup>
 
