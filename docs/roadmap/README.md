@@ -29,7 +29,7 @@ Kada otvoris roadmap, treba odmah da bude jasno:
 Goal:
 Postaviti repozitorijum, osnovnu strukturu i pocetnu dokumentaciju.
 
-Status: In progress
+Status: Completed
 
 Tasks:
 
@@ -38,8 +38,8 @@ Tasks:
 - `[x]` Dodati osnovne GPT/context dokumente
 - `[x]` Dodati pocetne ADR dokumente
 - `[x]` Dodati solution foldere da dokumentacija bude vidljiva u Visual Studio
-- `[ ]` Azurirati glavni `README.md` sa opisom projekta i strukture
-- `[ ]` Dodati `build/` folder i objasniti njegovu namenu
+- `[x]` Azurirati glavni `README.md` sa opisom projekta i strukture
+- `[x]` Dodati `build/` folder i objasniti njegovu namenu
 
 Exit criteria:
 - Repo ima jasnu strukturu
@@ -53,7 +53,7 @@ Exit criteria:
 Goal:
 Napraviti stvarne projekte i reference prema ciljnoj arhitekturi.
 
-Status: Current next phase
+Status: In progress
 
 Tasks:
 
@@ -299,8 +299,8 @@ Exit criteria:
 ## Current Focus
 
 Now:
-- Zavrsiti `Phase 0`
-- Uci u `Phase 1`
+- `Phase 0` je zavrsena
+- Aktivna je `Phase 1`
 - Prvo napraviti osnovne projekte unutar `src/`
 
 After that:

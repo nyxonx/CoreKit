@@ -202,6 +202,7 @@ When asked to implement something:
 2. Explain impacted layers/modules.
 3. Generate code consistent with architecture.
 4. Mention if ADR or docs should be updated.
+5. When adding important `.md` files or other working solution files, also add them to `CoreKit.sln` so they are visible in Solution Explorer.
 
 ---
 

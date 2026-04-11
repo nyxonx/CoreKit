@@ -4,7 +4,7 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 0 - Project Bootstrap
+Phase 1 - Solution Skeleton
 
 ## Current Task
 

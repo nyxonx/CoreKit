@@ -1,13 +1,19 @@
 .vs/
+.vscode/
+.idea/
 
 # Build output
 [Bb]in/
 [Oo]bj/
+artifacts/
+TestResults/
 
 # User-specific files
 *.user
 *.rsuser
 *.suo
+*.userosscache
+*.sln.docstates
 
 # Logs
 *.log
@@ -15,3 +21,11 @@
 # NuGet packages
 packages/
 *.nupkg
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
