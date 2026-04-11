@@ -8,15 +8,14 @@ Phase 1 - Solution Skeleton
 
 ## Current Task
 
-Kreirati stvarne projekte i solution skeleton za AppHost, BuildingBlocks i prve module.
+Kreirati `BuildingBlocks` skeleton projekte.
 
 ## Next Tasks
 
-- Kreirati `CoreKit.AppHost.Server`
-- Kreirati `CoreKit.AppHost.Client`
-- Kreirati `CoreKit.AppHost.Contracts`
-- Dodati projekte u solution
-- Proveriti da solution build prolazi
+- Kreirati `BuildingBlocks` projekte
+- Dodati ih u solution
+- Kreirati `Modules/Identity` skeleton
+- Kreirati `Modules/Tenancy` skeleton
 
 ## After That
 

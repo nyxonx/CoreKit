@@ -57,15 +57,15 @@ Status: In progress
 
 Tasks:
 
-- `[>]` Kreirati `CoreKit.AppHost.Server`
-- `[ ]` Kreirati `CoreKit.AppHost.Client`
-- `[ ]` Kreirati `CoreKit.AppHost.Contracts`
-- `[ ]` Dodati projekte u solution
-- `[ ]` Podesiti project references izmedju AppHost projekata
-- `[ ]` Kreirati `BuildingBlocks` foldere i prazne projekte
+- `[x]` Kreirati `CoreKit.AppHost.Server`
+- `[x]` Kreirati `CoreKit.AppHost.Client`
+- `[x]` Kreirati `CoreKit.AppHost.Contracts`
+- `[x]` Dodati projekte u solution
+- `[x]` Podesiti project references izmedju AppHost projekata
+- `[>]` Kreirati `BuildingBlocks` foldere i prazne projekte
 - `[ ]` Kreirati `Modules/Identity` strukturu sa 4 projekta
 - `[ ]` Kreirati `Modules/Tenancy` strukturu sa 4 projekta
-- `[ ]` Proveriti da solution build prolazi bez poslovne logike
+- `[x]` Proveriti da solution build prolazi bez poslovne logike
 
 Exit criteria:
 - Svi glavni projekti postoje
@@ -301,7 +301,8 @@ Exit criteria:
 Now:
 - `Phase 0` je zavrsena
 - Aktivna je `Phase 1`
-- Prvo napraviti osnovne projekte unutar `src/`
+- `AppHost` skeleton je zavrsen
+- Sledece napraviti `BuildingBlocks` skeleton
 
 After that:
 - Pokrenuti `AppHost`
