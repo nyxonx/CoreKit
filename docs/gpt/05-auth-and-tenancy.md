@@ -29,6 +29,9 @@ Core models:
 
 Database Per Tenant
 
+Business podaci ostaju `database-per-tenant`.
+Identity store je trenutno centralizovan i ne prati tenant bazu jedan-na-jedan.
+
 ## Tenant Catalog Database
 
 Stores:
@@ -58,6 +61,9 @@ Tenant must be resolved:
 2. Before DbContext creation
 3. Before Request Handling
 
+Tenant resolution pre auth toka ne znaci da je i sam identity persistence tenant-scoped.
+To znaci da request dobija tenant kontekst pre user lookup i kasnijih tenant-aware authorization pravila tamo gde su obavezna.
+
 ## DbContext Rules
 
 All tenant-specific DbContexts must:
@@ -71,3 +77,17 @@ All tenant-specific DbContexts must:
 * Tenant boundary is critical security boundary
 * No request may execute without resolved tenant where tenant context is required
 * Tenant context must be validated before auth/user lookup
+
+## Authorization Direction
+
+CoreKit trenutno razdvaja:
+
+* centralizovanu autentikaciju (`AppUser`, cookie auth, jedan identity store)
+* tenant-scoped membership i autorizaciju za business module
+
+Planirani pravac nije `user database per tenant`, vec:
+
+* jedan globalni `UserId`
+* membership zapis po tenant-u
+* tenant-scoped role ili permission model
+* audit identitet koji nosi i `UserId` i `TenantId`

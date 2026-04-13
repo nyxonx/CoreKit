@@ -61,4 +61,9 @@ Platforma danas vec pokriva:
 - tenant-aware persistence i tenant provisioning osnovu
 - production-readiness baseline za logging, health, caching i background jobs
 
+Auth i tenancy model su trenutno postavljeni tako da:
+- `Identity` ostaje centralizovan kroz ASP.NET Core Identity i cookie auth
+- business podaci ostaju `database-per-tenant`
+- tenant-scoped membership i authorization predstavljaju sledeci planirani korak razvoja
+
 Detaljan plan razvoja vodi se u [`docs/roadmap/README.md`](docs/roadmap/README.md).

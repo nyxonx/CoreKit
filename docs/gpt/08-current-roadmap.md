@@ -4,18 +4,20 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Roadmap checkpoint posle Phase 11
+Phase 12 - Tenant Membership And Authorization Model
 
 ## Current Task
 
-Phase 11 je zatvorena i platforma je uskladjena oko startup orchestration, guardrail-a i high-level dokumentacije.
+Posle zatvaranja Phase 11 fokus prelazi na tenant membership, tenant-scoped authorization i audit identitet iznad postojeceg centralnog auth modela.
 
 ## Next Tasks
 
-- Izabrati sledeci prioritet posle architecture hardening checkpoint-a
-- Odrediti da li dalje ide sirenje business modula ili operativni/platformski fokus
-- Odrzati uvedeni startup i formatting obrazac kao baseline za naredne faze
+- Definisati tenant membership model i vezu sa centralnim `AppUser`
+- Uvesti osnovu za tenant-scoped role/permission proveru
+- Dodati shared current user / current tenant / audit contract za business operacije
+- Primeniti prvi authorization check na `Customers` modul
+- Potvrditi dokumentacijom razliku izmedju centralnog identity store-a i tenant-scoped prava
 
 ## After That
 
-- Novi milestone po prioritetima proizvoda i platforme
+- Sirenje business modula ili dublji security/operations milestone na stabilnijem authorization temelju

@@ -21,6 +21,9 @@ Primary need:
 
 Use ASP.NET Core Identity with Cookie Authentication for initial implementation.
 
+For the current platform baseline, Identity remains centralized in a dedicated store.
+Tenant-specific business data and later tenant-scoped authorization evolve separately on top of that auth model.
+
 ## Consequences
 
 ### Positive
@@ -41,6 +44,7 @@ May evolve to:
 
 * JWT / Access Token auth
 * Hybrid cookie/token approach
+* Richer tenant membership and authorization model above centralized Identity
 
 ## Alternatives Considered
 
@@ -50,4 +54,3 @@ Rejected because:
 
 * adds unnecessary complexity for bootstrap phase
 * premature for current requirements
-
