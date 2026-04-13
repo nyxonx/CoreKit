@@ -61,6 +61,8 @@ Postoje dva referentna primera:
 
 `Identity` pokazuje modul sa specijalizovanim auth endpoint-ima.
 
+Za sada je `Identity` i kontrolisani izuzetak od potpuno cistog domain modela, jer `AppUser` i `AppRole` ostaju direktno vezani za ASP.NET Core Identity tipove dok je aktivan trenutni auth pristup.
+
 `Tenancy` pokazuje modul koji koristi i:
 
 - runtime tenant infrastructure

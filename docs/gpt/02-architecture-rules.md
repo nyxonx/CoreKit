@@ -46,6 +46,11 @@ Must NOT contain:
 * EF Core logic
 * External dependencies
 
+Temporary exception:
+
+* `Identity` modul je trenutno kontrolisani framework-backed izuzetak zbog direktne ASP.NET Core Identity integracije (`AppUser`, `AppRole`)
+* taj kompromis je prihvacen za trenutni hosted cookie auth pravac i ostaje kandidat za kasniji refaktor, ne obrazac za ostale module
+
 ### Application
 
 Contains:
