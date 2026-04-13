@@ -4,17 +4,17 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 13 - Tenant Administration UI And Management Flows
+Phase 14 - Platform Administration Surface And Tenant Lifecycle Management
 
 ## Current Task
 
-Phase 13 je zatvorena kroz razdvojeni tenant admin surface za aktivni tenant i control-plane platform admin surface za tenant catalog/create-provisioning flow.
+Phase 14 prelazi sa osnovnog `platform-admin` baseline-a na zaseban control-plane UX sa tenant lifecycle i platform-level membership upravljanjem po izabranom tenant-u.
 
 ## Next Tasks
 
-- Definisati sledeci business/admin milestone na novom tenant management temelju
-- Prosiriti tenant admin surface dodatnim tenant lifecycle tokovima kada budu prioritet
-- Nasloniti sledece admin UI korake na vec uvedeni server-side membership/authorization model
+- Uvesti poseban layout i login UX za control-plane host
+- Dodati tenant lifecycle tokove kao sto su activate/deactivate i detaljniji catalog pregled
+- Dodati platform-level membership management i flow za dodelu postojeceg korisnika izabranom tenant-u
 
 ## After That
 

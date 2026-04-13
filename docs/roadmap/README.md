@@ -388,6 +388,34 @@ Exit criteria:
 
 ---
 
+## Phase 14 - Platform Administration Surface And Tenant Lifecycle Management
+
+Goal:
+Ucvrstiti novi control-plane pristup kroz poseban platform admin UX, tenant lifecycle operacije i platform-level membership upravljanje po izabranom tenant-u iznad vec uvedenog tenant admin baseline-a.
+
+Status: In Progress
+
+Tasks:
+
+- `[ ]` Uvesti poseban layout i navigaciju za `platform-admin` surface
+- `[ ]` Uvesti jasniji platform login UX za control-plane host
+- `[ ]` Dodati tenant catalog pregled sa detaljnijim tenant prikazom i osnovnim pretragama/filterima kada je prakticno
+- `[ ]` Dodati tenant lifecycle operacije kao sto su activate/deactivate za tenant
+- `[ ]` Dodati platform-level membership management za izabrani tenant
+- `[ ]` Dodati flow za dodelu postojeceg korisnika odabranom tenant-u sa tenant rolom
+- `[ ]` Dodati platform UI za promenu role i deaktivaciju/reaktivaciju membership-a po tenant-u
+- `[ ]` Dodati test scenarije za control-plane i platform membership tokove tamo gde je prakticno
+- `[ ]` Uskladiti README i high-level dokumentaciju sa platform administration surface-om
+
+Exit criteria:
+
+- Postoji jasno odvojen platform administration UX na control-plane hostu
+- Global admin moze da pregleda i menja tenant katalog bez ulaska u tenant host
+- Platform admin moze da dodeli postojeceg korisnika izabranom tenant-u i promeni mu tenant rolu
+- Tenant lifecycle i platform membership tokovi imaju proverljiv UI i server-side guardrail-e
+
+---
+
 ## Current Focus
 
 Now:
@@ -423,6 +451,8 @@ Now:
 - Dodat je tenant administration UI za aktivni tenant sa membership list/upsert tokom, role-change formom i guardrail porukom za non-admin korisnike
 - Tenant catalog/create-provisioning flow je izdvojen na control-plane platform admin surface umesto da zivi na svakom tenant hostu
 - Dodati su integration testovi i high-level docs alignment za tenant administration baseline
+- `Phase 14` je aktivna
+- Sledeci fokus je da `platform-admin` preraste u zaseban control-plane UX sa tenant lifecycle i platform-level membership tokovima
 
 After that:
 - Prosiriti tenant admin surface i otvoriti sledeci business/admin milestone na vec uspostavljenom tenant management temelju
