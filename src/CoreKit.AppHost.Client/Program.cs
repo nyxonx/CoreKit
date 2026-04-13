@@ -15,6 +15,7 @@ builder.Services.AddScoped(
     });
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthApiClient>();
+builder.Services.AddScoped<RpcClient>();
 builder.Services.AddScoped<ServerAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(
     serviceProvider => serviceProvider.GetRequiredService<ServerAuthenticationStateProvider>());

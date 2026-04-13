@@ -1,0 +1,111 @@
+@page "/tenant-notes"
+@attribute [Authorize]
+@inject RpcClient RpcClient
+
+<PageTitle>Tenant Notes</PageTitle>
+
+<section class="panel">
+    <p class="eyebrow">RPC</p>
+    <h1>Tenant notes over unified RPC</h1>
+    <p>
+        This page uses <code>/api/rpc</code> instead of direct module endpoints to create and load tenant-scoped notes.
+    </p>
+</section>
+
+<section class="grid">
+    <article class="panel">
+        <h2>Add note</h2>
+
+        <EditForm Model="@this" OnValidSubmit="@HandleSubmitAsync">
+            <label>
+                <span>Value</span>
+                <InputText @bind-Value="noteValue" />
+            </label>
+
+            <button class="primary-button" type="submit" disabled="@isSubmitting">
+                @(isSubmitting ? "Saving..." : "Add note")
+            </button>
+        </EditForm>
+
+        @if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <p class="error-text">@errorMessage</p>
+        }
+    </article>
+
+    <article class="panel">
+        <h2>Current tenant data</h2>
+
+        @if (isLoading)
+        {
+            <p>Loading tenant notes...</p>
+        }
+        else if (notes.Count == 0)
+        {
+            <p>No notes yet for this tenant.</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var note in notes)
+                {
+                    <li>@note.Value</li>
+                }
+            </ul>
+        }
+    </article>
+</section>
+
+@code {
+    private readonly List<TenantNoteDto> notes = [];
+    private string noteValue = string.Empty;
+    private string? errorMessage;
+    private bool isLoading = true;
+    private bool isSubmitting;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNotesAsync();
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        isSubmitting = true;
+        errorMessage = null;
+
+        var response = await RpcClient.InvokeAsync<TenantNoteDto>(
+            "tenancy.notes.add",
+            new { value = noteValue });
+
+        isSubmitting = false;
+
+        if (!response.Succeeded)
+        {
+            errorMessage = response.Errors.FirstOrDefault()?.Message ?? "The note could not be saved.";
+            return;
+        }
+
+        noteValue = string.Empty;
+        await LoadNotesAsync();
+    }
+
+    private async Task LoadNotesAsync()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        var response = await RpcClient.InvokeAsync<List<TenantNoteDto>>("tenancy.notes.list");
+
+        isLoading = false;
+
+        if (!response.Succeeded)
+        {
+            errorMessage = response.Errors.FirstOrDefault()?.Message ?? "The tenant notes could not be loaded.";
+            notes.Clear();
+            return;
+        }
+
+        notes.Clear();
+        notes.AddRange(response.Data ?? []);
+    }
+}

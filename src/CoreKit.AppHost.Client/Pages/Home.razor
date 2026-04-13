@@ -3,20 +3,20 @@
 
 <section class="hero">
     <div class="hero-copy">
-        <p class="eyebrow">Phase 3</p>
-        <h1>CoreKit now has a working hosted cookie authentication flow.</h1>
-        <p class="lead">
-            The app host is ready for tenant-aware work after the first end-to-end auth pass:
-            login, logout, protected routing, and refresh-safe user state.
-        </p>
+    <p class="eyebrow">Phase 6</p>
+    <h1>CoreKit now has a working unified RPC and CQRS foundation.</h1>
+    <p class="lead">
+        The app host now combines hosted auth, tenant resolution, tenant-aware persistence,
+        and a first RPC pipeline that can execute module commands and queries through one endpoint.
+    </p>
     </div>
 
     <div class="hero-card">
         <h2>Current focus</h2>
         <ul>
             <li>Hosted login and logout through the server</li>
-            <li>Protected routes backed by cookie auth</li>
-            <li>Preparation for tenant resolution</li>
+            <li>Tenant-aware persistence per request</li>
+            <li>Unified RPC via <code>/api/rpc</code></li>
         </ul>
     </div>
 </section>
@@ -44,7 +44,7 @@
     <article class="panel">
         <h2>Next milestone</h2>
         <p>
-            Move into tenant catalog and tenant resolution after this auth phase closes.
+            Expand the client-side RPC workflow and then formalize the reusable module framework.
         </p>
     </article>
 </section>

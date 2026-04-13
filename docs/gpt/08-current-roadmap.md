@@ -8,13 +8,13 @@ Phase 6 - CQRS And Unified RPC Pipeline
 
 ## Current Task
 
-Ucvrstiti prvi CQRS/RPC slice preko `POST /api/rpc` i tenancy sample operation-a.
+ Ucvrstiti prvi CQRS/RPC slice kroz klijentski poziv ka `POST /api/rpc`.
 
 ## Next Tasks
 
-- Dodati prvi klijentski RPC poziv obrazac
 - Prosiriti RPC sample van tenancy demo use case-a
 - Pripremiti module framework na vrhu novog pipeline-a
+- Poceti standardizaciju client-side module access obrasca
 
 ## After That
 
