@@ -10,4 +10,5 @@ Tipican sadrzaj:
 - operativne i platform smernice kao sto su module framework i caching strategija
 - background jobs pristup i operativni runtime obrasci
 - startup orchestration smernice za module i host
+- tenant membership i authorization smernice iznad centralnog identity store-a
 - coverage audit beleznice za pilot business module kada su bitne za platformske faze

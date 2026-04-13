@@ -338,18 +338,18 @@ Exit criteria:
 Goal:
 Uvesti tenant-scoped membership, autorizaciju i audit identitet iznad postojeceg centralizovanog auth modela, bez menjanja osnovnog `ASP.NET Core Identity + cookie auth` pravca.
 
-Status: Planned
+Status: In Progress
 
 Tasks:
 
-- `[ ]` Definisati tenant membership model koji povezuje centralni `AppUser` sa aktivnim tenant-ima
+- `[x]` Definisati tenant membership model koji povezuje centralni `AppUser` sa aktivnim tenant-ima
 - `[ ]` Definisati tenant-scoped role/permission osnovu za buduce module
-- `[ ]` Dodati shared current user / current tenant access contract za business operacije
-- `[ ]` Uvesti proveru da autentikovani korisnik pripada aktivnom tenant-u tamo gde je to obavezno
+- `[x]` Dodati shared current user / current tenant access contract za business operacije
+- `[x]` Uvesti proveru da autentikovani korisnik pripada aktivnom tenant-u tamo gde je to obavezno
 - `[ ]` Definisati audit metadata obrazac (`CreatedByUserId`, `ModifiedByUserId`, `TenantId`)
-- `[ ]` Primeniti osnovnu tenant authorization proveru na `Customers` modul
-- `[ ]` Dodati test scenarije za tenant membership i authorization flow
-- `[ ]` Uskladiti auth/tenancy dokumentaciju sa central identity + tenant-scoped authorization modelom
+- `[x]` Primeniti osnovnu tenant authorization proveru na `Customers` modul
+- `[~]` Dodati test scenarije za tenant membership i authorization flow
+- `[x]` Uskladiti auth/tenancy dokumentaciju sa central identity + tenant-scoped authorization modelom
 
 Exit criteria:
 
@@ -385,8 +385,9 @@ Now:
 - Dodat je formatting baseline kroz `.editorconfig`, lokalni format check script i CI guardrail
 - Dodata je coverage audit beleznica za `Customers` i kriticni tenant isolation test
 - Tenant-before-auth redosled je pokriven integration test scenarijem i startup/pipeline cleanup-om
-- `Phase 12` je sledeci planirani korak
-- Sledeci fokus je tenant membership i tenant-scoped authorization model iznad postojeceg centralnog auth store-a
+- `Phase 12` je aktivna
+- Uvedeni su membership baseline, shared current execution contract i prvi tenant authorization check na `Customers` modulu
+- Sledeci fokus je tenant role/permission semantika i audit metadata obrazac
 
 After that:
 - Prosiriti sledeci business modul ili dublji operativni/security milestone na vec uvedenom tenant authorization temelju

@@ -32,11 +32,22 @@ internal static class RpcHttpResults
             return StatusCodes.Status409Conflict;
         }
 
+        if (codes.Any(code => code == "authentication_required"))
+        {
+            return StatusCodes.Status401Unauthorized;
+        }
+
+        if (codes.Any(code => code == "tenant_membership_required"))
+        {
+            return StatusCodes.Status403Forbidden;
+        }
+
         if (codes.Any(
                 code => code is "validation_error"
                     or "rpc_operation_required"
                     or "rpc_operation_not_found"
-                    or "rpc_payload_invalid"))
+                    or "rpc_payload_invalid"
+                    or "tenant_context_required"))
         {
             return StatusCodes.Status400BadRequest;
         }

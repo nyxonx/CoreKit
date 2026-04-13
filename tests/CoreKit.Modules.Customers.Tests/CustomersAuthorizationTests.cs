@@ -1,0 +1,215 @@
+using System.Net;
+using System.Net.Http.Json;
+using System.Text.Json;
+using CoreKit.AppHost.Contracts.Authentication;
+using CoreKit.AppHost.Contracts.Rpc;
+using CoreKit.Modules.Tenancy.Domain;
+using CoreKit.Modules.Tenancy.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Xunit;
+
+namespace CoreKit.Modules.Customers.Tests;
+
+public sealed class CustomersAuthorizationTests
+{
+    [Fact]
+    public async Task CustomersRpc_ReturnsAuthenticationRequired_WhenUserIsAnonymous()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var factory = new CoreKitAppFactory(tempRoot);
+            using var client = factory.CreateClient();
+
+            using var response = await SendRpcAsync(client, "localhost", "customers.list", "{}");
+
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+
+            var payload = await response.Content.ReadFromJsonAsync<RpcResponse>();
+            Assert.NotNull(payload);
+            Assert.False(payload.Succeeded);
+            Assert.Contains(payload.Errors, error => error.Code == "authentication_required");
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
+    public async Task CustomersRpc_Succeeds_ForBootstrapTenantMember()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var factory = new CoreKitAppFactory(tempRoot);
+            using var client = factory.CreateClient();
+            var authCookie = await LoginAsync(client, "localhost");
+
+            using var response = await SendRpcAsync(client, "localhost", "customers.list", "{}", authCookie);
+
+            response.EnsureSuccessStatusCode();
+
+            var payload = await response.Content.ReadFromJsonAsync<RpcResponse>();
+            Assert.NotNull(payload);
+            Assert.True(payload.Succeeded);
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
+    public async Task CustomersRpc_ReturnsForbidden_WhenUserLacksMembershipForResolvedTenant()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var factory = new CoreKitAppFactory(tempRoot);
+            await factory.AddTenantAsync("secondary", "secondary.local", Path.Combine(tempRoot, "secondary.db"));
+
+            using var client = factory.CreateClient();
+            var authCookie = await LoginAsync(client, "localhost");
+
+            using var response = await SendRpcAsync(client, "secondary.local", "customers.list", "{}", authCookie);
+
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+
+            var payload = await response.Content.ReadFromJsonAsync<RpcResponse>();
+            Assert.NotNull(payload);
+            Assert.False(payload.Succeeded);
+            Assert.Contains(payload.Errors, error => error.Code == "tenant_membership_required");
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    private static async Task<string> LoginAsync(HttpClient client, string host)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Post, "/api/auth/login")
+        {
+            Content = JsonContent.Create(new LoginRequest("admin", "Admin1234", false))
+        };
+        request.Headers.Host = host;
+
+        using var response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        var setCookie = response.Headers.TryGetValues("Set-Cookie", out var values)
+            ? values.FirstOrDefault()
+            : null;
+
+        Assert.False(string.IsNullOrWhiteSpace(setCookie));
+
+        return setCookie!.Split(';', 2)[0];
+    }
+
+    private static async Task<HttpResponseMessage> SendRpcAsync(
+        HttpClient client,
+        string host,
+        string operation,
+        string payloadJson,
+        string? authCookie = null)
+    {
+        using var document = JsonDocument.Parse(payloadJson);
+        using var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            "/api/rpc")
+        {
+            Content = JsonContent.Create(new RpcRequest(operation, document.RootElement.Clone()))
+        };
+
+        request.Headers.Host = host;
+
+        if (!string.IsNullOrWhiteSpace(authCookie))
+        {
+            request.Headers.Add("Cookie", authCookie);
+        }
+
+        return await client.SendAsync(request);
+    }
+
+    private static string CreateTempRoot()
+    {
+        var tempRoot = Path.Combine(Path.GetTempPath(), "corekit-customers-auth-tests", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempRoot);
+        return tempRoot;
+    }
+
+    private static void TryDeleteDirectory(string path)
+    {
+        try
+        {
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, recursive: true);
+            }
+        }
+        catch (IOException)
+        {
+        }
+        catch (UnauthorizedAccessException)
+        {
+        }
+    }
+
+    private sealed class CoreKitAppFactory(string tempRoot) : WebApplicationFactory<Program>
+    {
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        {
+            var tenantCatalogPath = Path.Combine(tempRoot, "catalog.db");
+            var tenantDataPath = Path.Combine(tempRoot, "tenant.db");
+            var identityPath = Path.Combine(tempRoot, "identity.db");
+
+            builder.UseEnvironment("Development");
+            builder.ConfigureAppConfiguration(
+                (_, configuration) =>
+                {
+                    configuration.AddInMemoryCollection(
+                    [
+                        KeyValuePair.Create<string, string?>("ConnectionStrings:TenantCatalogDatabase", $"Data Source={tenantCatalogPath}"),
+                        KeyValuePair.Create<string, string?>("ConnectionStrings:DefaultTenantDatabase", $"Data Source={tenantDataPath}"),
+                        KeyValuePair.Create<string, string?>("ConnectionStrings:IdentityDatabase", $"Data Source={identityPath}"),
+                        KeyValuePair.Create<string, string?>("Tenancy:Seed:Identifier", "bootstrap"),
+                        KeyValuePair.Create<string, string?>("Tenancy:Seed:Name", "Bootstrap Tenant"),
+                        KeyValuePair.Create<string, string?>("Tenancy:Seed:Host", "localhost")
+                    ]);
+                });
+        }
+
+        public async Task AddTenantAsync(string identifier, string host, string databasePath)
+        {
+            await using var scope = Services.CreateAsyncScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<TenantCatalogDbContext>();
+
+            var exists = await dbContext.Tenants.AnyAsync(tenant => tenant.Identifier == identifier);
+
+            if (exists)
+            {
+                return;
+            }
+
+            dbContext.Tenants.Add(
+                new TenantCatalogEntry
+                {
+                    Identifier = identifier,
+                    Name = identifier,
+                    Host = host,
+                    ConnectionString = $"Data Source={databasePath}",
+                    IsActive = true
+                });
+
+            await dbContext.SaveChangesAsync();
+        }
+    }
+}

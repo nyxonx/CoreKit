@@ -91,3 +91,12 @@ Planirani pravac nije `user database per tenant`, vec:
 * membership zapis po tenant-u
 * tenant-scoped role ili permission model
 * audit identitet koji nosi i `UserId` i `TenantId`
+
+## Current Phase 12 Baseline
+
+Trenutni uvodni `Phase 12` baseline vec uvodi:
+
+* `AppUserTenantMembership` u centralnom Identity store-u
+* shared current execution context contract za application/use case sloj
+* shared proveru da li autentikovani korisnik pripada aktivnom tenant-u
+* prvi primenjeni authorization check na `Customers` RPC operacijama

@@ -23,6 +23,7 @@ public static class IdentityBootstrapExtensions
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
 
         await dbContext.Database.EnsureCreatedAsync(cancellationToken);
+        await EnsureMembershipSchemaAsync(dbContext, cancellationToken);
 
         const string adminRoleName = "Admin";
 
@@ -37,10 +38,11 @@ public static class IdentityBootstrapExtensions
         var existingUser = await userManager.Users.SingleOrDefaultAsync(
             user => user.UserName == adminUserName,
             cancellationToken);
+        AppUser adminUser;
 
         if (existingUser is null)
         {
-            var adminUser = new AppUser
+            adminUser = new AppUser
             {
                 UserName = adminUserName
             };
@@ -55,5 +57,55 @@ public static class IdentityBootstrapExtensions
 
             await userManager.AddToRoleAsync(adminUser, adminRoleName);
         }
+        else
+        {
+            adminUser = existingUser;
+        }
+
+        var bootstrapTenantIdentifier = configuration["Tenancy:Seed:Identifier"] ?? "bootstrap";
+        var membershipExists = await dbContext.UserTenantMemberships.AnyAsync(
+            membership => membership.UserId == adminUser.Id
+                && membership.TenantIdentifier == bootstrapTenantIdentifier,
+            cancellationToken);
+
+        if (!membershipExists)
+        {
+            dbContext.UserTenantMemberships.Add(
+                new AppUserTenantMembership
+                {
+                    UserId = adminUser.Id,
+                    TenantIdentifier = bootstrapTenantIdentifier,
+                    Role = adminRoleName,
+                    IsActive = true
+                });
+
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+    }
+
+    private static async Task EnsureMembershipSchemaAsync(
+        AppIdentityDbContext dbContext,
+        CancellationToken cancellationToken)
+    {
+        const string createMembershipTableSql =
+            """
+            CREATE TABLE IF NOT EXISTS UserTenantMemberships (
+                Id TEXT NOT NULL CONSTRAINT PK_UserTenantMemberships PRIMARY KEY,
+                UserId TEXT NOT NULL,
+                TenantIdentifier TEXT NOT NULL,
+                Role TEXT NOT NULL,
+                IsActive INTEGER NOT NULL,
+                CONSTRAINT FK_UserTenantMemberships_AspNetUsers_UserId FOREIGN KEY (UserId) REFERENCES AspNetUsers (Id) ON DELETE CASCADE
+            );
+            """;
+
+        const string createMembershipIndexSql =
+            """
+            CREATE UNIQUE INDEX IF NOT EXISTS IX_UserTenantMemberships_UserId_TenantIdentifier
+            ON UserTenantMemberships (UserId, TenantIdentifier);
+            """;
+
+        await dbContext.Database.ExecuteSqlRawAsync(createMembershipTableSql, cancellationToken);
+        await dbContext.Database.ExecuteSqlRawAsync(createMembershipIndexSql, cancellationToken);
     }
 }

@@ -171,6 +171,7 @@ public sealed class CustomersModuleTests
         services.AddCustomersInfrastructure();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IAuditEventWriter, NoOpAuditEventWriter>();
+        services.AddScoped<ICurrentTenantAuthorizationService, AllowCurrentTenantAuthorizationService>();
 
         return services.BuildServiceProvider();
     }
@@ -317,5 +318,11 @@ public sealed class CustomersModuleTests
         {
             TryDeleteDirectory(tempRoot);
         }
+    }
+
+    private sealed class AllowCurrentTenantAuthorizationService : ICurrentTenantAuthorizationService
+    {
+        public Task<OperationError?> ValidateAccessAsync(CancellationToken cancellationToken = default) =>
+            Task.FromResult<OperationError?>(null);
     }
 }

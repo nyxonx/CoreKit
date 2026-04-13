@@ -14,6 +14,8 @@ Svaki novi modul treba da moze da se uvede bez improvizacije kroz isti skup kora
 
 Application sloj zadrzava contracts, use case orchestration i handlere, dok persistence implementacije ostaju u Infrastructure sloju.
 
+Kada modul koristi tenant-scoped authorization, application handler-i treba da koriste shared current execution / authorization contract, a ne da direktno citaju `HttpContext` ili module-specific auth persistence detalje.
+
 ## Standardni Oblik Modula
 
 Svaki modul koristi istu strukturu:

@@ -8,15 +8,14 @@ Phase 12 - Tenant Membership And Authorization Model
 
 ## Current Task
 
-Posle zatvaranja Phase 11 fokus prelazi na tenant membership, tenant-scoped authorization i audit identitet iznad postojeceg centralnog auth modela.
+Phase 12 je zapoceta uvodjenjem membership osnove, shared current execution contract-a i prvog tenant authorization check-a nad `Customers` modulom.
 
 ## Next Tasks
 
-- Definisati tenant membership model i vezu sa centralnim `AppUser`
-- Uvesti osnovu za tenant-scoped role/permission proveru
-- Dodati shared current user / current tenant / audit contract za business operacije
-- Primeniti prvi authorization check na `Customers` modul
-- Potvrditi dokumentacijom razliku izmedju centralnog identity store-a i tenant-scoped prava
+- Prosiriti membership model sa jasnijim tenant role/permission semantikama
+- Uvesti audit metadata obrazac za create/update operacije
+- Prosiriti authorization pattern i na naredne business module
+- Stabilizovati i verifikovati nove auth/membership test scenarije u pouzdanijem okruzenju
 
 ## After That
 

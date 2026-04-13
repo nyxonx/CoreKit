@@ -3,13 +3,22 @@ using MediatR;
 
 namespace CoreKit.Modules.Customers.Application;
 
-public sealed class UpdateCustomerCommandHandler(ICustomerService customerService)
+public sealed class UpdateCustomerCommandHandler(
+    ICustomerService customerService,
+    ICurrentTenantAuthorizationService tenantAuthorizationService)
     : IRequestHandler<UpdateCustomerCommand, OperationResult<CustomerDto>>
 {
     public async Task<OperationResult<CustomerDto>> Handle(
         UpdateCustomerCommand request,
         CancellationToken cancellationToken)
     {
+        var authorizationError = await tenantAuthorizationService.ValidateAccessAsync(cancellationToken);
+
+        if (authorizationError is not null)
+        {
+            return OperationResult<CustomerDto>.Invalid([authorizationError]);
+        }
+
         try
         {
             var customer = await customerService.UpdateCustomerAsync(
