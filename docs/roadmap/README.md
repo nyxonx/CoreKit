@@ -310,18 +310,18 @@ Exit criteria:
 Goal:
 Ucvrstiti platformsku arhitekturu, smanjiti bootstrap tehnicki dug i uskladiti dokumentaciju sa stvarnim stanjem sistema pre daljeg sirenja modula.
 
-Status: Planned
+Status: In Progress
 
 Tasks:
 
-- `[ ]` Refaktorisati module startup orchestration kroz unified `InitializeAsync` pipeline
-- `[ ]` Ukloniti direktno module-specific init pozivanje iz `Program.cs`
-- `[ ]` Standardizovati C# formatting kroz ceo solution
-- `[ ]` Dodati `.editorconfig` i format guardrail-e
-- `[ ]` Uskladiti root `README.md` i ostalu high-level dokumentaciju sa realnim stanjem repozitorijuma
-- `[ ]` Dodati integration test koji verifikuje tenant-before-auth redosled
-- `[ ]` Auditirati test coverage za prvi business modul i evidentirati rupe
-- `[ ]` Dokumentovati startup orchestration flow za module
+- `[x]` Refaktorisati module startup orchestration kroz unified `InitializeAsync` pipeline
+- `[x]` Ukloniti direktno module-specific init pozivanje iz `Program.cs`
+- `[~]` Standardizovati C# formatting kroz ceo solution
+- `[x]` Dodati `.editorconfig` i format guardrail-e
+- `[x]` Uskladiti root `README.md` i ostalu high-level dokumentaciju sa realnim stanjem repozitorijuma
+- `[~]` Dodati integration test koji verifikuje tenant-before-auth redosled
+- `[x]` Auditirati test coverage za prvi business modul i evidentirati rupe
+- `[x]` Dokumentovati startup orchestration flow za module
 
 Exit criteria:
 
@@ -353,8 +353,11 @@ Now:
 - Dodati su audit dogadjaji za auth i RPC, runtime observability endpoint i security header/cookie guardrail-i
 - Dodat je in-process background jobs obrazac sa tenancy maintenance job-om
 - Definisana je pocetna caching strategija za tenant katalog i read-mostly konfiguraciju
-- `Phase 11` je sledeci planirani korak
-- Fokus je na architecture hardening, startup cleanup i dokumentaciji uskladjenoj sa realnim stanjem repozitorijuma
+- `Phase 11` je aktivna
+- Uveden je shared module initialization pipeline i `Program.cs` je zadrzan bez module-specific startup grananja
+- Dodat je formatting baseline kroz `.editorconfig`, lokalni format check script i CI guardrail
+- Dodata je coverage audit beleznica za `Customers` i kriticni tenant isolation test
+- Tenant-before-auth integration test je dodat, ali puna verifikacija ostaje ogranicena u trenutnom okruzenju
 
 After that:
-- Implementacija `Phase 11` taskova
+- Zatvoriti preostalu verification i formatting stavku iz `Phase 11`

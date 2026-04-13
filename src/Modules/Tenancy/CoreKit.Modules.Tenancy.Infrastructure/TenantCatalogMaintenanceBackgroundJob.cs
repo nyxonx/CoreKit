@@ -8,7 +8,6 @@ namespace CoreKit.Modules.Tenancy.Infrastructure;
 public sealed class TenantCatalogMaintenanceBackgroundJob(
     IServiceScopeFactory scopeFactory,
     IOptions<TenantCatalogMaintenanceJobOptions> options,
-    IAuditEventWriter auditEventWriter,
     ILogger<TenantCatalogMaintenanceBackgroundJob> logger) : ICoreKitBackgroundJob
 {
     public string Name => "tenancy.catalog-maintenance";
@@ -21,6 +20,7 @@ public sealed class TenantCatalogMaintenanceBackgroundJob(
 
         var validator = scope.ServiceProvider.GetRequiredService<TenantConfigurationValidator>();
         var provisioningService = scope.ServiceProvider.GetRequiredService<TenantProvisioningService>();
+        var auditEventWriter = scope.ServiceProvider.GetRequiredService<IAuditEventWriter>();
 
         await validator.ValidateAsync(cancellationToken);
         await provisioningService.ProvisionAllAsync(cancellationToken);

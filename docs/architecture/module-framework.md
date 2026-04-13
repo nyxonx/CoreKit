@@ -46,7 +46,9 @@ Standardni tok je:
 2. svi moduli registruju svoje servise
 3. AppHost registruje shared CQRS/RPC pipeline nad modulskim application assembly-jima
 4. svi moduli mapiraju svoje endpoint-e
-5. svi moduli izvrsavaju bootstrap kroz `InitializeAsync`
+5. shared initialization pipeline izvrsava module bootstrap kroz `InitializeAsync`
+
+Trenutni shared startup orchestration je dokumentovan i u `docs/architecture/module-startup-orchestration.md`.
 
 ## Trenutni Primeri
 

@@ -230,6 +230,38 @@ public sealed class CustomersModuleTests
     }
 
     [Fact]
+    public async Task CustomerService_AllowsSameEmail_AcrossDifferentTenants()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var firstProvider = CreateServices(tempRoot, "tenant-one");
+            await using var secondProvider = CreateServices(tempRoot, "tenant-two");
+            await using var firstScope = firstProvider.CreateAsyncScope();
+            await using var secondScope = secondProvider.CreateAsyncScope();
+
+            var firstService = firstScope.ServiceProvider.GetRequiredService<ICustomerService>();
+            var secondService = secondScope.ServiceProvider.GetRequiredService<ICustomerService>();
+
+            await firstService.CreateCustomerAsync(new CreateCustomerRequest("Tenant One", "shared@test.local"));
+            await secondService.CreateCustomerAsync(new CreateCustomerRequest("Tenant Two", "shared@test.local"));
+
+            var firstCustomers = await firstService.GetCustomersAsync();
+            var secondCustomers = await secondService.GetCustomersAsync();
+
+            Assert.Single(firstCustomers);
+            Assert.Single(secondCustomers);
+            Assert.Equal("Tenant One", firstCustomers[0].Name);
+            Assert.Equal("Tenant Two", secondCustomers[0].Name);
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
     public async Task CustomerService_DeletesCustomer_WhenItExists()
     {
         var tempRoot = CreateTempRoot();

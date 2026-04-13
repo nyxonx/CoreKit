@@ -5,6 +5,7 @@ VisualStudioVersion = 18.5.11626.173
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BC2DA9E9-806C-4490-8467-27D7EEF36238}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		README.md = README.md
 	EndProjectSection
@@ -21,6 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{38F165E2
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E1A9C89B-B32D-4493-B37C-386BFF0E8805}"
 	ProjectSection(SolutionItems) = preProject
+		build\format-check.ps1 = build\format-check.ps1
 		build\provision-local.ps1 = build\provision-local.ps1
 		build\README.md = build\README.md
 	EndProjectSection
@@ -34,7 +36,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architectur
 	ProjectSection(SolutionItems) = preProject
 		docs\architecture\background-jobs.md = docs\architecture\background-jobs.md
 		docs\architecture\caching-strategy.md = docs\architecture\caching-strategy.md
+		docs\architecture\customers-coverage-audit.md = docs\architecture\customers-coverage-audit.md
 		docs\architecture\module-framework.md = docs\architecture\module-framework.md
+		docs\architecture\module-startup-orchestration.md = docs\architecture\module-startup-orchestration.md
 		docs\architecture\new-module-checklist.md = docs\architecture\new-module-checklist.md
 		docs\architecture\README.md = docs\architecture\README.md
 	EndProjectSection
@@ -66,6 +70,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{646F6EF2-8B02-4D81-A4A6-7B3FC7EC2BDE}"
 	ProjectSection(SolutionItems) = preProject
 		.github\copilot-instructions.md = .github\copilot-instructions.md
+		.github\workflows\ci.yml = .github\workflows\ci.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreKit.AppHost.Server", "src\CoreKit.AppHost.Server\CoreKit.AppHost.Server.csproj", "{BBA79E95-B89A-4348-B342-490B092C547F}"

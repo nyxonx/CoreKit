@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace CoreKit.BuildingBlocks.Presentation;
 
@@ -18,6 +19,7 @@ public static class CoreKitModuleExtensions
         var registeredModules = modules.ToArray();
 
         services.AddSingleton<IReadOnlyList<ICoreKitModule>>(registeredModules);
+        services.TryAddSingleton<CoreKitModuleInitializationPipeline>();
 
         foreach (var module in registeredModules)
         {
@@ -49,11 +51,7 @@ public static class CoreKitModuleExtensions
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
 
-        var modules = services.GetRequiredService<IReadOnlyList<ICoreKitModule>>();
-
-        foreach (var module in modules)
-        {
-            await module.InitializeAsync(services, configuration, cancellationToken);
-        }
+        var pipeline = services.GetRequiredService<CoreKitModuleInitializationPipeline>();
+        await pipeline.InitializeAsync(services, configuration, cancellationToken);
     }
 }
