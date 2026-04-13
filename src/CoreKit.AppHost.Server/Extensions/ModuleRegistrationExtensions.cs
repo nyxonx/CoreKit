@@ -1,27 +1,34 @@
-using CoreKit.Modules.Identity.Presentation;
-using CoreKit.Modules.Tenancy.Presentation;
+using CoreKit.BuildingBlocks.Presentation;
 
 namespace CoreKit.AppHost.Server.Extensions;
 
 public static class ModuleRegistrationExtensions
 {
-    public static IServiceCollection AddCoreKitModules(this IServiceCollection services)
+    public static IServiceCollection AddCoreKitModules(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
 
-        services.AddIdentityModule();
-        services.AddTenancyModule();
-
-        return services;
+        return services.AddCoreKitModules(configuration, [.. CoreKitModuleCatalog.All]);
     }
 
     public static IEndpointRouteBuilder MapCoreKitModules(this IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints);
 
-        endpoints.MapIdentityModule();
-        endpoints.MapTenancyModule();
+        return endpoints.MapRegisteredCoreKitModules();
+    }
 
-        return endpoints;
+    public static Task InitializeCoreKitModulesAsync(
+        this IServiceProvider services,
+        IConfiguration configuration,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        return services.InitializeRegisteredCoreKitModulesAsync(configuration, cancellationToken);
     }
 }

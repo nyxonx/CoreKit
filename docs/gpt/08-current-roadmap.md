@@ -4,19 +4,19 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 6 - CQRS And Unified RPC Pipeline
+Phase 7 - Module Framework
 
 ## Current Task
 
- Ucvrstiti prvi CQRS/RPC slice kroz reusable klijentski module access obrazac.
+ Ucvrstiti module framework kroz shared registration, startup i endpoint mapping contract.
 
 ## Next Tasks
 
-- Prosiriti RPC sample van tenancy demo use case-a
-- Pripremiti module framework na vrhu novog pipeline-a
-- Osloniti naredni modul na isti `Contracts + ModuleClient + RPC` obrazac
+- Dodati checklistu za novi modul
+- Dokumentovati pravila granica izmedju modula
+- Pripremiti prvi pravi poslovni modul na novom obrascu
 
 ## After That
 
-- Module framework + prvi pravi modul
+- Prvi pravi modul
 - Production-grade error handling i observability oko pipeline-a

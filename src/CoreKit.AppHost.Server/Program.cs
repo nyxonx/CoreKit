@@ -8,8 +8,7 @@ builder.Services.AddCoreKitAppHost(builder.Configuration);
 
 var app = builder.Build();
 
-await app.Services.InitializeTenancyAsync(app.Configuration);
-await app.Services.InitializeIdentityAsync(app.Configuration);
+await app.Services.InitializeCoreKitModulesAsync(app.Configuration);
 
 app.UseCoreKitAppHost();
 app.MapCoreKitInfrastructureEndpoints();

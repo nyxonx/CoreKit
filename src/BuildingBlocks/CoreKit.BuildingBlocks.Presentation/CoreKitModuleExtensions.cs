@@ -1,0 +1,59 @@
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace CoreKit.BuildingBlocks.Presentation;
+
+public static class CoreKitModuleExtensions
+{
+    public static IServiceCollection AddCoreKitModules(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        params ICoreKitModule[] modules)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(modules);
+
+        var registeredModules = modules.ToArray();
+
+        services.AddSingleton<IReadOnlyList<ICoreKitModule>>(registeredModules);
+
+        foreach (var module in registeredModules)
+        {
+            module.AddServices(services, configuration);
+        }
+
+        return services;
+    }
+
+    public static IEndpointRouteBuilder MapRegisteredCoreKitModules(this IEndpointRouteBuilder endpoints)
+    {
+        ArgumentNullException.ThrowIfNull(endpoints);
+
+        var modules = endpoints.ServiceProvider.GetRequiredService<IReadOnlyList<ICoreKitModule>>();
+
+        foreach (var module in modules)
+        {
+            module.MapEndpoints(endpoints);
+        }
+
+        return endpoints;
+    }
+
+    public static async Task InitializeRegisteredCoreKitModulesAsync(
+        this IServiceProvider services,
+        IConfiguration configuration,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        var modules = services.GetRequiredService<IReadOnlyList<ICoreKitModule>>();
+
+        foreach (var module in modules)
+        {
+            await module.InitializeAsync(services, configuration, cancellationToken);
+        }
+    }
+}

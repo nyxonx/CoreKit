@@ -2,9 +2,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks\CoreKit.BuildingBlocks.Application\CoreKit.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\BuildingBlocks\CoreKit.BuildingBlocks.Presentation\CoreKit.BuildingBlocks.Presentation.csproj" />
     <ProjectReference Include="..\CoreKit.AppHost.Contracts\CoreKit.AppHost.Contracts.csproj" />
     <ProjectReference Include="..\CoreKit.AppHost.Client\CoreKit.AppHost.Client.csproj" />
     <ProjectReference Include="..\Modules\Tenancy\CoreKit.Modules.Tenancy.Application\CoreKit.Modules.Tenancy.Application.csproj" />
+    <ProjectReference Include="..\Modules\Identity\CoreKit.Modules.Identity.Application\CoreKit.Modules.Identity.Application.csproj" />
     <ProjectReference Include="..\Modules\Identity\CoreKit.Modules.Identity.Infrastructure\CoreKit.Modules.Identity.Infrastructure.csproj" />
     <ProjectReference Include="..\Modules\Identity\CoreKit.Modules.Identity.Presentation\CoreKit.Modules.Identity.Presentation.csproj" />
     <ProjectReference Include="..\Modules\Tenancy\CoreKit.Modules.Tenancy.Presentation\CoreKit.Modules.Tenancy.Presentation.csproj" />

@@ -210,13 +210,13 @@ Exit criteria:
 Goal:
 Napraviti ponovljiv obrazac za dodavanje buducih modula.
 
-Status: Planned
+Status: In progress
 
 Tasks:
 
-- `[ ]` Definisati module registration contract
-- `[ ]` Definisati module startup pattern
-- `[ ]` Definisati module service registration pattern
+- `[x]` Definisati module registration contract
+- `[x]` Definisati module startup pattern
+- `[x]` Definisati module service registration pattern
 - `[ ]` Dodati base contracts u `BuildingBlocks`
 - `[ ]` Dodati primer wiring-a za `Identity` modul
 - `[ ]` Dodati primer wiring-a za `Tenancy` modul
@@ -310,9 +310,10 @@ Now:
 - `Phase 3` je zavrsena
 - `Phase 4` je zavrsena
 - `Phase 5` je zavrsena
-- `Phase 6` je aktivna
-- Unified RPC i CQRS osnova su uvedeni sa tenancy sample command/query tokom
-- Sledece ucvrscujemo RPC client obrazac i pripremamo module framework
+- `Phase 6` je zavrsena
+- `Phase 7` je aktivna
+- Module contract, startup pattern i service registration pattern su uvedeni
+- Sledece zavrsavamo module checklist i dokumentujemo pravila granica
 
 After that:
 - Posle toga RPC i CQRS

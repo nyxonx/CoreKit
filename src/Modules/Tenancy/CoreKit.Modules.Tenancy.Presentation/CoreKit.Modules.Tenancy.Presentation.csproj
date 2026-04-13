@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\CoreKit.BuildingBlocks.Presentation\CoreKit.BuildingBlocks.Presentation.csproj" />
     <ProjectReference Include="..\CoreKit.Modules.Tenancy.Application\CoreKit.Modules.Tenancy.Application.csproj" />
     <ProjectReference Include="..\CoreKit.Modules.Tenancy.Infrastructure\CoreKit.Modules.Tenancy.Infrastructure.csproj" />
   </ItemGroup>
