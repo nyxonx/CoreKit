@@ -8,13 +8,13 @@ Phase 6 - CQRS And Unified RPC Pipeline
 
 ## Current Task
 
- Ucvrstiti prvi CQRS/RPC slice kroz klijentski poziv ka `POST /api/rpc`.
+ Ucvrstiti prvi CQRS/RPC slice kroz reusable klijentski module access obrazac.
 
 ## Next Tasks
 
 - Prosiriti RPC sample van tenancy demo use case-a
 - Pripremiti module framework na vrhu novog pipeline-a
-- Poceti standardizaciju client-side module access obrasca
+- Osloniti naredni modul na isti `Contracts + ModuleClient + RPC` obrazac
 
 ## After That
 

@@ -1,6 +1,6 @@
 @page "/tenant-notes"
 @attribute [Authorize]
-@inject RpcClient RpcClient
+@inject ITenancyModuleClient TenancyModuleClient
 
 <PageTitle>Tenant Notes</PageTitle>
 
@@ -73,9 +73,7 @@
         isSubmitting = true;
         errorMessage = null;
 
-        var response = await RpcClient.InvokeAsync<TenantNoteDto>(
-            "tenancy.notes.add",
-            new { value = noteValue });
+        var response = await TenancyModuleClient.AddNoteAsync(new AddTenantNoteRpcRequest(noteValue));
 
         isSubmitting = false;
 
@@ -94,7 +92,7 @@
         isLoading = true;
         errorMessage = null;
 
-        var response = await RpcClient.InvokeAsync<List<TenantNoteDto>>("tenancy.notes.list");
+        var response = await TenancyModuleClient.GetNotesAsync();
 
         isLoading = false;
 
