@@ -286,14 +286,14 @@ Exit criteria:
 Goal:
 Podici platformu na nivo spreman za stvaran rad.
 
-Status: Planned
+Status: In progress
 
 Tasks:
 
-- `[ ]` Standardizovati error handling
-- `[ ]` Uvesti strukturisano logovanje
+- `[x]` Standardizovati error handling
+- `[x]` Uvesti strukturisano logovanje
 - `[ ]` Dodati audit logging osnovu
-- `[ ]` Prosiriti health checks
+- `[x]` Prosiriti health checks
 - `[ ]` Uvesti osnovnu observability strategiju
 - `[ ]` Definisati caching strategiju
 - `[ ]` Definisati background jobs pristup
@@ -320,7 +320,8 @@ Now:
 - `Customers` modul radi end-to-end kroz tenant-aware persistence, RPC i UI
 - `Phase 9` je zavrsena
 - Catalog migracije, tenant provisioning i deployment helper tok su standardizovani
-- `Phase 10` je sledeca aktivna faza
+- `Phase 10` je aktivna
+- Uvedeni su global exception handling, request context logging i prosireni health checks
 
 After that:
 - Production readiness hardening i operativne osnove

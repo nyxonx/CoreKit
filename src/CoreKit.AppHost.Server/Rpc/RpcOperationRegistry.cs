@@ -39,4 +39,6 @@ public sealed class RpcOperationRegistry
 
         return operations.TryGetValue(operationName, out descriptor!);
     }
+
+    public int Count => operations.Count;
 }

@@ -1,5 +1,9 @@
+using System.Text.Json;
+using CoreKit.AppHost.Server.Diagnostics;
 using CoreKit.AppHost.Server.Rpc;
 using CoreKit.Modules.Tenancy.Infrastructure;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace CoreKit.AppHost.Server.Extensions;
 
@@ -9,19 +13,16 @@ public static class WebApplicationExtensions
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-        }
-
         if (!app.Environment.IsDevelopment())
         {
             app.UseHttpsRedirection();
         }
 
+        app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
         app.UseBlazorFrameworkFiles();
         app.UseStaticFiles();
         app.UseMiddleware<TenantResolutionMiddleware>();
+        app.UseMiddleware<RequestContextLoggingMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -56,11 +57,39 @@ public static class WebApplicationExtensions
             .WithName("GetSystemInfo")
             .WithTags("System");
 
-        app.MapHealthChecks("/health").WithTags("System");
+        app.MapHealthChecks(
+                "/health",
+                new HealthCheckOptions
+                {
+                    ResponseWriter = WriteHealthResponseAsync
+                })
+            .WithTags("System");
         app.MapRpcEndpoints();
         app.MapCoreKitModules();
         app.MapFallbackToFile("index.html");
 
         return app;
+    }
+
+    private static Task WriteHealthResponseAsync(HttpContext context, HealthReport report)
+    {
+        context.Response.ContentType = "application/json";
+
+        var payload = new
+        {
+            status = report.Status.ToString(),
+            totalDuration = report.TotalDuration.TotalMilliseconds,
+            checks = report.Entries.Select(
+                entry => new
+                {
+                    name = entry.Key,
+                    status = entry.Value.Status.ToString(),
+                    description = entry.Value.Description,
+                    duration = entry.Value.Duration.TotalMilliseconds,
+                    data = entry.Value.Data
+                })
+        };
+
+        return context.Response.WriteAsync(JsonSerializer.Serialize(payload));
     }
 }

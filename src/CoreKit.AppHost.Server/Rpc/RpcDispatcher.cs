@@ -2,10 +2,14 @@ using System.Text.Json;
 using CoreKit.AppHost.Contracts.Rpc;
 using CoreKit.BuildingBlocks.Application;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace CoreKit.AppHost.Server.Rpc;
 
-public sealed class RpcDispatcher(IMediator mediator, RpcOperationRegistry operationRegistry)
+public sealed class RpcDispatcher(
+    IMediator mediator,
+    RpcOperationRegistry operationRegistry,
+    ILogger<RpcDispatcher> logger)
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
@@ -45,7 +49,20 @@ public sealed class RpcDispatcher(IMediator mediator, RpcOperationRegistry opera
                 $"RPC payload for operation '{request.Operation}' could not be deserialized.");
         }
 
-        var response = await mediator.Send(message, cancellationToken);
+        object? response;
+
+        try
+        {
+            response = await mediator.Send(message, cancellationToken);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Unhandled exception while dispatching RPC operation {Operation}.", request.Operation);
+
+            return CreateErrorResponse(
+                "rpc_unhandled_error",
+                "An unexpected error occurred while processing the RPC operation.");
+        }
 
         if (response is not IOperationResult operationResult)
         {

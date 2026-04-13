@@ -8,13 +8,13 @@ Phase 10 - Production Readiness
 
 ## Current Task
 
-Pokrenuti production readiness hardening preko error handling, logovanja i observability osnova.
+Ucvrstiti production readiness osnovu preko error handling, request logging i health signala.
 
 ## Next Tasks
 
-- Standardizovati error handling oko RPC i module pipeline-a
-- Uvesti strukturisano logovanje i prosirene health checkove
+- Dodati audit logging osnovu
 - Definisati prvi production-grade observability slice
+- Razraditi security hardening i operativne guardrail-e
 
 ## After That
 

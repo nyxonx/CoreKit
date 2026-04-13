@@ -13,7 +13,7 @@ public static class RpcEndpointRouteBuilderExtensions
                 async (RpcRequest request, RpcDispatcher dispatcher, CancellationToken cancellationToken) =>
                 {
                     var response = await dispatcher.DispatchAsync(request, cancellationToken);
-                    return response.Succeeded ? Results.Ok(response) : Results.BadRequest(response);
+                    return RpcHttpResults.FromResponse(response);
                 })
             .WithName("DispatchRpcOperation")
             .WithTags("RPC");

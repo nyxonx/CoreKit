@@ -4,6 +4,7 @@ using CoreKit.AppHost.Server.Rpc;
 using CoreKit.BuildingBlocks.Application;
 using CoreKit.Modules.Tenancy.Application;
 using CoreKit.Modules.Tenancy.Infrastructure;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -89,6 +90,26 @@ public sealed class RpcDispatcherTests
         }
     }
 
+    [Fact]
+    public async Task DispatchAsync_ReturnsUnhandledError_WhenHandlerThrows()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddCoreKitApplication(typeof(ExplodingCommand).Assembly);
+        services.AddSingleton(new RpcOperationRegistry(typeof(ExplodingCommand).Assembly));
+        services.AddScoped<RpcDispatcher>();
+
+        await using var provider = services.BuildServiceProvider();
+        await using var scope = provider.CreateAsyncScope();
+        var dispatcher = scope.ServiceProvider.GetRequiredService<RpcDispatcher>();
+
+        var response = await dispatcher.DispatchAsync(CreateRequest("tests.explode", "{}"));
+
+        Assert.False(response.Succeeded);
+        Assert.Single(response.Errors);
+        Assert.Equal("rpc_unhandled_error", response.Errors[0].Code);
+    }
+
     private static ServiceProvider CreateServices(string tempRoot, string tenantIdentifier)
     {
         var databasePath = Path.Combine(tempRoot, $"{tenantIdentifier}.db");
@@ -152,5 +173,14 @@ public sealed class RpcDispatcherTests
         catch (UnauthorizedAccessException)
         {
         }
+    }
+
+    [RpcOperation("tests.explode")]
+    public sealed record ExplodingCommand() : IRequest<OperationResult<string>>;
+
+    public sealed class ExplodingCommandHandler : IRequestHandler<ExplodingCommand, OperationResult<string>>
+    {
+        public Task<OperationResult<string>> Handle(ExplodingCommand request, CancellationToken cancellationToken) =>
+            throw new InvalidOperationException("boom");
     }
 }
