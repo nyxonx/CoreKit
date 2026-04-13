@@ -14,7 +14,7 @@
 
 <section class="grid">
     <article class="panel">
-        <h2>Create customer</h2>
+        <h2>@(selectedCustomerId is null ? "Create customer" : "Edit customer")</h2>
 
         <EditForm Model="@this" OnValidSubmit="@HandleSubmitAsync">
             <label>
@@ -28,8 +28,15 @@
             </label>
 
             <button class="primary-button" type="submit" disabled="@isSubmitting">
-                @(isSubmitting ? "Saving..." : "Create customer")
+                @(isSubmitting ? "Saving..." : selectedCustomerId is null ? "Create customer" : "Save changes")
             </button>
+
+            @if (selectedCustomerId is not null)
+            {
+                <button class="primary-button" type="button" @onclick="CancelEdit">
+                    Cancel edit
+                </button>
+            }
         </EditForm>
 
         @if (!string.IsNullOrWhiteSpace(errorMessage))
@@ -54,7 +61,12 @@
             <ul>
                 @foreach (var customer in customers)
                 {
-                    <li>@customer.Name (@customer.Email)</li>
+                    <li>
+                        @customer.Name (@customer.Email)
+                        <button class="primary-button" type="button" @onclick="() => BeginEditAsync(customer.Id)">
+                            Edit
+                        </button>
+                    </li>
                 }
             </ul>
         }
@@ -63,6 +75,7 @@
 
 @code {
     private readonly List<CustomerDto> customers = [];
+    private Guid? selectedCustomerId;
     private string customerName = string.Empty;
     private string? customerEmail;
     private string? errorMessage;
@@ -79,8 +92,11 @@
         isSubmitting = true;
         errorMessage = null;
 
-        var response = await CustomersModuleClient.CreateCustomerAsync(
-            new CreateCustomerRpcRequest(customerName, customerEmail));
+        var response = selectedCustomerId is null
+            ? await CustomersModuleClient.CreateCustomerAsync(
+                new CreateCustomerRpcRequest(customerName, customerEmail))
+            : await CustomersModuleClient.UpdateCustomerAsync(
+                new UpdateCustomerRpcRequest(selectedCustomerId.Value, customerName, customerEmail));
 
         isSubmitting = false;
 
@@ -90,8 +106,7 @@
             return;
         }
 
-        customerName = string.Empty;
-        customerEmail = null;
+        CancelEdit();
         await LoadCustomersAsync();
     }
 
@@ -113,5 +128,29 @@
 
         customers.Clear();
         customers.AddRange(response.Data ?? []);
+    }
+
+    private async Task BeginEditAsync(Guid id)
+    {
+        errorMessage = null;
+
+        var response = await CustomersModuleClient.GetCustomerAsync(id);
+
+        if (!response.Succeeded || response.Data is null)
+        {
+            errorMessage = response.Errors.FirstOrDefault()?.Message ?? "The customer could not be loaded.";
+            return;
+        }
+
+        selectedCustomerId = response.Data.Id;
+        customerName = response.Data.Name;
+        customerEmail = response.Data.Email;
+    }
+
+    private void CancelEdit()
+    {
+        selectedCustomerId = null;
+        customerName = string.Empty;
+        customerEmail = null;
     }
 }

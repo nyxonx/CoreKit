@@ -4,5 +4,9 @@ public static class CustomersRpcOperations
 {
     public const string Create = "customers.create";
 
+    public const string Get = "customers.get";
+
     public const string List = "customers.list";
+
+    public const string Update = "customers.update";
 }

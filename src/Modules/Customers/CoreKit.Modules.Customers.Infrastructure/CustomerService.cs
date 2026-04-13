@@ -17,6 +17,17 @@ public sealed class CustomerService(CustomersDbContext dbContext) : ICustomerSer
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<CustomerDto?> GetCustomerAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        await dbContext.EnsureSchemaAsync(cancellationToken);
+
+        return await dbContext.Customers
+            .AsNoTracking()
+            .Where(customer => customer.Id == id)
+            .Select(customer => new CustomerDto(customer.Id, customer.Name, customer.Email))
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<CustomerDto> CreateCustomerAsync(
         CreateCustomerRequest request,
         CancellationToken cancellationToken = default)
@@ -34,6 +45,33 @@ public sealed class CustomerService(CustomersDbContext dbContext) : ICustomerSer
         };
 
         dbContext.Customers.Add(customer);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return new CustomerDto(customer.Id, customer.Name, customer.Email);
+    }
+
+    public async Task<CustomerDto?> UpdateCustomerAsync(
+        UpdateCustomerRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        await dbContext.EnsureSchemaAsync(cancellationToken);
+
+        var customer = await dbContext.Customers.SingleOrDefaultAsync(
+            entity => entity.Id == request.Id,
+            cancellationToken);
+
+        if (customer is null)
+        {
+            return null;
+        }
+
+        customer.Name = request.Name.Trim();
+        customer.Email = string.IsNullOrWhiteSpace(request.Email)
+            ? null
+            : request.Email.Trim();
+
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return new CustomerDto(customer.Id, customer.Name, customer.Email);
