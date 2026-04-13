@@ -10,10 +10,17 @@ public sealed class CreateCustomerCommandHandler(ICustomerService customerServic
         CreateCustomerCommand request,
         CancellationToken cancellationToken)
     {
-        var customer = await customerService.CreateCustomerAsync(
-            new CreateCustomerRequest(request.Name, request.Email),
-            cancellationToken);
+        try
+        {
+            var customer = await customerService.CreateCustomerAsync(
+                new CreateCustomerRequest(request.Name, request.Email),
+                cancellationToken);
 
-        return OperationResult<CustomerDto>.Success(customer);
+            return OperationResult<CustomerDto>.Success(customer);
+        }
+        catch (InvalidOperationException exception)
+        {
+            return OperationResult<CustomerDto>.Failure("customer_email_conflict", exception.Message);
+        }
     }
 }

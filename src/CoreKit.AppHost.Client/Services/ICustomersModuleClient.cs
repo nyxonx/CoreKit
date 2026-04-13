@@ -18,4 +18,8 @@ public interface ICustomersModuleClient
     Task<RpcInvocationResult<CustomerDto>> UpdateCustomerAsync(
         UpdateCustomerRpcRequest request,
         CancellationToken cancellationToken = default);
+
+    Task<RpcInvocationResult<bool>> DeleteCustomerAsync(
+        DeleteCustomerRpcRequest request,
+        CancellationToken cancellationToken = default);
 }

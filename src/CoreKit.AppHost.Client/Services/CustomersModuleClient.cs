@@ -42,4 +42,16 @@ public sealed class CustomersModuleClient(RpcClient rpcClient)
             request,
             cancellationToken);
     }
+
+    public Task<RpcInvocationResult<bool>> DeleteCustomerAsync(
+        DeleteCustomerRpcRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        return InvokeAsync<bool>(
+            CustomersRpcOperations.Delete,
+            request,
+            cancellationToken);
+    }
 }

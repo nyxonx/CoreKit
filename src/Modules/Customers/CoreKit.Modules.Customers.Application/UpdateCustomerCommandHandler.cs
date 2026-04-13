@@ -10,12 +10,19 @@ public sealed class UpdateCustomerCommandHandler(ICustomerService customerServic
         UpdateCustomerCommand request,
         CancellationToken cancellationToken)
     {
-        var customer = await customerService.UpdateCustomerAsync(
-            new UpdateCustomerRequest(request.Id, request.Name, request.Email),
-            cancellationToken);
+        try
+        {
+            var customer = await customerService.UpdateCustomerAsync(
+                new UpdateCustomerRequest(request.Id, request.Name, request.Email),
+                cancellationToken);
 
-        return customer is null
-            ? OperationResult<CustomerDto>.Failure("customer_not_found", "Customer was not found.")
-            : OperationResult<CustomerDto>.Success(customer);
+            return customer is null
+                ? OperationResult<CustomerDto>.Failure("customer_not_found", "Customer was not found.")
+                : OperationResult<CustomerDto>.Success(customer);
+        }
+        catch (InvalidOperationException exception)
+        {
+            return OperationResult<CustomerDto>.Failure("customer_email_conflict", exception.Message);
+        }
     }
 }

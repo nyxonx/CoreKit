@@ -36,6 +36,10 @@
                 <button class="primary-button" type="button" @onclick="CancelEdit">
                     Cancel edit
                 </button>
+
+                <button class="primary-button" type="button" @onclick="DeleteSelectedAsync">
+                    Delete customer
+                </button>
             }
         </EditForm>
 
@@ -152,5 +156,30 @@
         selectedCustomerId = null;
         customerName = string.Empty;
         customerEmail = null;
+    }
+
+    private async Task DeleteSelectedAsync()
+    {
+        if (selectedCustomerId is null)
+        {
+            return;
+        }
+
+        isSubmitting = true;
+        errorMessage = null;
+
+        var response = await CustomersModuleClient.DeleteCustomerAsync(
+            new DeleteCustomerRpcRequest(selectedCustomerId.Value));
+
+        isSubmitting = false;
+
+        if (!response.Succeeded)
+        {
+            errorMessage = response.Errors.FirstOrDefault()?.Message ?? "The customer could not be deleted.";
+            return;
+        }
+
+        CancelEdit();
+        await LoadCustomersAsync();
     }
 }

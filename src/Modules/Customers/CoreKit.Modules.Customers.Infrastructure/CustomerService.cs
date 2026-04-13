@@ -36,6 +36,8 @@ public sealed class CustomerService(CustomersDbContext dbContext) : ICustomerSer
 
         await dbContext.EnsureSchemaAsync(cancellationToken);
 
+        await EnsureEmailIsUniqueAsync(request.Email, customerId: null, cancellationToken);
+
         var customer = new Customer
         {
             Name = request.Name.Trim(),
@@ -58,6 +60,8 @@ public sealed class CustomerService(CustomersDbContext dbContext) : ICustomerSer
 
         await dbContext.EnsureSchemaAsync(cancellationToken);
 
+        await EnsureEmailIsUniqueAsync(request.Email, request.Id, cancellationToken);
+
         var customer = await dbContext.Customers.SingleOrDefaultAsync(
             entity => entity.Id == request.Id,
             cancellationToken);
@@ -75,5 +79,48 @@ public sealed class CustomerService(CustomersDbContext dbContext) : ICustomerSer
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return new CustomerDto(customer.Id, customer.Name, customer.Email);
+    }
+
+    public async Task<bool> DeleteCustomerAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        await dbContext.EnsureSchemaAsync(cancellationToken);
+
+        var customer = await dbContext.Customers.SingleOrDefaultAsync(
+            entity => entity.Id == id,
+            cancellationToken);
+
+        if (customer is null)
+        {
+            return false;
+        }
+
+        dbContext.Customers.Remove(customer);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return true;
+    }
+
+    private async Task EnsureEmailIsUniqueAsync(
+        string? email,
+        Guid? customerId,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            return;
+        }
+
+        var normalizedEmail = email.Trim().ToUpperInvariant();
+
+        var exists = await dbContext.Customers.AnyAsync(
+            customer => customer.Email != null
+                && customer.Email.ToUpper() == normalizedEmail
+                && (!customerId.HasValue || customer.Id != customerId.Value),
+            cancellationToken);
+
+        if (exists)
+        {
+            throw new InvalidOperationException("Customer email must be unique within the current tenant.");
+        }
     }
 }

@@ -82,6 +82,69 @@ public sealed class CustomersModuleTests
         }
     }
 
+    [Fact]
+    public async Task CustomerService_UpdatesCustomer_WhenItExists()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var provider = CreateServices(tempRoot, "customers-update-test");
+            await using var scope = provider.CreateAsyncScope();
+            var service = scope.ServiceProvider.GetRequiredService<ICustomerService>();
+
+            var created = await service.CreateCustomerAsync(
+                new CreateCustomerRequest("Before", "before@test.local"));
+            var updated = await service.UpdateCustomerAsync(
+                new UpdateCustomerRequest(created.Id, "After", "after@test.local"));
+
+            Assert.NotNull(updated);
+            Assert.Equal("After", updated.Name);
+            Assert.Equal("after@test.local", updated.Email);
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
+    public async Task RpcDispatcher_GetsAndUpdatesCustomer()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var provider = CreateServices(tempRoot, "customers-rpc-update-test");
+            await using var scope = provider.CreateAsyncScope();
+            var dispatcher = scope.ServiceProvider.GetRequiredService<RpcDispatcher>();
+
+            var createResponse = await dispatcher.DispatchAsync(
+                CreateRequest("customers.create", """{"name":"Wide World","email":"sales@wideworld.test"}"""));
+            var createdCustomer = Assert.IsType<CoreKit.Modules.Customers.Application.CustomerDto>(createResponse.Data);
+
+            var getResponse = await dispatcher.DispatchAsync(
+                CreateRequest("customers.get", $$"""{"id":"{{createdCustomer.Id}}"}"""));
+            var updateResponse = await dispatcher.DispatchAsync(
+                CreateRequest(
+                    "customers.update",
+                    $$"""{"id":"{{createdCustomer.Id}}","name":"Wide World Updated","email":"updated@wideworld.test"}"""));
+
+            Assert.True(getResponse.Succeeded);
+            Assert.True(updateResponse.Succeeded);
+
+            var loadedCustomer = Assert.IsType<CoreKit.Modules.Customers.Application.CustomerDto>(getResponse.Data);
+            var updatedCustomer = Assert.IsType<CoreKit.Modules.Customers.Application.CustomerDto>(updateResponse.Data);
+
+            Assert.Equal(createdCustomer.Id, loadedCustomer.Id);
+            Assert.Equal("Wide World Updated", updatedCustomer.Name);
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
     private static ServiceProvider CreateServices(string tempRoot, string tenantIdentifier)
     {
         var databasePath = Path.Combine(tempRoot, $"{tenantIdentifier}.db");
@@ -136,6 +199,88 @@ public sealed class CustomersModuleTests
         }
         catch (UnauthorizedAccessException)
         {
+        }
+    }
+
+    [Fact]
+    public async Task CustomerService_RejectsDuplicateEmail_PerTenant()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var provider = CreateServices(tempRoot, "customers-unique-email-test");
+            await using var scope = provider.CreateAsyncScope();
+            var service = scope.ServiceProvider.GetRequiredService<ICustomerService>();
+
+            await service.CreateCustomerAsync(new CreateCustomerRequest("First", "same@test.local"));
+
+            var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+                () => service.CreateCustomerAsync(new CreateCustomerRequest("Second", "same@test.local")));
+
+            Assert.Contains("unique", exception.Message, StringComparison.OrdinalIgnoreCase);
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
+    public async Task CustomerService_DeletesCustomer_WhenItExists()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var provider = CreateServices(tempRoot, "customers-delete-test");
+            await using var scope = provider.CreateAsyncScope();
+            var service = scope.ServiceProvider.GetRequiredService<ICustomerService>();
+
+            var created = await service.CreateCustomerAsync(new CreateCustomerRequest("Delete Me", "delete@test.local"));
+            var deleted = await service.DeleteCustomerAsync(created.Id);
+            var customers = await service.GetCustomersAsync();
+
+            Assert.True(deleted);
+            Assert.Empty(customers);
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
+    public async Task RpcDispatcher_DeletesCustomer()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var provider = CreateServices(tempRoot, "customers-rpc-delete-test");
+            await using var scope = provider.CreateAsyncScope();
+            var dispatcher = scope.ServiceProvider.GetRequiredService<RpcDispatcher>();
+
+            var createResponse = await dispatcher.DispatchAsync(
+                CreateRequest("customers.create", """{"name":"Delete Rpc","email":"delete-rpc@test.local"}"""));
+            var createdCustomer = Assert.IsType<CoreKit.Modules.Customers.Application.CustomerDto>(createResponse.Data);
+
+            var deleteResponse = await dispatcher.DispatchAsync(
+                CreateRequest("customers.delete", $$"""{"id":"{{createdCustomer.Id}}"}"""));
+            var listResponse = await dispatcher.DispatchAsync(CreateRequest("customers.list", "{}"));
+
+            Assert.True(deleteResponse.Succeeded);
+            Assert.True(Assert.IsType<bool>(deleteResponse.Data));
+
+            var customers =
+                Assert.IsAssignableFrom<IReadOnlyList<CoreKit.Modules.Customers.Application.CustomerDto>>(
+                    listResponse.Data);
+
+            Assert.Empty(customers);
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
         }
     }
 }
