@@ -1,0 +1,174 @@
+@page "/tenant-admin"
+@attribute [Authorize]
+@inject AuthApiClient AuthApiClient
+@inject IIdentityAdminModuleClient IdentityAdminModuleClient
+
+<PageTitle>Tenant Administration</PageTitle>
+
+<section class="panel">
+    <p class="eyebrow">Phase 13</p>
+    <h1>Tenant administration</h1>
+    <p>
+        This screen is the first UI slice over tenant membership and role management for the active tenant.
+    </p>
+</section>
+
+@if (!isAuthorizedForAdmin)
+{
+    <section class="panel">
+        <h2>Admin access required</h2>
+        <p>
+            The active tenant administration surface is available only to tenant admins.
+        </p>
+        @if (!string.IsNullOrWhiteSpace(currentTenantIdentifier))
+        {
+            <p>Active tenant: <code>@currentTenantIdentifier</code></p>
+        }
+    </section>
+}
+else
+{
+    <section class="grid">
+        <article class="panel">
+            <h2>Grant or change membership</h2>
+            <p>
+                Active tenant: <code>@currentTenantIdentifier</code>
+            </p>
+
+            <EditForm Model="@this" OnValidSubmit="@HandleSubmitAsync">
+                <label>
+                    <span>User name</span>
+                    <InputText @bind-Value="targetUserName" />
+                </label>
+
+                <label>
+                    <span>Tenant role</span>
+                    <InputSelect @bind-Value="selectedRole">
+                        @foreach (var role in availableRoles)
+                        {
+                            <option value="@role">@role</option>
+                        }
+                    </InputSelect>
+                </label>
+
+                <button class="primary-button" type="submit" disabled="@isSubmitting">
+                    @(isSubmitting ? "Saving..." : "Save membership")
+                </button>
+            </EditForm>
+
+            @if (!string.IsNullOrWhiteSpace(formMessage))
+            {
+                <p class="error-text">@formMessage</p>
+            }
+        </article>
+
+        <article class="panel">
+            <h2>Current tenant memberships</h2>
+
+            @if (isLoading)
+            {
+                <p>Loading memberships...</p>
+            }
+            else if (!string.IsNullOrWhiteSpace(loadError))
+            {
+                <p class="error-text">@loadError</p>
+            }
+            else if (memberships.Count == 0)
+            {
+                <p>No memberships yet for this tenant.</p>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var membership in memberships)
+                    {
+                        <li>
+                            <strong>@membership.UserName</strong> - @membership.Role
+                            @if (!membership.IsActive)
+                            {
+                                <span>(inactive)</span>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+        </article>
+    </section>
+}
+
+@code {
+    private readonly List<TenantMembershipDto> memberships = [];
+    private readonly string[] availableRoles = [TenantMembershipRoles.Admin, TenantMembershipRoles.Member];
+    private string currentTenantIdentifier = string.Empty;
+    private string? currentTenantRole;
+    private string targetUserName = "admin";
+    private string selectedRole = TenantMembershipRoles.Member;
+    private string? formMessage;
+    private string? loadError;
+    private bool isLoading = true;
+    private bool isSubmitting;
+
+    private bool isAuthorizedForAdmin =>
+        string.Equals(currentTenantRole, TenantMembershipRoles.Admin, StringComparison.OrdinalIgnoreCase);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAuthStateAsync();
+
+        if (isAuthorizedForAdmin)
+        {
+            await LoadMembershipsAsync();
+        }
+        else
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task LoadAuthStateAsync()
+    {
+        var authState = await AuthApiClient.GetAuthStateAsync();
+        currentTenantIdentifier = authState.TenantIdentifier ?? string.Empty;
+        currentTenantRole = authState.TenantRole;
+    }
+
+    private async Task LoadMembershipsAsync()
+    {
+        isLoading = true;
+        loadError = null;
+
+        var response = await IdentityAdminModuleClient.GetTenantMembershipsAsync();
+
+        isLoading = false;
+
+        if (!response.Succeeded)
+        {
+            loadError = response.Errors.FirstOrDefault()?.Message ?? "Memberships could not be loaded.";
+            memberships.Clear();
+            return;
+        }
+
+        memberships.Clear();
+        memberships.AddRange(response.Data ?? []);
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        isSubmitting = true;
+        formMessage = null;
+
+        var response = await IdentityAdminModuleClient.UpsertTenantMembershipAsync(
+            new UpsertTenantMembershipRpcRequest(targetUserName, selectedRole));
+
+        isSubmitting = false;
+
+        if (!response.Succeeded)
+        {
+            formMessage = response.Errors.FirstOrDefault()?.Message ?? "Membership could not be saved.";
+            return;
+        }
+
+        formMessage = $"Membership saved for '{response.Data?.UserName}'.";
+        await LoadMembershipsAsync();
+    }
+}

@@ -361,6 +361,33 @@ Exit criteria:
 
 ---
 
+## Phase 13 - Tenant Administration UI And Management Flows
+
+Goal:
+Uvesti prvi stvarni admin UI za tenant administraciju, kreiranje tenant-a i upravljanje korisnicima po tenant-u iznad vec zavrsenog server-side membership i authorization modela.
+
+Status: In Progress
+
+Tasks:
+
+- `[x]` Dodati prvi tenant administration ekran za aktivni tenant
+- `[x]` Povezati membership list/upsert server tokove na Blazor client kroz module client obrazac
+- `[ ]` Dodati UI za promenu tenant role po korisniku bez ručnog RPC testiranja
+- `[ ]` Dodati UI za kreiranje novog tenant-a i provisioning flow
+- `[ ]` Dodati pregled aktivnog tenant konteksta u admin povrsini
+- `[ ]` Dodati osnovni guardrail UX za non-admin korisnike na admin ekranima
+- `[ ]` Dodati test scenarije za tenant administration UI tokove tamo gde je prakticno
+- `[ ]` Uskladiti README i high-level dokumentaciju sa tenant administration UI baseline-om
+
+Exit criteria:
+
+- Postoji tenant administration UI koji koristi postojece server-side tokove
+- Tenant admin moze da vidi i menja membership/role za aktivni tenant
+- Tenant creation/provisioning ima jasan UI ili proverljiv flow
+- Admin povrsina jasno razlikuje tenant admin i non-admin iskustvo
+
+---
+
 ## Current Focus
 
 Now:
@@ -386,14 +413,15 @@ Now:
 - Dodat je formatting baseline kroz `.editorconfig`, lokalni format check script i CI guardrail
 - Dodata je coverage audit beleznica za `Customers` i kriticni tenant isolation test
 - Tenant-before-auth redosled je pokriven integration test scenarijem i startup/pipeline cleanup-om
-- `Phase 12` je aktivna
 - Uvedeni su membership baseline, shared current execution contract i prvi tenant authorization check na `Customers` modulu
 - `Customers` sada nosi i pocetni audit metadata obrazac za `CreatedByUserId`, `ModifiedByUserId`, tenant identitet i UTC timestamp polja
 - `Customers` sada ima i prvu tenant role semantiku: `Member`/`Admin` za read, `Admin` za write
 - Identity modul sada ima i admin-only server-side tok za tenant membership list/upsert operacije
 - Auth state sada iznosi aktivni tenant i tenant rolu do klijenta za tenant-aware UI i dalji authorization flow
 - `Phase 12` je zavrsena
-- Sledeci fokus je definisanje `Phase 13` tenant administration UI i management tokova
+- `Phase 13` je aktivna
+- Dodat je prvi tenant administration UI slice za aktivni tenant i povezan na membership list/upsert tokove
+- Sledeci fokus je tenant provisioning UI i dublji membership management UX
 
 After that:
-- Uvesti UI za tenant administraciju, kreiranje tenant-a i upravljanje korisnicima po tenant-u na vec uspostavljenom server-side authorization modelu
+- Prosiriti tenant admin surface i otvoriti sledeci business/admin milestone na vec uspostavljenom tenant management temelju

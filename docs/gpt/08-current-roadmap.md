@@ -4,19 +4,19 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Roadmap checkpoint posle Phase 12
+Phase 13 - Tenant Administration UI And Management Flows
 
 ## Current Task
 
-Phase 12 je zatvorena sa membership modelom, tenant role semantikom, tenant-aware auth state surfacing-om i admin-only server-side membership management baseline-om.
+Phase 13 je zapoceta prvim tenant administration ekranom koji koristi postojece membership list/upsert server-side tokove za aktivni tenant.
 
 ## Next Tasks
 
-- Definisati `Phase 13` za tenant administration UI i management tokove
-- Uvesti UI za kreiranje tenant-a i pregled tenant konteksta
-- Uvesti UI za membership i tenant role upravljanje po korisniku
-- Nasloniti nove UI tokove na vec uvedeni server-side membership/authorization model
+- Prosiriti membership management UX na jasniji role-change flow
+- Uvesti UI za kreiranje tenant-a i provisioning flow
+- Prosiriti admin povrsinu sa pregledom tenant konteksta i guardrail porukama
+- Nasloniti sve nove UI tokove na vec uvedeni server-side membership/authorization model
 
 ## After That
 
-- Sledeci business modul i siri admin surface na stabilnijem tenant authorization temelju
+- Sledeci business modul i siri admin surface na stabilnijem tenant management temelju
