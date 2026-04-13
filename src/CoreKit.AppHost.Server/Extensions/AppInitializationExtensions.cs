@@ -1,3 +1,5 @@
+using CoreKit.BuildingBlocks.Presentation;
+
 namespace CoreKit.AppHost.Server.Extensions;
 
 public static class AppInitializationExtensions
