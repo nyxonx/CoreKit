@@ -22,7 +22,8 @@ public static class ServiceCollectionExtensions
         services.AddHttpContextAccessor();
         services.AddHealthChecks()
             .AddCheck<TenantCatalogHealthCheck>("tenant-catalog-db", tags: ["ready"])
-            .AddCheck<RpcOperationsHealthCheck>("rpc-operations", tags: ["ready"]);
+            .AddCheck<RpcOperationsHealthCheck>("rpc-operations", tags: ["ready"])
+            .AddCheck<BackgroundJobsHealthCheck>("background-jobs", tags: ["ready"]);
         services.AddCoreKitApplication(applicationAssemblies);
         services.AddSingleton(new RpcOperationRegistry(applicationAssemblies));
         services.AddScoped<IAuditEventWriter, LoggingAuditEventWriter>();

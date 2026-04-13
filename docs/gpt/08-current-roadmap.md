@@ -4,18 +4,18 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 10 - Production Readiness
+Roadmap Completed
 
 ## Current Task
 
-Ucvrstiti production readiness osnovu preko audit logova, observability signala i security guardrail-a.
+Roadmap faze 0-10 imaju implementiran osnovni checkpoint.
 
 ## Next Tasks
 
-- Definisati caching strategiju
-- Definisati background jobs pristup
-- Prosiriti operativne guardrail-e i deployment hardening
+- Izabrati sledeci produkcioni fokus posle roadmap-a
+- Odrediti da li dalje sirimo poslovne module ili operativni stack
+- Planirati sledeci milestone van pocetnog bootstrap roadmap-a
 
 ## After That
 
-- Security hardening, audit logging i background jobs strategija
+- Novi milestone po prioritetima proizvoda i platforme

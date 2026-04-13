@@ -286,7 +286,7 @@ Exit criteria:
 Goal:
 Podici platformu na nivo spreman za stvaran rad.
 
-Status: In progress
+Status: Completed
 
 Tasks:
 
@@ -295,8 +295,8 @@ Tasks:
 - `[x]` Dodati audit logging osnovu
 - `[x]` Prosiriti health checks
 - `[x]` Uvesti osnovnu observability strategiju
-- `[ ]` Definisati caching strategiju
-- `[ ]` Definisati background jobs pristup
+- `[x]` Definisati caching strategiju
+- `[x]` Definisati background jobs pristup
 - `[x]` Dodati osnovne security hardening provere
 
 Exit criteria:
@@ -320,9 +320,11 @@ Now:
 - `Customers` modul radi end-to-end kroz tenant-aware persistence, RPC i UI
 - `Phase 9` je zavrsena
 - Catalog migracije, tenant provisioning i deployment helper tok su standardizovani
-- `Phase 10` je aktivna
+- `Phase 10` je zavrsena
 - Uvedeni su global exception handling, request context logging i prosireni health checks
 - Dodati su audit dogadjaji za auth i RPC, runtime observability endpoint i security header/cookie guardrail-i
+- Dodat je in-process background jobs obrazac sa tenancy maintenance job-om
+- Definisana je pocetna caching strategija za tenant katalog i read-mostly konfiguraciju
 
 After that:
-- Production readiness hardening i operativne osnove
+- Roadmap checkpoint je kompletiran

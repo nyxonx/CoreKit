@@ -62,13 +62,22 @@ public static class WebApplicationExtensions
 
         app.MapGet(
                 "/api/system/runtime",
-                (IHostEnvironment environment, RpcOperationRegistry rpcOperationRegistry) => Results.Ok(
+                (
+                    IHostEnvironment environment,
+                    RpcOperationRegistry rpcOperationRegistry,
+                    CoreKitBackgroundJobRegistry backgroundJobRegistry) => Results.Ok(
                     new
                     {
                         application = "CoreKit",
                         environment = environment.EnvironmentName,
                         utcNow = DateTimeOffset.UtcNow,
                         rpcOperations = rpcOperationRegistry.Count,
+                        backgroundJobs = backgroundJobRegistry.Jobs.Select(
+                            job => new
+                            {
+                                job.Name,
+                                interval = job.Interval.ToString()
+                            }),
                         metrics = new
                         {
                             meter = CoreKitTelemetry.MeterName

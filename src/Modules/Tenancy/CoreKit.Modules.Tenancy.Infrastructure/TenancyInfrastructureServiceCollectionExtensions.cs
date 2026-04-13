@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using CoreKit.BuildingBlocks.Presentation;
 
 namespace CoreKit.Modules.Tenancy.Infrastructure;
 
@@ -24,6 +25,11 @@ public static class TenancyInfrastructureServiceCollectionExtensions
             .Validate(
                 options => options.TtlSeconds > 0,
                 "Tenant catalog cache TTL must be greater than zero.");
+        services.AddOptions<TenantCatalogMaintenanceJobOptions>()
+            .Bind(configuration.GetSection(TenantCatalogMaintenanceJobOptions.SectionName))
+            .Validate(
+                options => options.IntervalMinutes > 0,
+                "Tenant catalog maintenance job interval must be greater than zero.");
 
         services.AddDbContext<TenantCatalogDbContext>(
             options => options.UseSqlite(connectionString));
@@ -44,6 +50,7 @@ public static class TenancyInfrastructureServiceCollectionExtensions
         services.AddScoped<ITenantDatabaseMigration, TenantMetadataMigration>();
         services.AddScoped<ITenantDatabaseMigration, TenantNotesDatabaseMigration>();
         services.AddScoped<ITenantSeedDataContributor, TenantMetadataSeedContributor>();
+        services.AddCoreKitBackgroundJob<TenantCatalogMaintenanceBackgroundJob>();
 
         return services;
     }

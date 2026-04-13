@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\CoreKit.BuildingBlocks.Presentation\CoreKit.BuildingBlocks.Presentation.csproj" />
     <ProjectReference Include="..\CoreKit.Modules.Tenancy.Domain\CoreKit.Modules.Tenancy.Domain.csproj" />
   </ItemGroup>
 

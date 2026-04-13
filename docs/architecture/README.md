@@ -8,3 +8,4 @@ Tipican sadrzaj:
 - tokovi podataka
 - integracije i granice sistema
 - operativne i platform smernice kao sto su module framework i caching strategija
+- background jobs pristup i operativni runtime obrasci
