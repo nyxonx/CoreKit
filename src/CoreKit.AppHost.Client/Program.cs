@@ -18,6 +18,7 @@ builder.Services.AddScoped<AuthApiClient>();
 builder.Services.AddScoped<RpcClient>();
 builder.Services.AddScoped<ICustomersModuleClient, CustomersModuleClient>();
 builder.Services.AddScoped<IIdentityAdminModuleClient, IdentityAdminModuleClient>();
+builder.Services.AddScoped<ITenantAdministrationClient, TenantAdministrationClient>();
 builder.Services.AddScoped<ITenancyModuleClient, TenancyModuleClient>();
 builder.Services.AddScoped<ServerAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(

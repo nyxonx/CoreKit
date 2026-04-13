@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using CoreKit.BuildingBlocks.Presentation;
+using CoreKit.Modules.Tenancy.Application;
 
 namespace CoreKit.Modules.Tenancy.Infrastructure;
 
@@ -45,6 +46,7 @@ public static class TenancyInfrastructureServiceCollectionExtensions
         services.AddScoped<TenantDatabaseMigrationRunner>();
         services.AddScoped<TenantSeedDataRunner>();
         services.AddScoped<TenantProvisioningService>();
+        services.AddScoped<ITenantAdministrationService, TenantAdministrationService>();
         services.AddScoped<TenantDatabaseBootstrapper>();
         services.AddScoped<TenantConfigurationValidator>();
         services.AddScoped<ITenantDatabaseMigration, TenantMetadataMigration>();

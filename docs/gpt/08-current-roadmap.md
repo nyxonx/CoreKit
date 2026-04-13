@@ -8,14 +8,13 @@ Phase 13 - Tenant Administration UI And Management Flows
 
 ## Current Task
 
-Phase 13 je zapoceta prvim tenant administration ekranom koji koristi postojece membership list/upsert server-side tokove za aktivni tenant.
+Phase 13 sada ima prvi tenant administration UI baseline: membership list/upsert i role-change za aktivni tenant, plus tenant catalog/create-provisioning flow.
 
 ## Next Tasks
 
-- Prosiriti membership management UX na jasniji role-change flow
-- Uvesti UI za kreiranje tenant-a i provisioning flow
-- Prosiriti admin povrsinu sa pregledom tenant konteksta i guardrail porukama
-- Nasloniti sve nove UI tokove na vec uvedeni server-side membership/authorization model
+- Dodati test scenarije za tenant administration UI tokove tamo gde je prakticno
+- Uskladiti README i high-level dokumentaciju sa tenant administration UI baseline-om
+- Nasloniti sledece admin UI korake na vec uvedeni server-side membership/authorization model
 
 ## After That
 

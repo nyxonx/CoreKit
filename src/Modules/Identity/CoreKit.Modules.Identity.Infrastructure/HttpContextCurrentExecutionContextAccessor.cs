@@ -17,6 +17,7 @@ public sealed class HttpContextCurrentExecutionContextAccessor(
             principal?.FindFirstValue(ClaimTypes.NameIdentifier),
             principal?.FindFirstValue(ClaimTypes.Name) ?? principal?.Identity?.Name,
             principal?.Identity?.IsAuthenticated == true,
-            tenantContextAccessor.TenantContext?.Identifier);
+            tenantContextAccessor.TenantContext?.Identifier,
+            principal?.FindAll(ClaimTypes.Role).Select(claim => claim.Value).ToArray() ?? Array.Empty<string>());
     }
 }

@@ -4,4 +4,5 @@ public sealed record CurrentExecutionContext(
     string? UserId,
     string? UserName,
     bool IsAuthenticated,
-    string? TenantIdentifier);
+    string? TenantIdentifier,
+    IReadOnlyList<string>? Roles = null);

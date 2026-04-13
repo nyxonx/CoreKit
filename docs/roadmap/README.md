@@ -372,10 +372,10 @@ Tasks:
 
 - `[x]` Dodati prvi tenant administration ekran za aktivni tenant
 - `[x]` Povezati membership list/upsert server tokove na Blazor client kroz module client obrazac
-- `[ ]` Dodati UI za promenu tenant role po korisniku bez ručnog RPC testiranja
-- `[ ]` Dodati UI za kreiranje novog tenant-a i provisioning flow
-- `[ ]` Dodati pregled aktivnog tenant konteksta u admin povrsini
-- `[ ]` Dodati osnovni guardrail UX za non-admin korisnike na admin ekranima
+- `[x]` Dodati UI za promenu tenant role po korisniku bez ručnog RPC testiranja
+- `[x]` Dodati UI za kreiranje novog tenant-a i provisioning flow
+- `[x]` Dodati pregled aktivnog tenant konteksta u admin povrsini
+- `[x]` Dodati osnovni guardrail UX za non-admin korisnike na admin ekranima
 - `[ ]` Dodati test scenarije za tenant administration UI tokove tamo gde je prakticno
 - `[ ]` Uskladiti README i high-level dokumentaciju sa tenant administration UI baseline-om
 
@@ -420,8 +420,9 @@ Now:
 - Auth state sada iznosi aktivni tenant i tenant rolu do klijenta za tenant-aware UI i dalji authorization flow
 - `Phase 12` je zavrsena
 - `Phase 13` je aktivna
-- Dodat je prvi tenant administration UI slice za aktivni tenant i povezan na membership list/upsert tokove
-- Sledeci fokus je tenant provisioning UI i dublji membership management UX
+- Dodat je tenant administration UI za aktivni tenant sa membership list/upsert tokom, role-change formom i guardrail porukom za non-admin korisnike
+- Dodat je i tenant catalog/create-provisioning UI baseline za prvi admin flow kreiranja novog tenant-a iz aplikacije
+- Sledeci fokus su test scenariji i dalji docs/high-level alignment za tenant administration surface
 
 After that:
 - Prosiriti tenant admin surface i otvoriti sledeci business/admin milestone na vec uspostavljenom tenant management temelju

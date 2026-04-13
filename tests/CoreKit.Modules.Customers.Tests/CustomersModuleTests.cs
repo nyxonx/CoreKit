@@ -178,7 +178,8 @@ public sealed class CustomersModuleTests
                     UserId: "test-user",
                     UserName: "test-user",
                     IsAuthenticated: true,
-                    TenantIdentifier: tenantIdentifier)));
+                    TenantIdentifier: tenantIdentifier,
+                    Roles: [ApplicationRoles.Admin])));
         services.AddScoped<ICurrentTenantAuthorizationService, AllowCurrentTenantAuthorizationService>();
 
         return services.BuildServiceProvider();
