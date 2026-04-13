@@ -79,6 +79,10 @@ Kada modul ima klijentski pristup iz WASM-a, koristi se obrazac:
 - modul-specificki client servis u `CoreKit.AppHost.Client`
 - `RpcClient` kao transportni mehanizam kada je operacija business use case
 
+Ako modul koristi i application DTO i transport DTO za isti use case, oni mogu namerno ostati odvojeni i kada su trenutno istog oblika.
+
+Razlog je sto se interni application modeli i public/shared transport contracts mogu vremenom menjati razlicitim tempom.
+
 Primer:
 
 - [TenancyModuleClient.cs](C:/Users/nikol/source/repos/nyxonx/CoreKit/src/CoreKit.AppHost.Client/Services/TenancyModuleClient.cs)
