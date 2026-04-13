@@ -20,11 +20,18 @@ public sealed class TenantMembershipAdministrationService(AppIdentityDbContext d
                 dbContext.Users.AsNoTracking(),
                 membership => membership.UserId,
                 user => user.Id,
-                (membership, user) => new TenantMembershipDto(
-                    user.UserName ?? user.Id,
+                (membership, user) => new
+                {
+                    UserName = user.UserName ?? user.Id,
+                    membership.Role,
+                    membership.IsActive
+                })
+            .OrderBy(membership => membership.UserName)
+            .Select(
+                membership => new TenantMembershipDto(
+                    membership.UserName,
                     membership.Role,
                     membership.IsActive))
-            .OrderBy(membership => membership.UserName)
             .ToListAsync(cancellationToken);
     }
 
