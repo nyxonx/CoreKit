@@ -397,13 +397,13 @@ Status: In Progress
 
 Tasks:
 
-- `[ ]` Uvesti poseban layout i navigaciju za `platform-admin` surface
-- `[ ]` Uvesti jasniji platform login UX za control-plane host
-- `[ ]` Dodati tenant catalog pregled sa detaljnijim tenant prikazom i osnovnim pretragama/filterima kada je prakticno
-- `[ ]` Dodati tenant lifecycle operacije kao sto su activate/deactivate za tenant
-- `[ ]` Dodati platform-level membership management za izabrani tenant
-- `[ ]` Dodati flow za dodelu postojeceg korisnika odabranom tenant-u sa tenant rolom
-- `[ ]` Dodati platform UI za promenu role i deaktivaciju/reaktivaciju membership-a po tenant-u
+- `[x]` Uvesti poseban layout i navigaciju za `platform-admin` surface
+- `[x]` Uvesti jasniji platform login UX za control-plane host
+- `[x]` Dodati tenant catalog pregled sa detaljnijim tenant prikazom i osnovnim pretragama/filterima kada je prakticno
+- `[x]` Dodati tenant lifecycle operacije kao sto su activate/deactivate za tenant
+- `[x]` Dodati platform-level membership management za izabrani tenant
+- `[x]` Dodati flow za dodelu postojeceg korisnika odabranom tenant-u sa tenant rolom
+- `[x]` Dodati platform UI za promenu role i deaktivaciju/reaktivaciju membership-a po tenant-u
 - `[ ]` Dodati test scenarije za control-plane i platform membership tokove tamo gde je prakticno
 - `[ ]` Uskladiti README i high-level dokumentaciju sa platform administration surface-om
 
@@ -452,7 +452,10 @@ Now:
 - Tenant catalog/create-provisioning flow je izdvojen na control-plane platform admin surface umesto da zivi na svakom tenant hostu
 - Dodati su integration testovi i high-level docs alignment za tenant administration baseline
 - `Phase 14` je aktivna
-- Sledeci fokus je da `platform-admin` preraste u zaseban control-plane UX sa tenant lifecycle i platform-level membership tokovima
+- `platform-admin` sada ima zaseban layout i login UX na control-plane hostu
+- Dodat je tenant catalog selection/detail baseline sa platform-level membership list/upsert tokom za izabrani tenant
+- Dodat je i prvi tenant lifecycle/status slice kroz activate/deactivate tokove za tenant i membership status
+- Sledeci fokus su test scenariji i docs alignment za siri platform administration surface
 
 After that:
 - Prosiriti tenant admin surface i otvoriti sledeci business/admin milestone na vec uspostavljenom tenant management temelju

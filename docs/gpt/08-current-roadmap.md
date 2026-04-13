@@ -12,9 +12,9 @@ Phase 14 sada ima prvi control-plane UX slice: zaseban platform layout/login, te
 
 ## Next Tasks
 
-- Prosiriti tenant lifecycle tokove preko detaljnijeg catalog pregleda i sigurnijih guardrail UX koraka
-- Prosiriti platform-level membership management sa jasnijim tenant detail flow-om i eventualnim create-user-to-tenant tokom
-- Nasloniti naredne control-plane tokove na izabrani tenant kontekst unutar `platform-admin` surface-a
+- Dodati test scenarije za control-plane i platform membership/lifecycle tokove tamo gde je prakticno
+- Uskladiti README i high-level dokumentaciju sa prosirenim platform administration surface-om
+- Nasloniti naredne control-plane tokove na izabrani tenant kontekst unutar `platform-admin` surface-a, ukljucujuci eventualni create-user-to-tenant flow
 
 ## After That
 
