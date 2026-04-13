@@ -3,6 +3,8 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using CoreKit.AppHost.Contracts.Authentication;
 using CoreKit.AppHost.Contracts.Rpc;
+using CoreKit.BuildingBlocks.Application;
+using CoreKit.Modules.Identity.Infrastructure;
 using CoreKit.Modules.Tenancy.Domain;
 using CoreKit.Modules.Tenancy.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
@@ -87,6 +89,39 @@ public sealed class CustomersAuthorizationTests
             Assert.NotNull(payload);
             Assert.False(payload.Succeeded);
             Assert.Contains(payload.Errors, error => error.Code == "tenant_membership_required");
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
+    public async Task CustomersRpc_ReturnsForbidden_WhenMemberAttemptsWriteOperation()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var factory = new CoreKitAppFactory(tempRoot);
+            await factory.SetMembershipRoleAsync("admin", "bootstrap", TenantMembershipRoles.Member);
+
+            using var client = factory.CreateClient();
+            var authCookie = await LoginAsync(client, "localhost");
+
+            using var response = await SendRpcAsync(
+                client,
+                "localhost",
+                "customers.create",
+                """{"name":"Blocked Write","email":"blocked@test.local"}""",
+                authCookie);
+
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+
+            var payload = await response.Content.ReadFromJsonAsync<RpcResponse>();
+            Assert.NotNull(payload);
+            Assert.False(payload.Succeeded);
+            Assert.Contains(payload.Errors, error => error.Code == "tenant_role_required");
         }
         finally
         {
@@ -209,6 +244,18 @@ public sealed class CustomersAuthorizationTests
                     IsActive = true
                 });
 
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SetMembershipRoleAsync(string userName, string tenantIdentifier, string role)
+        {
+            await using var scope = Services.CreateAsyncScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
+            var user = await dbContext.Users.SingleAsync(entity => entity.UserName == userName);
+            var membership = await dbContext.UserTenantMemberships.SingleAsync(
+                entity => entity.UserId == user.Id && entity.TenantIdentifier == tenantIdentifier);
+
+            membership.Role = role;
             await dbContext.SaveChangesAsync();
         }
     }

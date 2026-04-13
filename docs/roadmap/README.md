@@ -343,7 +343,7 @@ Status: In Progress
 Tasks:
 
 - `[x]` Definisati tenant membership model koji povezuje centralni `AppUser` sa aktivnim tenant-ima
-- `[ ]` Definisati tenant-scoped role/permission osnovu za buduce module
+- `[x]` Definisati tenant-scoped role/permission osnovu za buduce module
 - `[x]` Dodati shared current user / current tenant access contract za business operacije
 - `[x]` Uvesti proveru da autentikovani korisnik pripada aktivnom tenant-u tamo gde je to obavezno
 - `[x]` Definisati audit metadata obrazac (`CreatedByUserId`, `ModifiedByUserId`, `TenantId`)
@@ -388,7 +388,8 @@ Now:
 - `Phase 12` je aktivna
 - Uvedeni su membership baseline, shared current execution contract i prvi tenant authorization check na `Customers` modulu
 - `Customers` sada nosi i pocetni audit metadata obrazac za `CreatedByUserId`, `ModifiedByUserId`, tenant identitet i UTC timestamp polja
-- Sledeci fokus je tenant role/permission semantika i sirenje istog obrasca na naredne module
+- `Customers` sada ima i prvu tenant role semantiku: `Member`/`Admin` za read, `Admin` za write
+- Sledeci fokus je sirenje istog role/authorization obrasca na naredne module
 
 After that:
 - Prosiriti sledeci business modul ili dublji operativni/security milestone na vec uvedenom tenant authorization temelju

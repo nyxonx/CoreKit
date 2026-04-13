@@ -366,6 +366,11 @@ public sealed class CustomersModuleTests
     {
         public Task<OperationError?> ValidateAccessAsync(CancellationToken cancellationToken = default) =>
             Task.FromResult<OperationError?>(null);
+
+        public Task<OperationError?> ValidateAccessAsync(
+            CurrentTenantAccessRequirement requirement,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult<OperationError?>(null);
     }
 
     private sealed class TestCurrentExecutionContextAccessor(CurrentExecutionContext current)

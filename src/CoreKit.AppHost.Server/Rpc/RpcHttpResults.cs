@@ -42,6 +42,11 @@ internal static class RpcHttpResults
             return StatusCodes.Status403Forbidden;
         }
 
+        if (codes.Any(code => code == "tenant_role_required"))
+        {
+            return StatusCodes.Status403Forbidden;
+        }
+
         if (codes.Any(
                 code => code is "validation_error"
                     or "rpc_operation_required"

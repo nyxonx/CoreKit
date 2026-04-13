@@ -43,14 +43,16 @@ Za `Customers` RPC operacije:
 
 - anonimni korisnik dobija `authentication_required`
 - autentikovan korisnik bez membership-a za aktivni tenant dobija `tenant_membership_required`
-- korisnik sa membership-om prolazi na business operaciju
+- `Member` i `Admin` mogu da citaju customer podatke
+- `Admin` je potreban za create/update/delete operacije
+- korisnik sa neodgovarajucom tenant rolom dobija `tenant_role_required`
 - create/update tok dopunjava audit metadata polja iz current execution konteksta
 
 Audit timestamp polja se cuvaju kao UTC vrednosti.
 Lokalne vremenske zone i tenant-specific prikaz ostaju briga klijenta ili presentation sloja, ne persistence izvora istine.
 
 To je namerno mali prvi korak.
-Tenant-scoped permissions i finije role provere dolaze posle ove osnove.
+Tenant-scoped permissions i finije role provere dolaze posle ove osnove, ali prva razlikovana role semantika vec postoji kroz `Member` naspram `Admin`.
 
 ## Zasto Ovako
 

@@ -9,6 +9,13 @@ public sealed class CurrentTenantAuthorizationService(
 {
     public async Task<OperationError?> ValidateAccessAsync(CancellationToken cancellationToken = default)
     {
+        return await ValidateAccessAsync(CurrentTenantAccessRequirement.Membership, cancellationToken);
+    }
+
+    public async Task<OperationError?> ValidateAccessAsync(
+        CurrentTenantAccessRequirement requirement,
+        CancellationToken cancellationToken = default)
+    {
         var current = executionContextAccessor.GetCurrent();
 
         if (string.IsNullOrWhiteSpace(current.TenantIdentifier))
@@ -25,18 +32,30 @@ public sealed class CurrentTenantAuthorizationService(
                 "Authentication is required for this operation.");
         }
 
-        var hasMembership = await dbContext.UserTenantMemberships
+        var membership = await dbContext.UserTenantMemberships
             .AsNoTracking()
-            .AnyAsync(
+            .SingleOrDefaultAsync(
                 membership => membership.UserId == current.UserId
                     && membership.TenantIdentifier == current.TenantIdentifier
                     && membership.IsActive,
                 cancellationToken);
 
-        return hasMembership
-            ? null
-            : new OperationError(
+        if (membership is null)
+        {
+            return new OperationError(
                 "tenant_membership_required",
                 "The current user does not have access to the active tenant.");
+        }
+
+        if (requirement.AllowedRoles.Length == 0)
+        {
+            return null;
+        }
+
+        return requirement.AllowedRoles.Contains(membership.Role, StringComparer.OrdinalIgnoreCase)
+            ? null
+            : new OperationError(
+                "tenant_role_required",
+                "The current user does not have the required tenant role for this operation.");
     }
 }

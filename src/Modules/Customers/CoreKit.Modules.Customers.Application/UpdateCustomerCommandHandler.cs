@@ -12,7 +12,9 @@ public sealed class UpdateCustomerCommandHandler(
         UpdateCustomerCommand request,
         CancellationToken cancellationToken)
     {
-        var authorizationError = await tenantAuthorizationService.ValidateAccessAsync(cancellationToken);
+        var authorizationError = await tenantAuthorizationService.ValidateAccessAsync(
+            new CurrentTenantAccessRequirement(TenantMembershipRoles.Admin),
+            cancellationToken);
 
         if (authorizationError is not null)
         {

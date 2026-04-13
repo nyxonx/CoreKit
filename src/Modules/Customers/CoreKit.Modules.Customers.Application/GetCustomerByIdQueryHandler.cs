@@ -12,7 +12,9 @@ public sealed class GetCustomerByIdQueryHandler(
         GetCustomerByIdQuery request,
         CancellationToken cancellationToken)
     {
-        var authorizationError = await tenantAuthorizationService.ValidateAccessAsync(cancellationToken);
+        var authorizationError = await tenantAuthorizationService.ValidateAccessAsync(
+            new CurrentTenantAccessRequirement(TenantMembershipRoles.Admin, TenantMembershipRoles.Member),
+            cancellationToken);
 
         if (authorizationError is not null)
         {
