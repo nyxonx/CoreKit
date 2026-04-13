@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using CoreKit.AppHost.Contracts.Authentication;
+using CoreKit.BuildingBlocks.Presentation;
 using CoreKit.Modules.Identity.Domain;
 using System.Security.Claims;
 
@@ -37,13 +38,29 @@ public static class IdentityModuleRegistrationExtensions
             "/login",
             async (
                 LoginRequest request,
-                SignInManager<AppUser> signInManager) =>
+                SignInManager<AppUser> signInManager,
+                IAuditEventWriter auditEventWriter,
+                CancellationToken cancellationToken) =>
             {
                 var result = await signInManager.PasswordSignInAsync(
                     request.UserName,
                     request.Password,
                     request.RememberMe,
                     lockoutOnFailure: false);
+
+                var outcome = result.Succeeded ? "success" : "failure";
+                await auditEventWriter.WriteAsync(
+                    new AuditEvent(
+                        "identity",
+                        "login",
+                        outcome,
+                        request.UserName,
+                        new Dictionary<string, object?>
+                        {
+                            ["rememberMe"] = request.RememberMe
+                        }),
+                    cancellationToken);
+                CoreKitTelemetry.AuthEvents.Add(1, new KeyValuePair<string, object?>("action", "login"), new KeyValuePair<string, object?>("outcome", outcome));
 
                 return result.Succeeded
                     ? Results.Ok()
@@ -52,9 +69,18 @@ public static class IdentityModuleRegistrationExtensions
 
         group.MapPost(
             "/logout",
-            async (SignInManager<AppUser> signInManager) =>
+            async (
+                ClaimsPrincipal principal,
+                SignInManager<AppUser> signInManager,
+                IAuditEventWriter auditEventWriter,
+                CancellationToken cancellationToken) =>
             {
                 await signInManager.SignOutAsync();
+                var subject = principal.Identity?.Name;
+                await auditEventWriter.WriteAsync(
+                    new AuditEvent("identity", "logout", "success", subject),
+                    cancellationToken);
+                CoreKitTelemetry.AuthEvents.Add(1, new KeyValuePair<string, object?>("action", "logout"), new KeyValuePair<string, object?>("outcome", "success"));
                 return Results.Ok();
             });
 

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using CoreKit.AppHost.Contracts.Rpc;
 using CoreKit.BuildingBlocks.Application;
+using CoreKit.BuildingBlocks.Presentation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -9,13 +10,15 @@ namespace CoreKit.AppHost.Server.Rpc;
 public sealed class RpcDispatcher(
     IMediator mediator,
     RpcOperationRegistry operationRegistry,
-    ILogger<RpcDispatcher> logger)
+    ILogger<RpcDispatcher> logger,
+    IAuditEventWriter auditEventWriter)
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
     public async Task<RpcResponse> DispatchAsync(RpcRequest request, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(request);
+        var startedAt = DateTimeOffset.UtcNow;
 
         if (string.IsNullOrWhiteSpace(request.Operation))
         {
@@ -58,6 +61,12 @@ public sealed class RpcDispatcher(
         catch (Exception exception)
         {
             logger.LogError(exception, "Unhandled exception while dispatching RPC operation {Operation}.", request.Operation);
+            await WriteAuditAsync(request.Operation, "error", startedAt, cancellationToken);
+            CoreKitTelemetry.RpcRequests.Add(1, new KeyValuePair<string, object?>("operation", request.Operation), new KeyValuePair<string, object?>("outcome", "error"));
+            CoreKitTelemetry.RpcDurationMs.Record(
+                (DateTimeOffset.UtcNow - startedAt).TotalMilliseconds,
+                new KeyValuePair<string, object?>("operation", request.Operation),
+                new KeyValuePair<string, object?>("outcome", "error"));
 
             return CreateErrorResponse(
                 "rpc_unhandled_error",
@@ -71,7 +80,7 @@ public sealed class RpcDispatcher(
                 $"RPC operation '{request.Operation}' returned an unsupported response type.");
         }
 
-        return operationResult.IsSuccess
+        var rpcResponse = operationResult.IsSuccess
             ? new RpcResponse(true, operationResult.Value, Array.Empty<RpcErrorResponse>())
             : new RpcResponse(
                 false,
@@ -79,6 +88,16 @@ public sealed class RpcDispatcher(
                 operationResult.Errors
                     .Select(error => new RpcErrorResponse(error.Code, error.Message))
                     .ToArray());
+
+        var outcome = rpcResponse.Succeeded ? "success" : "failure";
+        await WriteAuditAsync(request.Operation, outcome, startedAt, cancellationToken, rpcResponse.Errors);
+        CoreKitTelemetry.RpcRequests.Add(1, new KeyValuePair<string, object?>("operation", request.Operation), new KeyValuePair<string, object?>("outcome", outcome));
+        CoreKitTelemetry.RpcDurationMs.Record(
+            (DateTimeOffset.UtcNow - startedAt).TotalMilliseconds,
+            new KeyValuePair<string, object?>("operation", request.Operation),
+            new KeyValuePair<string, object?>("outcome", outcome));
+
+        return rpcResponse;
     }
 
     private static object? DeserializePayload(JsonElement payload, Type requestType)
@@ -93,4 +112,24 @@ public sealed class RpcDispatcher(
 
     private static RpcResponse CreateErrorResponse(string code, string message) =>
         new(false, Data: null, [new RpcErrorResponse(code, message)]);
+
+    private Task WriteAuditAsync(
+        string operation,
+        string outcome,
+        DateTimeOffset startedAt,
+        CancellationToken cancellationToken,
+        IReadOnlyList<RpcErrorResponse>? errors = null)
+    {
+        return auditEventWriter.WriteAsync(
+            new AuditEvent(
+                "rpc",
+                operation,
+                outcome,
+                Details: new Dictionary<string, object?>
+                {
+                    ["durationMs"] = (DateTimeOffset.UtcNow - startedAt).TotalMilliseconds,
+                    ["errorCodes"] = errors?.Select(error => error.Code).ToArray()
+                }),
+            cancellationToken);
+    }
 }

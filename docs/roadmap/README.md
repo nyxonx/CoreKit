@@ -292,12 +292,12 @@ Tasks:
 
 - `[x]` Standardizovati error handling
 - `[x]` Uvesti strukturisano logovanje
-- `[ ]` Dodati audit logging osnovu
+- `[x]` Dodati audit logging osnovu
 - `[x]` Prosiriti health checks
-- `[ ]` Uvesti osnovnu observability strategiju
+- `[x]` Uvesti osnovnu observability strategiju
 - `[ ]` Definisati caching strategiju
 - `[ ]` Definisati background jobs pristup
-- `[ ]` Dodati osnovne security hardening provere
+- `[x]` Dodati osnovne security hardening provere
 
 Exit criteria:
 - Platforma ima operativne osnove za produkciju
@@ -322,6 +322,7 @@ Now:
 - Catalog migracije, tenant provisioning i deployment helper tok su standardizovani
 - `Phase 10` je aktivna
 - Uvedeni su global exception handling, request context logging i prosireni health checks
+- Dodati su audit dogadjaji za auth i RPC, runtime observability endpoint i security header/cookie guardrail-i
 
 After that:
 - Production readiness hardening i operativne osnove

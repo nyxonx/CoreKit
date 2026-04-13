@@ -1,6 +1,7 @@
 using System.Text.Json;
 using CoreKit.AppHost.Server.Diagnostics;
 using CoreKit.AppHost.Server.Rpc;
+using CoreKit.BuildingBlocks.Presentation;
 using CoreKit.Modules.Tenancy.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -16,9 +17,11 @@ public static class WebApplicationExtensions
         if (!app.Environment.IsDevelopment())
         {
             app.UseHttpsRedirection();
+            app.UseHsts();
         }
 
         app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+        app.UseMiddleware<SecurityHeadersMiddleware>();
         app.UseBlazorFrameworkFiles();
         app.UseStaticFiles();
         app.UseMiddleware<TenantResolutionMiddleware>();
@@ -55,6 +58,23 @@ public static class WebApplicationExtensions
                         environment = app.Environment.EnvironmentName
                     }))
             .WithName("GetSystemInfo")
+            .WithTags("System");
+
+        app.MapGet(
+                "/api/system/runtime",
+                (IHostEnvironment environment, RpcOperationRegistry rpcOperationRegistry) => Results.Ok(
+                    new
+                    {
+                        application = "CoreKit",
+                        environment = environment.EnvironmentName,
+                        utcNow = DateTimeOffset.UtcNow,
+                        rpcOperations = rpcOperationRegistry.Count,
+                        metrics = new
+                        {
+                            meter = CoreKitTelemetry.MeterName
+                        }
+                    }))
+            .WithName("GetRuntimeInfo")
             .WithTags("System");
 
         app.MapHealthChecks(

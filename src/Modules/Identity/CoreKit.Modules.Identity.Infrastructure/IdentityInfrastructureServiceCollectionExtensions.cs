@@ -1,4 +1,5 @@
 using CoreKit.Modules.Identity.Domain;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +38,10 @@ public static class IdentityInfrastructureServiceCollectionExtensions
         services.ConfigureApplicationCookie(options =>
         {
             options.Cookie.Name = "CoreKit.Auth";
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            options.Cookie.IsEssential = true;
             options.LoginPath = "/login";
             options.LogoutPath = "/logout";
             options.SlidingExpiration = true;

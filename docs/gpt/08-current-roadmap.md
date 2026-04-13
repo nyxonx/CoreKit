@@ -8,13 +8,13 @@ Phase 10 - Production Readiness
 
 ## Current Task
 
-Ucvrstiti production readiness osnovu preko error handling, request logging i health signala.
+Ucvrstiti production readiness osnovu preko audit logova, observability signala i security guardrail-a.
 
 ## Next Tasks
 
-- Dodati audit logging osnovu
-- Definisati prvi production-grade observability slice
-- Razraditi security hardening i operativne guardrail-e
+- Definisati caching strategiju
+- Definisati background jobs pristup
+- Prosiriti operativne guardrail-e i deployment hardening
 
 ## After That
 

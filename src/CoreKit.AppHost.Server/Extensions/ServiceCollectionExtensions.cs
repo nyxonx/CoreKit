@@ -1,6 +1,7 @@
 using CoreKit.AppHost.Server.Diagnostics;
 using CoreKit.AppHost.Server.Rpc;
 using CoreKit.BuildingBlocks.Application;
+using CoreKit.BuildingBlocks.Presentation;
 
 namespace CoreKit.AppHost.Server.Extensions;
 
@@ -18,11 +19,13 @@ public static class ServiceCollectionExtensions
             .Distinct()
             .ToArray();
 
+        services.AddHttpContextAccessor();
         services.AddHealthChecks()
             .AddCheck<TenantCatalogHealthCheck>("tenant-catalog-db", tags: ["ready"])
             .AddCheck<RpcOperationsHealthCheck>("rpc-operations", tags: ["ready"]);
         services.AddCoreKitApplication(applicationAssemblies);
         services.AddSingleton(new RpcOperationRegistry(applicationAssemblies));
+        services.AddScoped<IAuditEventWriter, LoggingAuditEventWriter>();
         services.AddScoped<RpcDispatcher>();
         services.AddCoreKitModules(configuration);
 
