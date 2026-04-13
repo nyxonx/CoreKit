@@ -159,6 +159,45 @@ public sealed class CustomersAuthorizationTests
         }
     }
 
+    [Fact]
+    public async Task IdentityMembershipRpc_AllowsAdminToChangeTenantRole()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var factory = new CoreKitAppFactory(tempRoot);
+            using var client = factory.CreateClient();
+            var authCookie = await LoginAsync(client, "localhost");
+
+            using var updateResponse = await SendRpcAsync(
+                client,
+                "localhost",
+                "identity.memberships.upsert",
+                """{"userName":"admin","role":"Member"}""",
+                authCookie);
+
+            updateResponse.EnsureSuccessStatusCode();
+
+            using var createResponse = await SendRpcAsync(
+                client,
+                "localhost",
+                "customers.create",
+                """{"name":"Should Fail","email":"should-fail@test.local"}""",
+                authCookie);
+
+            Assert.Equal(HttpStatusCode.Forbidden, createResponse.StatusCode);
+
+            var payload = await createResponse.Content.ReadFromJsonAsync<RpcResponse>();
+            Assert.NotNull(payload);
+            Assert.Contains(payload.Errors, error => error.Code == "tenant_role_required");
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
     private static async Task<string> LoginAsync(HttpClient client, string host)
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, "/api/auth/login")

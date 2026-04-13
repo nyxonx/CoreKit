@@ -338,17 +338,18 @@ Exit criteria:
 Goal:
 Uvesti tenant-scoped membership, autorizaciju i audit identitet iznad postojeceg centralizovanog auth modela, bez menjanja osnovnog `ASP.NET Core Identity + cookie auth` pravca.
 
-Status: In Progress
+Status: Completed
 
 Tasks:
 
 - `[x]` Definisati tenant membership model koji povezuje centralni `AppUser` sa aktivnim tenant-ima
 - `[x]` Definisati tenant-scoped role/permission osnovu za buduce module
+- `[x]` Dodati admin-only server tok za tenant membership dodelu i promenu role
 - `[x]` Dodati shared current user / current tenant access contract za business operacije
 - `[x]` Uvesti proveru da autentikovani korisnik pripada aktivnom tenant-u tamo gde je to obavezno
 - `[x]` Definisati audit metadata obrazac (`CreatedByUserId`, `ModifiedByUserId`, `TenantId`)
 - `[x]` Primeniti osnovnu tenant authorization proveru na `Customers` modul
-- `[~]` Dodati test scenarije za tenant membership i authorization flow
+- `[x]` Dodati test scenarije za tenant membership i authorization flow
 - `[x]` Uskladiti auth/tenancy dokumentaciju sa central identity + tenant-scoped authorization modelom
 
 Exit criteria:
@@ -389,8 +390,10 @@ Now:
 - Uvedeni su membership baseline, shared current execution contract i prvi tenant authorization check na `Customers` modulu
 - `Customers` sada nosi i pocetni audit metadata obrazac za `CreatedByUserId`, `ModifiedByUserId`, tenant identitet i UTC timestamp polja
 - `Customers` sada ima i prvu tenant role semantiku: `Member`/`Admin` za read, `Admin` za write
+- Identity modul sada ima i admin-only server-side tok za tenant membership list/upsert operacije
 - Auth state sada iznosi aktivni tenant i tenant rolu do klijenta za tenant-aware UI i dalji authorization flow
-- Sledeci fokus je sirenje istog role/authorization obrasca na naredne module
+- `Phase 12` je zavrsena
+- Sledeci fokus je definisanje `Phase 13` tenant administration UI i management tokova
 
 After that:
-- Prosiriti sledeci business modul ili dublji operativni/security milestone na vec uvedenom tenant authorization temelju
+- Uvesti UI za tenant administraciju, kreiranje tenant-a i upravljanje korisnicima po tenant-u na vec uspostavljenom server-side authorization modelu

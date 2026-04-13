@@ -1,4 +1,5 @@
 using CoreKit.Modules.Identity.Domain;
+using CoreKit.Modules.Identity.Application;
 using CoreKit.BuildingBlocks.Application;
 using CoreKit.Modules.Tenancy.Infrastructure;
 using Microsoft.AspNetCore.Http;
@@ -52,6 +53,7 @@ public static class IdentityInfrastructureServiceCollectionExtensions
         services.AddAuthorization();
         services.AddScoped<ICurrentExecutionContextAccessor, HttpContextCurrentExecutionContextAccessor>();
         services.AddScoped<ICurrentTenantAuthorizationService, CurrentTenantAuthorizationService>();
+        services.AddScoped<ITenantMembershipAdministrationService, TenantMembershipAdministrationService>();
 
         return services;
     }
