@@ -18,6 +18,7 @@ Kada host direktno poznaje module-specific bootstrap korake, vremenom se:
 Svaki modul treba da ostane iza shared contract-a `ICoreKitModule` i da koristi isti lifecycle:
 
 - `AddServices(...)`
+- `ConfigurePipeline(...)`
 - `MapEndpoints(...)`
 - `InitializeAsync(...)`
 
@@ -29,8 +30,9 @@ Prakticni cilj je da runtime startup ostane u jednom standardnom obrascu:
 
 1. host ucita registrovane module iz kataloga
 2. svi moduli registruju svoje servise kroz shared contract
-3. host mapira module endpoint-e genericki
-4. host pokrece module initialization kroz zajednicki `CoreKitModuleInitializationPipeline`
+3. moduli po potrebi prikljucuju svoje middleware/pipeline korake kroz shared hook
+4. host mapira module endpoint-e genericki
+5. host pokrece module initialization kroz zajednicki `CoreKitModuleInitializationPipeline`
 
 Ovim pristupom startup logika ostaje koncentrisana u module i shared orchestration sloj, umesto da se razbacuje po `Program.cs`.
 
@@ -40,6 +42,7 @@ Trenutni minimalni Phase 11 oblik je:
 
 - `Program.cs` delegira startup bootstrap kroz `InitializeCoreKitAppAsync(...)`
 - shared pipeline enumerira `ICoreKitModule` instance iz kataloga
+- host vise ne zna direktno za `TenantResolutionMiddleware`, vec ga `TenancyModule` prikljucuje kroz `ConfigurePipeline(...)`
 - svaki modul i dalje zadrzava sopstveni `InitializeAsync(...)` bez host-specific grananja
 
 To zadrzava postojeci CoreKit pravac, ali uklanja potrebu da host bootstrap raste kroz module-specific startup odluke.

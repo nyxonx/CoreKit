@@ -2,6 +2,7 @@ using System.Reflection;
 using CoreKit.BuildingBlocks.Presentation;
 using CoreKit.Modules.Identity.Application;
 using CoreKit.Modules.Identity.Infrastructure;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,11 @@ public sealed class IdentityModule : ICoreKitModule
         ArgumentNullException.ThrowIfNull(endpoints);
 
         endpoints.MapIdentityModule();
+    }
+
+    public void ConfigurePipeline(WebApplication app)
+    {
+        ArgumentNullException.ThrowIfNull(app);
     }
 
     public Task InitializeAsync(

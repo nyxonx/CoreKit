@@ -2,7 +2,6 @@ using System.Text.Json;
 using CoreKit.AppHost.Server.Diagnostics;
 using CoreKit.AppHost.Server.Rpc;
 using CoreKit.BuildingBlocks.Presentation;
-using CoreKit.Modules.Tenancy.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
@@ -24,7 +23,7 @@ public static class WebApplicationExtensions
         app.UseMiddleware<SecurityHeadersMiddleware>();
         app.UseBlazorFrameworkFiles();
         app.UseStaticFiles();
-        app.UseMiddleware<TenantResolutionMiddleware>();
+        app.ConfigureRegisteredCoreKitModulePipeline();
         app.UseMiddleware<RequestContextLoggingMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();

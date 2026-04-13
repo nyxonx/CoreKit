@@ -62,6 +62,11 @@ Purpose:
 * Common pipeline logic
 * Shared module registration contracts
 
+Current note:
+
+* `CoreKit.BuildingBlocks.Domain` i `CoreKit.BuildingBlocks.Infrastructure` mogu privremeno sadrzati samo marker ili mali broj tipova
+* ne uvoditi shared domain/infrastructure baze unapred bez stvarne ponovne upotrebe kroz vise modula
+
 ## Modules
 
 ```text

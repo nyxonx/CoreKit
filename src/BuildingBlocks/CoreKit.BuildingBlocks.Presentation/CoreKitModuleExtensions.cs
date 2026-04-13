@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +42,20 @@ public static class CoreKitModuleExtensions
         }
 
         return endpoints;
+    }
+
+    public static WebApplication ConfigureRegisteredCoreKitModulePipeline(this WebApplication app)
+    {
+        ArgumentNullException.ThrowIfNull(app);
+
+        var modules = app.Services.GetRequiredService<IReadOnlyList<ICoreKitModule>>();
+
+        foreach (var module in modules)
+        {
+            module.ConfigurePipeline(app);
+        }
+
+        return app;
     }
 
     public static async Task InitializeRegisteredCoreKitModulesAsync(

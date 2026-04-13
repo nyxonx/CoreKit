@@ -35,6 +35,7 @@ Svaki modul preko njega definise:
 - `Name`
 - `ApplicationAssemblies`
 - `AddServices(...)`
+- `ConfigurePipeline(...)`
 - `MapEndpoints(...)`
 - `InitializeAsync(...)`
 
@@ -46,9 +47,10 @@ Standardni tok je:
 
 1. AppHost ucita katalog modula
 2. svi moduli registruju svoje servise
-3. AppHost registruje shared CQRS/RPC pipeline nad modulskim application assembly-jima
-4. svi moduli mapiraju svoje endpoint-e
-5. shared initialization pipeline izvrsava module bootstrap kroz `InitializeAsync`
+3. moduli po potrebi prikljucuju svoje middleware/pipeline korake kroz shared module hook
+4. AppHost registruje shared CQRS/RPC pipeline nad modulskim application assembly-jima
+5. svi moduli mapiraju svoje endpoint-e
+6. shared initialization pipeline izvrsava module bootstrap kroz `InitializeAsync`
 
 Trenutni shared startup orchestration je dokumentovan i u `docs/architecture/module-startup-orchestration.md`.
 

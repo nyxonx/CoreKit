@@ -1,6 +1,7 @@
 using System.Reflection;
 using CoreKit.BuildingBlocks.Presentation;
 using CoreKit.Modules.Customers.Application;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,11 @@ public sealed class CustomersModule : ICoreKitModule
         ArgumentNullException.ThrowIfNull(endpoints);
 
         endpoints.MapCustomersModule();
+    }
+
+    public void ConfigurePipeline(WebApplication app)
+    {
+        ArgumentNullException.ThrowIfNull(app);
     }
 
     public Task InitializeAsync(

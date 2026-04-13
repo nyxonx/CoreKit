@@ -2,6 +2,7 @@ using System.Reflection;
 using CoreKit.BuildingBlocks.Presentation;
 using CoreKit.Modules.Tenancy.Application;
 using CoreKit.Modules.Tenancy.Infrastructure;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,13 @@ public sealed class TenancyModule : ICoreKitModule
         ArgumentNullException.ThrowIfNull(endpoints);
 
         endpoints.MapTenancyModule();
+    }
+
+    public void ConfigurePipeline(WebApplication app)
+    {
+        ArgumentNullException.ThrowIfNull(app);
+
+        app.UseMiddleware<TenantResolutionMiddleware>();
     }
 
     public Task InitializeAsync(
