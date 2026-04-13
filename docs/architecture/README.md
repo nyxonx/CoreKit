@@ -7,3 +7,4 @@ Tipican sadrzaj:
 - glavni moduli i njihove odgovornosti
 - tokovi podataka
 - integracije i granice sistema
+- operativne i platform smernice kao sto su module framework i caching strategija

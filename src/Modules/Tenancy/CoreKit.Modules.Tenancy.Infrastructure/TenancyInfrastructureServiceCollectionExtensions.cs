@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace CoreKit.Modules.Tenancy.Infrastructure;
 
@@ -16,6 +17,13 @@ public static class TenancyInfrastructureServiceCollectionExtensions
         var connectionString =
             configuration.GetConnectionString("TenantCatalogDatabase")
             ?? "Data Source=corekit.catalog.db";
+
+        services.AddMemoryCache();
+        services.AddOptions<TenantCatalogCacheOptions>()
+            .Bind(configuration.GetSection(TenantCatalogCacheOptions.SectionName))
+            .Validate(
+                options => options.TtlSeconds > 0,
+                "Tenant catalog cache TTL must be greater than zero.");
 
         services.AddDbContext<TenantCatalogDbContext>(
             options => options.UseSqlite(connectionString));

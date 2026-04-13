@@ -2,9 +2,11 @@ using System.Text.Json;
 using CoreKit.AppHost.Contracts.Rpc;
 using CoreKit.AppHost.Server.Rpc;
 using CoreKit.BuildingBlocks.Application;
+using CoreKit.BuildingBlocks.Presentation;
 using CoreKit.Modules.Customers.Application;
 using CoreKit.Modules.Customers.Infrastructure;
 using CoreKit.Modules.Tenancy.Infrastructure;
+using CoreKit.TestInfrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -168,6 +170,7 @@ public sealed class CustomersModuleTests
         services.AddScoped<ITenantConnectionStringProvider, TenantConnectionStringProvider>();
         services.AddCustomersInfrastructure();
         services.AddScoped<ICustomerService, CustomerService>();
+        services.AddScoped<IAuditEventWriter, NoOpAuditEventWriter>();
 
         return services.BuildServiceProvider();
     }

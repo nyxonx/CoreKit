@@ -4,6 +4,8 @@ using CoreKit.Modules.Tenancy.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using Xunit;
 
 namespace CoreKit.Modules.Tenancy.Tests;
@@ -27,7 +29,7 @@ public sealed class TenantResolutionTests
                 ConnectionString = "Data Source=bootstrap.db"
             });
 
-        var service = new TenantResolutionService(dbContext);
+        var service = CreateService(dbContext);
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Host = new HostString("localhost");
 
@@ -63,7 +65,7 @@ public sealed class TenantResolutionTests
                 ConnectionString = "Data Source=contoso.db"
             });
 
-        var service = new TenantResolutionService(dbContext);
+        var service = CreateService(dbContext);
         var httpContext = new DefaultHttpContext();
         httpContext.Request.Host = new HostString("localhost");
         httpContext.Request.Headers["X-Tenant"] = "contoso";
@@ -81,7 +83,7 @@ public sealed class TenantResolutionTests
         using var connection = CreateOpenConnection();
         await using var dbContext = CreateDbContext(connection);
 
-        var service = new TenantResolutionService(dbContext);
+        var service = CreateService(dbContext);
         var accessor = new TenantContextAccessor();
         var middleware = new TenantResolutionMiddleware(_ => Task.CompletedTask);
         var httpContext = CreateRequestContext("missing.local");
@@ -112,7 +114,7 @@ public sealed class TenantResolutionTests
                 ConnectionString = "Data Source=inactive.db"
             });
 
-        var service = new TenantResolutionService(dbContext);
+        var service = CreateService(dbContext);
         var accessor = new TenantContextAccessor();
         var middleware = new TenantResolutionMiddleware(_ => Task.CompletedTask);
         var httpContext = CreateRequestContext("inactive.local");
@@ -143,7 +145,7 @@ public sealed class TenantResolutionTests
                 ConnectionString = "Data Source=bootstrap.db"
             });
 
-        var service = new TenantResolutionService(dbContext);
+        var service = CreateService(dbContext);
         var accessor = new TenantContextAccessor();
         var wasNextCalled = false;
         var middleware = new TenantResolutionMiddleware(
@@ -160,6 +162,44 @@ public sealed class TenantResolutionTests
         Assert.NotNull(accessor.TenantContext);
         Assert.Equal("bootstrap", accessor.TenantContext.Identifier);
         Assert.Equal(StatusCodes.Status200OK, httpContext.Response.StatusCode);
+    }
+
+    [Fact]
+    public async Task ResolveAsync_UsesCachedTenantCatalogEntry_WithinTtl()
+    {
+        using var connection = CreateOpenConnection();
+        await using var dbContext = CreateDbContext(connection);
+
+        await SeedTenantAsync(
+            dbContext,
+            new TenantCatalogEntry
+            {
+                Identifier = "bootstrap",
+                Name = "Bootstrap Tenant",
+                Host = "localhost",
+                IsActive = true,
+                ConnectionString = "Data Source=bootstrap.db"
+            });
+
+        var service = CreateService(dbContext);
+        var firstContext = new DefaultHttpContext();
+        firstContext.Request.Host = new HostString("localhost");
+
+        var firstResult = await service.ResolveAsync(firstContext);
+
+        var tenant = await dbContext.Tenants.SingleAsync(entry => entry.Identifier == "bootstrap");
+        tenant.Name = "Updated Tenant Name";
+        await dbContext.SaveChangesAsync();
+
+        var secondContext = new DefaultHttpContext();
+        secondContext.Request.Host = new HostString("localhost");
+
+        var secondResult = await service.ResolveAsync(secondContext);
+
+        Assert.True(firstResult.IsResolved);
+        Assert.True(secondResult.IsResolved);
+        Assert.Equal("Bootstrap Tenant", firstResult.Tenant?.Name);
+        Assert.Equal("Bootstrap Tenant", secondResult.Tenant?.Name);
     }
 
     private static SqliteConnection CreateOpenConnection()
@@ -202,6 +242,18 @@ public sealed class TenantResolutionTests
         context.Response.Body.Position = 0;
         var payload = await JsonSerializer.DeserializeAsync<TenantErrorResponse>(context.Response.Body);
         return payload ?? throw new InvalidOperationException("Expected tenant error payload.");
+    }
+
+    private static TenantResolutionService CreateService(TenantCatalogDbContext dbContext)
+    {
+        var memoryCache = new MemoryCache(new MemoryCacheOptions());
+        var options = Options.Create(
+            new TenantCatalogCacheOptions
+            {
+                TtlSeconds = 60
+            });
+
+        return new TenantResolutionService(dbContext, memoryCache, options);
     }
 
     private sealed record TenantErrorResponse(string error, string detail);

@@ -2,8 +2,10 @@ using System.Text.Json;
 using CoreKit.AppHost.Contracts.Rpc;
 using CoreKit.AppHost.Server.Rpc;
 using CoreKit.BuildingBlocks.Application;
+using CoreKit.BuildingBlocks.Presentation;
 using CoreKit.Modules.Tenancy.Application;
 using CoreKit.Modules.Tenancy.Infrastructure;
+using CoreKit.TestInfrastructure;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -97,6 +99,7 @@ public sealed class RpcDispatcherTests
         services.AddLogging();
         services.AddCoreKitApplication(typeof(ExplodingCommand).Assembly);
         services.AddSingleton(new RpcOperationRegistry(typeof(ExplodingCommand).Assembly));
+        services.AddScoped<IAuditEventWriter, NoOpAuditEventWriter>();
         services.AddScoped<RpcDispatcher>();
 
         await using var provider = services.BuildServiceProvider();
@@ -134,6 +137,7 @@ public sealed class RpcDispatcherTests
         services.AddScoped(
             serviceProvider => serviceProvider.GetRequiredService<ITenantDbContextFactory>().CreateDbContext());
         services.AddSingleton(new RpcOperationRegistry(typeof(TenancyApplicationAssemblyMarker).Assembly));
+        services.AddScoped<IAuditEventWriter, NoOpAuditEventWriter>();
         services.AddScoped<RpcDispatcher>();
 
         var provider = services.BuildServiceProvider();
