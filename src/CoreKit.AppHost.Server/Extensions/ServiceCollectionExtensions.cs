@@ -28,7 +28,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(new RpcOperationRegistry(applicationAssemblies));
         services.AddScoped<IAuditEventWriter, LoggingAuditEventWriter>();
         services.AddScoped<RpcDispatcher>();
-        services.AddCoreKitModules(configuration);
+        services.AddCoreKitModules(configuration, [.. CoreKitModuleCatalog.All]);
 
         return services;
     }

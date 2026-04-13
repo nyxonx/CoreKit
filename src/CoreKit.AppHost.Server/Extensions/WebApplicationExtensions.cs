@@ -94,7 +94,7 @@ public static class WebApplicationExtensions
                 })
             .WithTags("System");
         app.MapRpcEndpoints();
-        app.MapCoreKitModules();
+        app.MapRegisteredCoreKitModules();
         app.MapFallbackToFile("index.html");
 
         return app;

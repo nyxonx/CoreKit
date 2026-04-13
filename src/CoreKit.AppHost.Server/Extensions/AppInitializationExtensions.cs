@@ -10,7 +10,7 @@ public static class AppInitializationExtensions
         ArgumentNullException.ThrowIfNull(app);
         ArgumentNullException.ThrowIfNull(args);
 
-        await app.Services.InitializeCoreKitModulesAsync(app.Configuration, cancellationToken);
+        await app.Services.InitializeRegisteredCoreKitModulesAsync(app.Configuration, cancellationToken);
 
         return !args.Contains("--provision-only", StringComparer.OrdinalIgnoreCase);
     }
