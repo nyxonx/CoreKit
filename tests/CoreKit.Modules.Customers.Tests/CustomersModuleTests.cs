@@ -7,6 +7,7 @@ using CoreKit.Modules.Customers.Application;
 using CoreKit.Modules.Customers.Infrastructure;
 using CoreKit.Modules.Tenancy.Infrastructure;
 using CoreKit.TestInfrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -171,6 +172,13 @@ public sealed class CustomersModuleTests
         services.AddCustomersInfrastructure();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IAuditEventWriter, NoOpAuditEventWriter>();
+        services.AddScoped<ICurrentExecutionContextAccessor>(
+            _ => new TestCurrentExecutionContextAccessor(
+                new CurrentExecutionContext(
+                    UserId: "test-user",
+                    UserName: "test-user",
+                    IsAuthenticated: true,
+                    TenantIdentifier: tenantIdentifier)));
         services.AddScoped<ICurrentTenantAuthorizationService, AllowCurrentTenantAuthorizationService>();
 
         return services.BuildServiceProvider();
@@ -320,9 +328,49 @@ public sealed class CustomersModuleTests
         }
     }
 
+    [Fact]
+    public async Task CustomerService_StampsAuditMetadata_OnCreateAndUpdate()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var provider = CreateServices(tempRoot, "customers-audit-test");
+            await using var scope = provider.CreateAsyncScope();
+            var service = scope.ServiceProvider.GetRequiredService<ICustomerService>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<CustomersDbContext>();
+
+            var created = await service.CreateCustomerAsync(
+                new CreateCustomerRequest("Audited", "audit@test.local"));
+            var updated = await service.UpdateCustomerAsync(
+                new UpdateCustomerRequest(created.Id, "Audited Updated", "audit-updated@test.local"));
+
+            Assert.NotNull(updated);
+
+            var entity = await dbContext.Customers.SingleAsync(customer => customer.Id == created.Id);
+
+            Assert.Equal("customers-audit-test", entity.TenantIdentifier);
+            Assert.Equal("test-user", entity.CreatedByUserId);
+            Assert.Equal("test-user", entity.ModifiedByUserId);
+            Assert.NotNull(entity.CreatedUtc);
+            Assert.NotNull(entity.ModifiedUtc);
+            Assert.True(entity.CreatedUtc <= entity.ModifiedUtc);
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
     private sealed class AllowCurrentTenantAuthorizationService : ICurrentTenantAuthorizationService
     {
         public Task<OperationError?> ValidateAccessAsync(CancellationToken cancellationToken = default) =>
             Task.FromResult<OperationError?>(null);
+    }
+
+    private sealed class TestCurrentExecutionContextAccessor(CurrentExecutionContext current)
+        : ICurrentExecutionContextAccessor
+    {
+        public CurrentExecutionContext GetCurrent() => current;
     }
 }

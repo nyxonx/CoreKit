@@ -100,3 +100,4 @@ Trenutni uvodni `Phase 12` baseline vec uvodi:
 * shared current execution context contract za application/use case sloj
 * shared proveru da li autentikovani korisnik pripada aktivnom tenant-u
 * prvi primenjeni authorization check na `Customers` RPC operacijama
+* pocetni audit metadata obrazac u `Customers` za `CreatedByUserId`, `ModifiedByUserId`, tenant identitet i UTC timestamp polja

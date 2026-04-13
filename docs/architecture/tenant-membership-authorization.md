@@ -22,6 +22,7 @@ Pocetna implementacija uvodi:
 - `AppUserTenantMembership` kao vezu izmedju `AppUser` i tenant identifikatora
 - shared `CurrentExecutionContext` contract u `BuildingBlocks.Application`
 - shared `ICurrentTenantAuthorizationService` za proveru pristupa aktivnom tenant-u
+- pocetni audit metadata obrazac za business entitete (`CreatedByUserId`, `ModifiedByUserId`, `TenantIdentifier`, `CreatedUtc`, `ModifiedUtc`)
 
 To znaci da application handler-i mogu da proveravaju pristup bez direktnog znanja o `HttpContext` ili konkretnom Identity persistence detalju.
 
@@ -43,6 +44,10 @@ Za `Customers` RPC operacije:
 - anonimni korisnik dobija `authentication_required`
 - autentikovan korisnik bez membership-a za aktivni tenant dobija `tenant_membership_required`
 - korisnik sa membership-om prolazi na business operaciju
+- create/update tok dopunjava audit metadata polja iz current execution konteksta
+
+Audit timestamp polja se cuvaju kao UTC vrednosti.
+Lokalne vremenske zone i tenant-specific prikaz ostaju briga klijenta ili presentation sloja, ne persistence izvora istine.
 
 To je namerno mali prvi korak.
 Tenant-scoped permissions i finije role provere dolaze posle ove osnove.

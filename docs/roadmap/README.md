@@ -346,7 +346,7 @@ Tasks:
 - `[ ]` Definisati tenant-scoped role/permission osnovu za buduce module
 - `[x]` Dodati shared current user / current tenant access contract za business operacije
 - `[x]` Uvesti proveru da autentikovani korisnik pripada aktivnom tenant-u tamo gde je to obavezno
-- `[ ]` Definisati audit metadata obrazac (`CreatedByUserId`, `ModifiedByUserId`, `TenantId`)
+- `[x]` Definisati audit metadata obrazac (`CreatedByUserId`, `ModifiedByUserId`, `TenantId`)
 - `[x]` Primeniti osnovnu tenant authorization proveru na `Customers` modul
 - `[~]` Dodati test scenarije za tenant membership i authorization flow
 - `[x]` Uskladiti auth/tenancy dokumentaciju sa central identity + tenant-scoped authorization modelom
@@ -387,7 +387,8 @@ Now:
 - Tenant-before-auth redosled je pokriven integration test scenarijem i startup/pipeline cleanup-om
 - `Phase 12` je aktivna
 - Uvedeni su membership baseline, shared current execution contract i prvi tenant authorization check na `Customers` modulu
-- Sledeci fokus je tenant role/permission semantika i audit metadata obrazac
+- `Customers` sada nosi i pocetni audit metadata obrazac za `CreatedByUserId`, `ModifiedByUserId`, tenant identitet i UTC timestamp polja
+- Sledeci fokus je tenant role/permission semantika i sirenje istog obrasca na naredne module
 
 After that:
 - Prosiriti sledeci business modul ili dublji operativni/security milestone na vec uvedenom tenant authorization temelju

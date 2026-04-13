@@ -1,10 +1,13 @@
 using CoreKit.Modules.Customers.Application;
 using CoreKit.Modules.Customers.Domain;
+using CoreKit.BuildingBlocks.Application;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoreKit.Modules.Customers.Infrastructure;
 
-public sealed class CustomerService(CustomersDbContext dbContext) : ICustomerService
+public sealed class CustomerService(
+    CustomersDbContext dbContext,
+    ICurrentExecutionContextAccessor executionContextAccessor) : ICustomerService
 {
     public async Task<IReadOnlyList<CustomerDto>> GetCustomersAsync(CancellationToken cancellationToken = default)
     {
@@ -46,6 +49,8 @@ public sealed class CustomerService(CustomersDbContext dbContext) : ICustomerSer
                 : request.Email.Trim()
         };
 
+        StampCreated(customer);
+
         dbContext.Customers.Add(customer);
         await dbContext.SaveChangesAsync(cancellationToken);
 
@@ -75,6 +80,7 @@ public sealed class CustomerService(CustomersDbContext dbContext) : ICustomerSer
         customer.Email = string.IsNullOrWhiteSpace(request.Email)
             ? null
             : request.Email.Trim();
+        StampModified(customer);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
@@ -122,5 +128,28 @@ public sealed class CustomerService(CustomersDbContext dbContext) : ICustomerSer
         {
             throw new InvalidOperationException("Customer email must be unique within the current tenant.");
         }
+    }
+
+    private void StampCreated(Customer customer)
+    {
+        var current = executionContextAccessor.GetCurrent();
+        var nowUtc = DateTimeOffset.UtcNow;
+
+        customer.TenantIdentifier = current.TenantIdentifier;
+        customer.CreatedByUserId = current.UserId;
+        customer.ModifiedByUserId = current.UserId;
+        customer.CreatedUtc = nowUtc;
+        customer.ModifiedUtc = nowUtc;
+    }
+
+    private void StampModified(Customer customer)
+    {
+        var current = executionContextAccessor.GetCurrent();
+        var nowUtc = DateTimeOffset.UtcNow;
+
+        customer.TenantIdentifier ??= current.TenantIdentifier;
+        customer.ModifiedByUserId = current.UserId;
+        customer.CreatedUtc ??= nowUtc;
+        customer.ModifiedUtc = nowUtc;
     }
 }
