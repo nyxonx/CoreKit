@@ -60,6 +60,7 @@ Purpose:
 * Base classes
 * Cross-cutting utilities
 * Common pipeline logic
+* Shared module registration contracts
 
 ## Modules
 
@@ -78,6 +79,20 @@ Each module structure:
     /CoreKit.Modules.[Module].Infrastructure
     /CoreKit.Modules.[Module].Presentation
 ```
+
+Recommended module contents:
+
+* `Domain`: business state and rules
+* `Application`: commands, queries, handlers, DTOs
+* `Infrastructure`: persistence and external integrations
+* `Presentation`: endpoint mapping and module entry point
+
+Recommended host integration:
+
+* module class implementing the shared module contract
+* module added to the AppHost module catalog
+* optional client contracts in `CoreKit.AppHost.Contracts`
+* optional WASM module client in `CoreKit.AppHost.Client`
 
 ## Tests
 

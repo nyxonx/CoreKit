@@ -4,19 +4,19 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 7 - Module Framework
+Phase 8 - First Real Module
 
 ## Current Task
 
- Ucvrstiti module framework kroz shared registration, startup i endpoint mapping contract.
+ Potvrditi prvi `Customers` end-to-end slice kroz AppHost browser flow.
 
 ## Next Tasks
 
-- Dodati checklistu za novi modul
-- Dokumentovati pravila granica izmedju modula
-- Pripremiti prvi pravi poslovni modul na novom obrascu
+- Ručno potvrditi `Customers` ekran kroz AppHost
+- Zatvoriti prvi `Phase 8` commit checkpoint
+- Odlučiti da li sledeci slice ostaje u `Customers` ili biramo drugi pilot use case
 
 ## After That
 
-- Prvi pravi modul
+- Migrations/provisioning
 - Production-grade error handling i observability oko pipeline-a

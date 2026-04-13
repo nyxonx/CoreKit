@@ -185,7 +185,7 @@ Exit criteria:
 Goal:
 Uvesti standardizovan execution pipeline za business operacije prema ADR-003.
 
-Status: In progress
+Status: Completed
 
 Tasks:
 
@@ -217,11 +217,15 @@ Tasks:
 - `[x]` Definisati module registration contract
 - `[x]` Definisati module startup pattern
 - `[x]` Definisati module service registration pattern
-- `[ ]` Dodati base contracts u `BuildingBlocks`
-- `[ ]` Dodati primer wiring-a za `Identity` modul
-- `[ ]` Dodati primer wiring-a za `Tenancy` modul
-- `[ ]` Napraviti template/checklist za novi modul
-- `[ ]` Dokumentovati pravila granica izmedju modula
+- `[x]` Dodati base contracts u `BuildingBlocks`
+- `[x]` Dodati primer wiring-a za `Identity` modul
+- `[x]` Dodati primer wiring-a za `Tenancy` modul
+- `[x]` Napraviti template/checklist za novi modul
+- `[x]` Dokumentovati pravila granica izmedju modula
+
+Reference docs:
+- `docs/architecture/module-framework.md`
+- `docs/architecture/new-module-checklist.md`
 
 Exit criteria:
 - Novi modul moze da se doda bez improvizacije
@@ -235,18 +239,19 @@ Goal:
 Proveriti da arhitektura radi na jednoj pravoj poslovnoj funkcionalnosti.
 
 Status: Planned
+Status: In progress
 
 Tasks:
 
-- `[ ]` Izabrati prvi pilot modul
-- `[ ]` Definisati use case-eve modula
-- `[ ]` Dodati domain modele
-- `[ ]` Dodati command/query handlere
-- `[ ]` Dodati persistence mapiranje
-- `[ ]` Dodati RPC operacije za modul
-- `[ ]` Dodati osnovni UI ekran
-- `[ ]` Dodati unit testove
-- `[ ]` Dodati integration testove
+- `[x]` Izabrati prvi pilot modul
+- `[x]` Definisati use case-eve modula
+- `[x]` Dodati domain modele
+- `[x]` Dodati command/query handlere
+- `[x]` Dodati persistence mapiranje
+- `[x]` Dodati RPC operacije za modul
+- `[x]` Dodati osnovni UI ekran
+- `[x]` Dodati unit testove
+- `[x]` Dodati integration testove
 
 Exit criteria:
 - Jedan modul radi end-to-end kroz ceo stack
@@ -312,9 +317,11 @@ Now:
 - `Phase 5` je zavrsena
 - `Phase 6` je zavrsena
 - `Phase 7` je aktivna
-- Module contract, startup pattern i service registration pattern su uvedeni
-- Sledece zavrsavamo module checklist i dokumentujemo pravila granica
+- Module framework je kompletiran kroz shared contract, primere i checklistu
+- `Phase 8` je aktivna
+- `Customers` je izabran kao prvi pravi modul i prvi slice je implementiran
+- Sledece potvrdujemo browser flow i secemo commit granicu za prvi `Phase 8` checkpoint
 
 After that:
-- Posle toga RPC i CQRS
-- Zatim module framework i prvi pravi modul
+- Posle toga prvi pravi modul
+- Zatim migrations/provisioning i production readiness

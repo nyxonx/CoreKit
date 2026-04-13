@@ -8,7 +8,7 @@ public sealed class TenantNoteService(TenantAppDbContext tenantAppDbContext) : I
 {
     public async Task<IReadOnlyList<TenantNoteDto>> GetNotesAsync(CancellationToken cancellationToken = default)
     {
-        await tenantAppDbContext.Database.EnsureCreatedAsync(cancellationToken);
+        await tenantAppDbContext.EnsureSchemaAsync(cancellationToken);
 
         return await tenantAppDbContext.Notes
             .AsNoTracking()
@@ -28,7 +28,7 @@ public sealed class TenantNoteService(TenantAppDbContext tenantAppDbContext) : I
             throw new InvalidOperationException("Tenant note value is required.");
         }
 
-        await tenantAppDbContext.Database.EnsureCreatedAsync(cancellationToken);
+        await tenantAppDbContext.EnsureSchemaAsync(cancellationToken);
 
         var note = new TenantNote
         {

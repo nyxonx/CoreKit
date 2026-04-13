@@ -26,6 +26,7 @@ Modules must:
 * be independently extendable
 * expose only necessary public contracts
 * minimize coupling to other modules
+* implement the shared module registration/startup contract
 
 ## Layer Responsibilities
 
@@ -105,6 +106,23 @@ Forbidden:
 * Domain referencing Infrastructure
 * Application referencing Presentation
 * Cross-module tight coupling
+* UI components calling raw module transport strings directly when a module client exists
+
+## Module Framework Rules
+
+Each module should expose a single module entry point that implements the shared host contract.
+
+Preferred pattern:
+
+* `BuildingBlocks.Presentation` contains the shared module contract
+* module `Presentation` project contains the concrete module class
+* AppHost discovers/registers modules through a catalog, not hand-written ad hoc calls in `Program.cs`
+
+When a module is used by the client:
+
+* shared transport contracts live in `CoreKit.AppHost.Contracts`
+* the client uses a module-specific client service
+* transport details should stay out of page/component code when possible
 
 ## Naming Rules
 

@@ -1,0 +1,117 @@
+@page "/customers"
+@attribute [Authorize]
+@inject ICustomersModuleClient CustomersModuleClient
+
+<PageTitle>Customers</PageTitle>
+
+<section class="panel">
+    <p class="eyebrow">Customers</p>
+    <h1>First real business module</h1>
+    <p>
+        This screen exercises the first non-platform module through the shared `Contracts + ModuleClient + RPC` flow.
+    </p>
+</section>
+
+<section class="grid">
+    <article class="panel">
+        <h2>Create customer</h2>
+
+        <EditForm Model="@this" OnValidSubmit="@HandleSubmitAsync">
+            <label>
+                <span>Name</span>
+                <InputText @bind-Value="customerName" />
+            </label>
+
+            <label>
+                <span>Email</span>
+                <InputText @bind-Value="customerEmail" />
+            </label>
+
+            <button class="primary-button" type="submit" disabled="@isSubmitting">
+                @(isSubmitting ? "Saving..." : "Create customer")
+            </button>
+        </EditForm>
+
+        @if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <p class="error-text">@errorMessage</p>
+        }
+    </article>
+
+    <article class="panel">
+        <h2>Current tenant customers</h2>
+
+        @if (isLoading)
+        {
+            <p>Loading customers...</p>
+        }
+        else if (customers.Count == 0)
+        {
+            <p>No customers yet for this tenant.</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var customer in customers)
+                {
+                    <li>@customer.Name (@customer.Email)</li>
+                }
+            </ul>
+        }
+    </article>
+</section>
+
+@code {
+    private readonly List<CustomerDto> customers = [];
+    private string customerName = string.Empty;
+    private string? customerEmail;
+    private string? errorMessage;
+    private bool isLoading = true;
+    private bool isSubmitting;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCustomersAsync();
+    }
+
+    private async Task HandleSubmitAsync()
+    {
+        isSubmitting = true;
+        errorMessage = null;
+
+        var response = await CustomersModuleClient.CreateCustomerAsync(
+            new CreateCustomerRpcRequest(customerName, customerEmail));
+
+        isSubmitting = false;
+
+        if (!response.Succeeded)
+        {
+            errorMessage = response.Errors.FirstOrDefault()?.Message ?? "The customer could not be saved.";
+            return;
+        }
+
+        customerName = string.Empty;
+        customerEmail = null;
+        await LoadCustomersAsync();
+    }
+
+    private async Task LoadCustomersAsync()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        var response = await CustomersModuleClient.GetCustomersAsync();
+
+        isLoading = false;
+
+        if (!response.Succeeded)
+        {
+            errorMessage = response.Errors.FirstOrDefault()?.Message ?? "The customers could not be loaded.";
+            customers.Clear();
+            return;
+        }
+
+        customers.Clear();
+        customers.AddRange(response.Data ?? []);
+    }
+}
