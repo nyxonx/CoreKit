@@ -305,6 +305,34 @@ Exit criteria:
 
 ---
 
+## Phase 11 - Architecture Hardening And Cleanup
+
+Goal:
+Ucvrstiti platformsku arhitekturu, smanjiti bootstrap tehnicki dug i uskladiti dokumentaciju sa stvarnim stanjem sistema pre daljeg sirenja modula.
+
+Status: Planned
+
+Tasks:
+
+- `[ ]` Refaktorisati module startup orchestration kroz unified `InitializeAsync` pipeline
+- `[ ]` Ukloniti direktno module-specific init pozivanje iz `Program.cs`
+- `[ ]` Standardizovati C# formatting kroz ceo solution
+- `[ ]` Dodati `.editorconfig` i format guardrail-e
+- `[ ]` Uskladiti root `README.md` i ostalu high-level dokumentaciju sa realnim stanjem repozitorijuma
+- `[ ]` Dodati integration test koji verifikuje tenant-before-auth redosled
+- `[ ]` Auditirati test coverage za prvi business modul i evidentirati rupe
+- `[ ]` Dokumentovati startup orchestration flow za module
+
+Exit criteria:
+
+- `Program.cs` ostaje cist i ne zna detalje pojedinacnih modula
+- Module initialization ide kroz standardizovan shared pipeline
+- Dokumentacija odgovara stvarnom stanju koda
+- Formatting i style pravila su standardizovani i ponovljivi
+- Postoji test ili jasna verifikacija da tenant resolution ide pre auth toka tamo gde je to obavezno
+
+---
+
 ## Current Focus
 
 Now:
@@ -325,6 +353,8 @@ Now:
 - Dodati su audit dogadjaji za auth i RPC, runtime observability endpoint i security header/cookie guardrail-i
 - Dodat je in-process background jobs obrazac sa tenancy maintenance job-om
 - Definisana je pocetna caching strategija za tenant katalog i read-mostly konfiguraciju
+- `Phase 11` je sledeci planirani korak
+- Fokus je na architecture hardening, startup cleanup i dokumentaciji uskladjenoj sa realnim stanjem repozitorijuma
 
 After that:
-- Roadmap checkpoint je kompletiran
+- Implementacija `Phase 11` taskova

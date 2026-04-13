@@ -1,6 +1,6 @@
 # CoreKit
 
-CoreKit je reusable enterprise-grade application core/framework namenjen za ubrzani razvoj buducih poslovnih aplikacija kroz zajednicku arhitekturu, infrastrukturu i module.
+CoreKit je reusable enterprise-grade application core/framework za izgradnju modularnih poslovnih aplikacija na zajednickoj platformi, arhitekturi i operativnim obrascima.
 
 Primeri ciljnih domena:
 - ERP
@@ -24,10 +24,11 @@ Primeri ciljnih domena:
 
 CoreKit je postavljen kao:
 - modular monolith
-- domain-driven i CQRS-oriented platforma
+- domain-driven i CQRS-oriented platforma na .NET 10
+- Blazor WebAssembly Hosted + Minimal APIs + PWA
 - baza za multi-tenant i white-label resenja
 
-Ključne odluke su dokumentovane u [`docs/adr`](C:/Users/nikol/source/repos/nyxonx/CoreKit/docs/adr).
+Kljucne odluke su dokumentovane u [`docs/adr`](C:/Users/nikol/source/repos/nyxonx/CoreKit/docs/adr).
 
 ## Repository Structure
 
@@ -47,9 +48,17 @@ Ključne odluke su dokumentovane u [`docs/adr`](C:/Users/nikol/source/repos/nyxo
 
 ## Current Status
 
-Bootstrap faza je zavrsena.
+Osnovna platforma i roadmap faze `0-10` su zavrsene.
 
-Sledeci korak:
-- kreiranje solution skeleton-a i prvih projekata unutar `src/`
+Trenutno stanje repozitorijuma ukljucuje:
+- `Identity` modul za ASP.NET Core Identity i cookie auth tok
+- `Tenancy` modul za tenant catalog, tenant resolution i database-per-tenant osnovu
+- `Customers` modul kao prvi end-to-end poslovni modul kroz application, infrastructure, RPC i UI sloj
+
+Platforma danas vec pokriva:
+- modularni startup kroz module catalog i shared contracts
+- unified `POST /api/rpc` endpoint za business CQRS operacije
+- tenant-aware persistence i tenant provisioning osnovu
+- production-readiness baseline za logging, health, caching i background jobs
 
 Detaljan plan razvoja vodi se u [`docs/roadmap/README.md`](C:/Users/nikol/source/repos/nyxonx/CoreKit/docs/roadmap/README.md).
