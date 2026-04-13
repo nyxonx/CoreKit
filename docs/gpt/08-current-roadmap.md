@@ -4,19 +4,18 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 11 - Architecture Hardening And Cleanup
+Roadmap checkpoint posle Phase 11
 
 ## Current Task
 
-Ucvrstiti startup orchestration, ukloniti bootstrap tehnicki dug i uskladiti high-level dokumentaciju sa realnim stanjem repozitorijuma.
+Phase 11 je zatvorena i platforma je uskladjena oko startup orchestration, guardrail-a i high-level dokumentacije.
 
 ## Next Tasks
 
-- Odrzati generic module initialization pipeline bez sirenja host-specific logike
-- Verifikovati tenant-before-auth redosled kroz integration test
-- Drzati formatting baseline i CI guardrail stabilnim
-- Zatvoriti najvaznije coverage rupe za `Customers` bez velikog test expansion-a
+- Izabrati sledeci prioritet posle architecture hardening checkpoint-a
+- Odrediti da li dalje ide sirenje business modula ili operativni/platformski fokus
+- Odrzati uvedeni startup i formatting obrazac kao baseline za naredne faze
 
 ## After That
 
-- Nastaviti na sledeci milestone sirenja modula i operativnog stack-a sa ciscim host bootstrap-om
+- Novi milestone po prioritetima proizvoda i platforme
