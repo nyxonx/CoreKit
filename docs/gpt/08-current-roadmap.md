@@ -8,12 +8,12 @@ Phase 13 - Tenant Administration UI And Management Flows
 
 ## Current Task
 
-Phase 13 sada ima prvi tenant administration UI baseline: membership list/upsert i role-change za aktivni tenant, plus tenant catalog/create-provisioning flow.
+Phase 13 je zatvorena kroz razdvojeni tenant admin surface za aktivni tenant i control-plane platform admin surface za tenant catalog/create-provisioning flow.
 
 ## Next Tasks
 
-- Dodati test scenarije za tenant administration UI tokove tamo gde je prakticno
-- Uskladiti README i high-level dokumentaciju sa tenant administration UI baseline-om
+- Definisati sledeci business/admin milestone na novom tenant management temelju
+- Prosiriti tenant admin surface dodatnim tenant lifecycle tokovima kada budu prioritet
 - Nasloniti sledece admin UI korake na vec uvedeni server-side membership/authorization model
 
 ## After That

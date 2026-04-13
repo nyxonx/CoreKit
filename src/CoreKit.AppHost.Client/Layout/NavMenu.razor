@@ -1,3 +1,5 @@
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 <div class="top-row">
     <div class="brand-block">
         <a class="navbar-brand" href="">CoreKit</a>
@@ -21,23 +23,38 @@
                 <span class="nav-label">System</span>
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="tenant-notes">
-                <span class="nav-label">Tenant Notes</span>
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="customers">
-                <span class="nav-label">Customers</span>
-            </NavLink>
-        </div>
-        <AuthorizeView>
+        @if (!isControlPlaneHost)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="tenant-notes">
+                    <span class="nav-label">Tenant Notes</span>
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="customers">
+                    <span class="nav-label">Customers</span>
+                </NavLink>
+            </div>
+            <AuthorizeView>
+                <Authorized>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="tenant-admin">
+                            <span class="nav-label">Tenant Admin</span>
+                        </NavLink>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+        }
+        <AuthorizeView Roles="Admin">
             <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="tenant-admin">
-                        <span class="nav-label">Tenant Admin</span>
-                    </NavLink>
-                </div>
+                @if (isControlPlaneHost)
+                {
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="platform-admin">
+                            <span class="nav-label">Platform Admin</span>
+                        </NavLink>
+                    </div>
+                }
             </Authorized>
         </AuthorizeView>
         <AuthorizeView>
@@ -61,8 +78,15 @@
 
 @code {
     private bool collapseNavMenu = true;
+    private bool isControlPlaneHost;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isControlPlaneHost = authState.User.HasClaim("corekit:control-plane", "true");
+    }
 
     private void ToggleNavMenu()
     {

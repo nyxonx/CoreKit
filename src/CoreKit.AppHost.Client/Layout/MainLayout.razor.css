@@ -46,6 +46,12 @@ main {
     padding: 1.5rem;
 }
 
+.layout-context {
+    margin: 0.25rem 0 0;
+    color: #6b7b8c;
+    font-size: 0.9rem;
+}
+
 @media (max-width: 640.98px) {
     .top-row {
         padding: 1rem 1rem 0;

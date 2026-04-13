@@ -5,4 +5,5 @@ public sealed record AuthStateResponse(
     string? UserName,
     IReadOnlyList<string> Roles,
     string? TenantIdentifier,
-    string? TenantRole);
+    string? TenantRole,
+    bool IsControlPlaneHost);

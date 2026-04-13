@@ -48,7 +48,7 @@ Kljucne odluke su dokumentovane u [`docs/adr`](docs/adr/README.md).
 
 ## Current Status
 
-Osnovna platforma i roadmap faze `0-10` su zavrsene.
+Osnovna platforma i roadmap faze `0-12` su zavrsene, a `Phase 13` sada ima razdvojen tenant admin i platform admin baseline.
 
 Trenutno stanje repozitorijuma ukljucuje:
 - `Identity` modul za ASP.NET Core Identity i cookie auth tok
@@ -59,11 +59,14 @@ Platforma danas vec pokriva:
 - modularni startup kroz module catalog i shared contracts
 - unified `POST /api/rpc` endpoint za business CQRS operacije
 - tenant-aware persistence i tenant provisioning osnovu
+- tenant administration UI za membership i role management unutar aktivnog tenant konteksta
+- control-plane tenant catalog i create/provisioning flow za global admin host
 - production-readiness baseline za logging, health, caching i background jobs
 
 Auth i tenancy model su trenutno postavljeni tako da:
 - `Identity` ostaje centralizovan kroz ASP.NET Core Identity i cookie auth
 - business podaci ostaju `database-per-tenant`
-- tenant-scoped membership i authorization predstavljaju sledeci planirani korak razvoja
+- tenant-scoped membership i authorization su uvedeni iznad centralnog identity store-a
+- tenant provisioning i tenant catalog administracija su izdvojeni na control-plane admin surface
 
 Detaljan plan razvoja vodi se u [`docs/roadmap/README.md`](docs/roadmap/README.md).

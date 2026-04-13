@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace CoreKit.Modules.Tenancy.Infrastructure;
 
@@ -20,13 +21,21 @@ public sealed class TenantResolutionMiddleware(RequestDelegate next)
     public async Task InvokeAsync(
         HttpContext context,
         TenantResolutionService tenantResolutionService,
-        ITenantContextAccessor tenantContextAccessor)
+        ITenantContextAccessor tenantContextAccessor,
+        IOptions<ControlPlaneHostOptions> controlPlaneHostOptions)
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(tenantResolutionService);
         ArgumentNullException.ThrowIfNull(tenantContextAccessor);
+        ArgumentNullException.ThrowIfNull(controlPlaneHostOptions);
 
         if (ShouldSkip(context.Request.Path))
+        {
+            await next(context);
+            return;
+        }
+
+        if (controlPlaneHostOptions.Value.IsControlPlaneHost(context.Request.Host.Host))
         {
             await next(context);
             return;

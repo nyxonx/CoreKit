@@ -11,4 +11,6 @@ Tipican sadrzaj:
 - background jobs pristup i operativni runtime obrasci
 - startup orchestration smernice za module i host
 - tenant membership i authorization smernice iznad centralnog identity store-a
+- tenant admin surface za membership/role upravljanje po aktivnom tenant-u
+- control-plane admin surface za tenant catalog i provisioning van tenant host konteksta
 - coverage audit beleznice za pilot business module kada su bitne za platformske faze

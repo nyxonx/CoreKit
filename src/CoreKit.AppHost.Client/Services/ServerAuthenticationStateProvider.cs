@@ -7,9 +7,6 @@ namespace CoreKit.AppHost.Client.Services;
 public sealed class ServerAuthenticationStateProvider(AuthApiClient authApiClient)
     : AuthenticationStateProvider
 {
-    private static readonly ClaimsPrincipal Anonymous =
-        new(new ClaimsIdentity());
-
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var authState = await authApiClient.GetAuthStateAsync();
@@ -27,7 +24,7 @@ public sealed class ServerAuthenticationStateProvider(AuthApiClient authApiClien
     {
         if (!authState.IsAuthenticated || string.IsNullOrWhiteSpace(authState.UserName))
         {
-            return new AuthenticationState(Anonymous);
+            return new AuthenticationState(CreateAnonymousPrincipal(authState));
         }
 
         var claims = new List<Claim>
@@ -47,8 +44,22 @@ public sealed class ServerAuthenticationStateProvider(AuthApiClient authApiClien
             claims.Add(new Claim("corekit:tenant-role", authState.TenantRole));
         }
 
+        if (authState.IsControlPlaneHost)
+        {
+            claims.Add(new Claim("corekit:control-plane", "true"));
+        }
+
         var identity = new ClaimsIdentity(claims, authenticationType: "Cookies");
 
         return new AuthenticationState(new ClaimsPrincipal(identity));
+    }
+
+    private static ClaimsPrincipal CreateAnonymousPrincipal(AuthStateResponse authState)
+    {
+        var claims = authState.IsControlPlaneHost
+            ? [new Claim("corekit:control-plane", "true")]
+            : Array.Empty<Claim>();
+
+        return new ClaimsPrincipal(new ClaimsIdentity(claims));
     }
 }

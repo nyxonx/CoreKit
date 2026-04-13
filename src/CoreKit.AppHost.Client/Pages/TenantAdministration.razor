@@ -2,7 +2,6 @@
 @attribute [Authorize]
 @inject AuthApiClient AuthApiClient
 @inject IIdentityAdminModuleClient IdentityAdminModuleClient
-@inject ITenantAdministrationClient TenantAdministrationClient
 
 <PageTitle>Tenant Administration</PageTitle>
 
@@ -10,7 +9,10 @@
     <p class="eyebrow">Phase 13</p>
     <h1>Tenant administration</h1>
     <p>
-        This screen is the first UI slice over tenant membership and role management for the active tenant.
+        This screen is the tenant-scoped admin surface for membership and role management on the active tenant.
+    </p>
+    <p>
+        Tenant catalog review and tenant provisioning now live on the separate <a href="/platform-admin">platform admin</a> surface.
     </p>
 </section>
 
@@ -30,64 +32,6 @@
 else
 {
     <section class="grid">
-        <article class="panel">
-            <h2>Tenant catalog</h2>
-
-            @if (isCatalogLoading)
-            {
-                <p>Loading tenants...</p>
-            }
-            else if (!string.IsNullOrWhiteSpace(catalogError))
-            {
-                <p class="error-text">@catalogError</p>
-            }
-            else if (tenants.Count == 0)
-            {
-                <p>No tenants found.</p>
-            }
-            else
-            {
-                <ul>
-                    @foreach (var tenant in tenants)
-                    {
-                        <li>
-                            <strong>@tenant.Name</strong> - @tenant.Identifier (@tenant.Host)
-                        </li>
-                    }
-                </ul>
-            }
-        </article>
-
-        <article class="panel">
-            <h2>Create tenant</h2>
-
-            <EditForm Model="@this" OnValidSubmit="@HandleCreateTenantAsync">
-                <label>
-                    <span>Identifier</span>
-                    <InputText @bind-Value="newTenantIdentifier" />
-                </label>
-
-                <label>
-                    <span>Name</span>
-                    <InputText @bind-Value="newTenantName" />
-                </label>
-
-                <label>
-                    <span>Host</span>
-                    <InputText @bind-Value="newTenantHost" />
-                </label>
-
-                <button class="primary-button" type="submit" disabled="@isTenantSubmitting">
-                    @(isTenantSubmitting ? "Provisioning..." : "Create tenant")
-                </button>
-            </EditForm>
-
-            @if (!string.IsNullOrWhiteSpace(tenantFormMessage))
-            {
-                <p class="error-text">@tenantFormMessage</p>
-            }
-        </article>
-
         <article class="panel">
             <h2>Grant or change membership</h2>
             <p>
@@ -157,23 +101,15 @@ else
 
 @code {
     private readonly List<TenantMembershipDto> memberships = [];
-    private readonly List<CoreKit.AppHost.Contracts.Tenancy.TenantCatalogDto> tenants = [];
     private readonly string[] availableRoles = [TenantMembershipRoles.Admin, TenantMembershipRoles.Member];
     private string currentTenantIdentifier = string.Empty;
     private string? currentTenantRole;
     private string targetUserName = "admin";
     private string selectedRole = TenantMembershipRoles.Member;
-    private string newTenantIdentifier = string.Empty;
-    private string newTenantName = string.Empty;
-    private string newTenantHost = string.Empty;
     private string? formMessage;
-    private string? tenantFormMessage;
     private string? loadError;
-    private string? catalogError;
     private bool isLoading = true;
-    private bool isCatalogLoading = true;
     private bool isSubmitting;
-    private bool isTenantSubmitting;
 
     private bool isAuthorizedForAdmin =>
         string.Equals(currentTenantRole, TenantMembershipRoles.Admin, StringComparison.OrdinalIgnoreCase);
@@ -184,13 +120,11 @@ else
 
         if (isAuthorizedForAdmin)
         {
-            await LoadTenantsAsync();
             await LoadMembershipsAsync();
         }
         else
         {
             isLoading = false;
-            isCatalogLoading = false;
         }
     }
 
@@ -220,27 +154,6 @@ else
         memberships.Clear();
         memberships.AddRange(response.Data ?? []);
     }
-
-    private async Task LoadTenantsAsync()
-    {
-        isCatalogLoading = true;
-        catalogError = null;
-
-        var response = await TenantAdministrationClient.GetTenantsAsync();
-
-        isCatalogLoading = false;
-
-        if (!response.Succeeded)
-        {
-            catalogError = response.Errors.FirstOrDefault()?.Message ?? "Tenants could not be loaded.";
-            tenants.Clear();
-            return;
-        }
-
-        tenants.Clear();
-        tenants.AddRange(response.Data ?? []);
-    }
-
     private async Task HandleSubmitAsync()
     {
         isSubmitting = true;
@@ -259,29 +172,5 @@ else
 
         formMessage = $"Membership saved for '{response.Data?.UserName}'.";
         await LoadMembershipsAsync();
-    }
-
-    private async Task HandleCreateTenantAsync()
-    {
-        isTenantSubmitting = true;
-        tenantFormMessage = null;
-
-        var response = await TenantAdministrationClient.CreateTenantAsync(
-            new CreateTenantRpcRequest(newTenantIdentifier, newTenantName, newTenantHost));
-
-        isTenantSubmitting = false;
-
-        if (!response.Succeeded)
-        {
-            tenantFormMessage = response.Errors.FirstOrDefault()?.Message ?? "Tenant could not be created.";
-            return;
-        }
-
-        tenantFormMessage = $"Tenant '{response.Data?.Identifier}' provisioned.";
-        newTenantIdentifier = string.Empty;
-        newTenantName = string.Empty;
-        newTenantHost = string.Empty;
-
-        await LoadTenantsAsync();
     }
 }

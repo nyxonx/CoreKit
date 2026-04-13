@@ -1,0 +1,244 @@
+@page "/platform-admin"
+@attribute [Authorize(Roles = "Admin")]
+@inject AuthApiClient AuthApiClient
+@inject ITenantAdministrationClient TenantAdministrationClient
+
+<PageTitle>Platform Administration</PageTitle>
+
+<section class="platform-hero">
+    <div class="platform-hero-copy panel">
+        <p class="eyebrow">Control Plane</p>
+        <h1>Platform administration</h1>
+        <p class="lead">
+            This surface is reserved for global tenant catalog and provisioning workflows, outside of any individual tenant workspace.
+        </p>
+
+        <div class="platform-badges">
+            <span class="status-chip @(isControlPlaneHost ? "status-chip-active" : "status-chip-muted")">
+                Host: @(isControlPlaneHost ? "admin.local" : "tenant host")
+            </span>
+            <span class="status-chip @(isGlobalAdmin ? "status-chip-active" : "status-chip-muted")">
+                Access: @(isGlobalAdmin ? "global admin" : "restricted")
+            </span>
+            @if (!string.IsNullOrWhiteSpace(currentTenantIdentifier))
+            {
+                <span class="status-chip status-chip-warn">Tenant context: @currentTenantIdentifier</span>
+            }
+        </div>
+    </div>
+
+    <aside class="platform-hero-card panel">
+        <h2>Operating rules</h2>
+        <ul class="platform-rules">
+            <li>Use this host only for platform-wide tenant management.</li>
+            <li>Use tenant hosts for membership, role changes, and tenant-scoped operations.</li>
+            <li>Each new tenant should get a unique identifier and dedicated host.</li>
+        </ul>
+    </aside>
+</section>
+
+@if (!isControlPlaneHost)
+{
+    <section class="panel">
+        <h2>Control-plane host required</h2>
+        <p>
+            Tenant catalog and provisioning are available only from the dedicated control-plane host <code>admin.local</code>.
+        </p>
+        <p>
+            Open the app through <code>http://admin.local:&lt;port&gt;/platform-admin</code> and sign in there with a global admin account.
+        </p>
+    </section>
+}
+else if (!isGlobalAdmin)
+{
+    <section class="panel">
+        <h2>Global admin access required</h2>
+        <p>
+            Only platform administrators can review the tenant catalog or provision a new tenant from this control-plane surface.
+        </p>
+    </section>
+}
+else
+{
+    <section class="grid platform-overview">
+        <article class="panel">
+            <p class="eyebrow">Catalog</p>
+            <h2>@TenantCountLabel</h2>
+            <p class="platform-panel-copy">Currently registered tenants in the shared catalog.</p>
+        </article>
+
+        <article class="panel">
+            <p class="eyebrow">Provisioning</p>
+            <h2>Ready</h2>
+            <p class="platform-panel-copy">New tenant creation will write catalog metadata and run the provisioning flow.</p>
+        </article>
+    </section>
+
+    <section class="grid platform-workspace">
+        <article class="panel platform-form-panel">
+            <div class="platform-section-header">
+                <div>
+                    <p class="eyebrow">Provision Tenant</p>
+                    <h2>Create tenant</h2>
+                </div>
+                <p class="platform-hint">Identifier and host should stay stable after rollout.</p>
+            </div>
+
+            <EditForm Model="@this" OnValidSubmit="@HandleCreateTenantAsync" class="platform-form">
+                <label>
+                    <span>Identifier</span>
+                    <InputText @bind-Value="newTenantIdentifier" />
+                    <small>Example: <code>acme</code></small>
+                </label>
+
+                <label>
+                    <span>Name</span>
+                    <InputText @bind-Value="newTenantName" />
+                    <small>Human-readable tenant name.</small>
+                </label>
+
+                <label>
+                    <span>Host</span>
+                    <InputText @bind-Value="newTenantHost" />
+                    <small>Example: <code>acme.local</code></small>
+                </label>
+
+                <button class="primary-button" type="submit" disabled="@isTenantSubmitting">
+                    @(isTenantSubmitting ? "Provisioning..." : "Create tenant")
+                </button>
+            </EditForm>
+
+            @if (!string.IsNullOrWhiteSpace(tenantFormMessage))
+            {
+                <p class="@TenantFormMessageClass">@tenantFormMessage</p>
+            }
+        </article>
+
+        <article class="panel">
+            <div class="platform-section-header">
+                <div>
+                    <p class="eyebrow">Tenant Catalog</p>
+                    <h2>Registered tenants</h2>
+                </div>
+                <button class="secondary-button" @onclick="LoadTenantsAsync" disabled="@isCatalogLoading">
+                    @(isCatalogLoading ? "Refreshing..." : "Refresh")
+                </button>
+            </div>
+
+            @if (isCatalogLoading)
+            {
+                <p>Loading tenants...</p>
+            }
+            else if (!string.IsNullOrWhiteSpace(catalogError))
+            {
+                <p class="error-text">@catalogError</p>
+            }
+            else if (tenants.Count == 0)
+            {
+                <p>No tenants found.</p>
+            }
+            else
+            {
+                <div class="tenant-catalog-list">
+                    @foreach (var tenant in tenants)
+                    {
+                        <article class="tenant-catalog-card">
+                            <div>
+                                <strong>@tenant.Name</strong>
+                                <p class="tenant-catalog-meta">@tenant.Identifier</p>
+                            </div>
+                            <div class="tenant-catalog-side">
+                                <code>@tenant.Host</code>
+                                <span class="tenant-state @(tenant.IsActive ? "tenant-state-active" : "tenant-state-inactive")">
+                                    @(tenant.IsActive ? "Active" : "Inactive")
+                                </span>
+                            </div>
+                        </article>
+                    }
+                </div>
+            }
+        </article>
+    </section>
+}
+
+@code {
+    private readonly List<TenantCatalogDto> tenants = [];
+    private string currentTenantIdentifier = string.Empty;
+    private string newTenantIdentifier = string.Empty;
+    private string newTenantName = string.Empty;
+    private string newTenantHost = string.Empty;
+    private string? tenantFormMessage;
+    private string? catalogError;
+    private bool isCatalogLoading = true;
+    private bool isTenantSubmitting;
+    private bool isControlPlaneHost;
+    private bool isGlobalAdmin;
+    private bool lastCreateSucceeded;
+
+    private string TenantCountLabel => $"{tenants.Count} tenant{(tenants.Count == 1 ? string.Empty : "s")}";
+
+    private string TenantFormMessageClass => lastCreateSucceeded ? "success-text" : "error-text";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthApiClient.GetAuthStateAsync();
+        currentTenantIdentifier = authState.TenantIdentifier ?? string.Empty;
+        isControlPlaneHost = authState.IsControlPlaneHost;
+        isGlobalAdmin = authState.Roles.Contains("Admin", StringComparer.OrdinalIgnoreCase);
+
+        if (isControlPlaneHost && isGlobalAdmin)
+        {
+            await LoadTenantsAsync();
+        }
+        else
+        {
+            isCatalogLoading = false;
+        }
+    }
+
+    private async Task LoadTenantsAsync()
+    {
+        isCatalogLoading = true;
+        catalogError = null;
+
+        var response = await TenantAdministrationClient.GetTenantsAsync();
+
+        isCatalogLoading = false;
+
+        if (!response.Succeeded)
+        {
+            catalogError = response.Errors.FirstOrDefault()?.Message ?? "Tenants could not be loaded.";
+            tenants.Clear();
+            return;
+        }
+
+        tenants.Clear();
+        tenants.AddRange(response.Data ?? []);
+    }
+
+    private async Task HandleCreateTenantAsync()
+    {
+        isTenantSubmitting = true;
+        tenantFormMessage = null;
+        lastCreateSucceeded = false;
+
+        var response = await TenantAdministrationClient.CreateTenantAsync(
+            new CreateTenantRpcRequest(newTenantIdentifier, newTenantName, newTenantHost));
+
+        isTenantSubmitting = false;
+
+        if (!response.Succeeded)
+        {
+            tenantFormMessage = response.Errors.FirstOrDefault()?.Message ?? "Tenant could not be created.";
+            return;
+        }
+
+        lastCreateSucceeded = true;
+        tenantFormMessage = $"Tenant '{response.Data?.Identifier}' was created and provisioning started successfully.";
+        newTenantIdentifier = string.Empty;
+        newTenantName = string.Empty;
+        newTenantHost = string.Empty;
+
+        await LoadTenantsAsync();
+    }
+}

@@ -31,6 +31,13 @@ public static class TenancyInfrastructureServiceCollectionExtensions
             .Validate(
                 options => options.IntervalMinutes > 0,
                 "Tenant catalog maintenance job interval must be greater than zero.");
+        services.AddOptions<ControlPlaneHostOptions>()
+            .Configure(options =>
+            {
+                options.Hosts =
+                    configuration.GetSection(ControlPlaneHostOptions.SectionName).Get<string[]>()
+                    ?? [];
+            });
 
         services.AddDbContext<TenantCatalogDbContext>(
             options => options.UseSqlite(connectionString));

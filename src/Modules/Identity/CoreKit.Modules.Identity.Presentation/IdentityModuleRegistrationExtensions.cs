@@ -10,6 +10,7 @@ using CoreKit.Modules.Identity.Domain;
 using CoreKit.Modules.Identity.Infrastructure;
 using CoreKit.Modules.Tenancy.Infrastructure;
 using System.Security.Claims;
+using Microsoft.Extensions.Options;
 
 namespace CoreKit.Modules.Identity.Presentation;
 
@@ -94,13 +95,15 @@ public static class IdentityModuleRegistrationExtensions
                 ClaimsPrincipal principal,
                 UserManager<AppUser> userManager,
                 AppIdentityDbContext identityDbContext,
-                ITenantContextAccessor tenantContextAccessor) =>
+                ITenantContextAccessor tenantContextAccessor,
+                IOptions<ControlPlaneHostOptions> controlPlaneHostOptions) =>
             {
                 ApplyNoStoreHeaders(httpContext.Response);
+                var isControlPlaneHost = controlPlaneHostOptions.Value.IsControlPlaneHost(httpContext.Request.Host.Host);
 
                 if (principal.Identity?.IsAuthenticated != true)
                 {
-                    return Results.Ok(new AuthStateResponse(false, null, Array.Empty<string>(), null, null));
+                    return Results.Ok(new AuthStateResponse(false, null, Array.Empty<string>(), null, null, isControlPlaneHost));
                 }
 
                 var user = await userManager.GetUserAsync(principal);
@@ -127,7 +130,8 @@ public static class IdentityModuleRegistrationExtensions
                         user?.UserName ?? principal.Identity?.Name,
                         roles.ToArray(),
                         tenantIdentifier,
-                        tenantRole));
+                        tenantRole,
+                        isControlPlaneHost));
             });
 
         return endpoints;

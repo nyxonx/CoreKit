@@ -366,7 +366,7 @@ Exit criteria:
 Goal:
 Uvesti prvi stvarni admin UI za tenant administraciju, kreiranje tenant-a i upravljanje korisnicima po tenant-u iznad vec zavrsenog server-side membership i authorization modela.
 
-Status: In Progress
+Status: Complete
 
 Tasks:
 
@@ -376,8 +376,8 @@ Tasks:
 - `[x]` Dodati UI za kreiranje novog tenant-a i provisioning flow
 - `[x]` Dodati pregled aktivnog tenant konteksta u admin povrsini
 - `[x]` Dodati osnovni guardrail UX za non-admin korisnike na admin ekranima
-- `[ ]` Dodati test scenarije za tenant administration UI tokove tamo gde je prakticno
-- `[ ]` Uskladiti README i high-level dokumentaciju sa tenant administration UI baseline-om
+- `[x]` Dodati test scenarije za tenant administration UI tokove tamo gde je prakticno
+- `[x]` Uskladiti README i high-level dokumentaciju sa tenant administration UI baseline-om
 
 Exit criteria:
 
@@ -419,10 +419,10 @@ Now:
 - Identity modul sada ima i admin-only server-side tok za tenant membership list/upsert operacije
 - Auth state sada iznosi aktivni tenant i tenant rolu do klijenta za tenant-aware UI i dalji authorization flow
 - `Phase 12` je zavrsena
-- `Phase 13` je aktivna
+- `Phase 13` je zavrsena
 - Dodat je tenant administration UI za aktivni tenant sa membership list/upsert tokom, role-change formom i guardrail porukom za non-admin korisnike
-- Dodat je i tenant catalog/create-provisioning UI baseline za prvi admin flow kreiranja novog tenant-a iz aplikacije
-- Sledeci fokus su test scenariji i dalji docs/high-level alignment za tenant administration surface
+- Tenant catalog/create-provisioning flow je izdvojen na control-plane platform admin surface umesto da zivi na svakom tenant hostu
+- Dodati su integration testovi i high-level docs alignment za tenant administration baseline
 
 After that:
 - Prosiriti tenant admin surface i otvoriti sledeci business/admin milestone na vec uspostavljenom tenant management temelju

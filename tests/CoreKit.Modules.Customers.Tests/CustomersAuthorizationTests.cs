@@ -91,6 +91,68 @@ public sealed class CustomersAuthorizationTests
             Assert.True(payload.IsAuthenticated);
             Assert.Equal("bootstrap", payload.TenantIdentifier);
             Assert.Equal(TenantMembershipRoles.Admin, payload.TenantRole);
+            Assert.False(payload.IsControlPlaneHost);
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
+    public async Task TenantCatalogRpc_Succeeds_ForGlobalAdmin_OnControlPlaneHost()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var factory = new CoreKitAppFactory(tempRoot);
+            using var client = factory.CreateClient();
+            var authCookie = await LoginAsync(client, "admin.local");
+
+            using var response = await SendRpcAsync(client, "admin.local", "tenancy.catalog.list", "{}", authCookie);
+
+            response.EnsureSuccessStatusCode();
+
+            var payload = await response.Content.ReadFromJsonAsync<RpcResponse>();
+            Assert.NotNull(payload);
+            Assert.True(payload.Succeeded);
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
+    public async Task TenantCreateRpc_ProvisionsTenant_ForGlobalAdmin_OnControlPlaneHost()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var factory = new CoreKitAppFactory(tempRoot);
+            using var client = factory.CreateClient();
+            var authCookie = await LoginAsync(client, "admin.local");
+
+            using var response = await SendRpcAsync(
+                client,
+                "admin.local",
+                "tenancy.catalog.create",
+                """{"identifier":"acme","name":"Acme Corp","host":"acme.local"}""",
+                authCookie);
+
+            response.EnsureSuccessStatusCode();
+
+            var payload = await response.Content.ReadFromJsonAsync<RpcResponse>();
+            Assert.NotNull(payload);
+            Assert.True(payload.Succeeded);
+
+            await using var scope = factory.Services.CreateAsyncScope();
+            var catalogDbContext = scope.ServiceProvider.GetRequiredService<TenantCatalogDbContext>();
+            var tenant = await catalogDbContext.Tenants.SingleOrDefaultAsync(entity => entity.Identifier == "acme");
+            Assert.NotNull(tenant);
+            Assert.Equal("acme.local", tenant.Host);
         }
         finally
         {
@@ -286,7 +348,8 @@ public sealed class CustomersAuthorizationTests
                         KeyValuePair.Create<string, string?>("ConnectionStrings:IdentityDatabase", $"Data Source={identityPath}"),
                         KeyValuePair.Create<string, string?>("Tenancy:Seed:Identifier", "bootstrap"),
                         KeyValuePair.Create<string, string?>("Tenancy:Seed:Name", "Bootstrap Tenant"),
-                        KeyValuePair.Create<string, string?>("Tenancy:Seed:Host", "localhost")
+                        KeyValuePair.Create<string, string?>("Tenancy:Seed:Host", "localhost"),
+                        KeyValuePair.Create<string, string?>("Tenancy:ControlPlaneHosts:0", "admin.local")
                     ]);
                 });
         }

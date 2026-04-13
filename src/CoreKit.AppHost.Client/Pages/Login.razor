@@ -8,7 +8,14 @@
 <section class="panel login-panel">
     <p class="eyebrow">Authentication</p>
     <h1>Sign in to CoreKit</h1>
-    <p>Use the seeded bootstrap account to test the first cookie auth flow.</p>
+    @if (isControlPlaneHost)
+    {
+        <p>Use the global admin account on this control-plane host to manage the tenant catalog and provisioning flows.</p>
+    }
+    else
+    {
+        <p>Use the seeded bootstrap account to test tenant-scoped login and administration on the active tenant host.</p>
+    }
 
     @if (!string.IsNullOrWhiteSpace(ReturnUrl))
     {
@@ -62,9 +69,13 @@
 
     private bool isSubmitting;
     private string? errorMessage;
+    private bool isControlPlaneHost;
 
     protected override async Task OnInitializedAsync()
     {
+        var initialAuthState = await AuthApiClient.GetAuthStateAsync();
+        isControlPlaneHost = initialAuthState.IsControlPlaneHost;
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
         if (authState.User.Identity?.IsAuthenticated == true)

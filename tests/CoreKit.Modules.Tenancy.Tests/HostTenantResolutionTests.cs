@@ -59,6 +59,36 @@ public sealed class HostTenantResolutionTests
             Assert.Empty(payload.Roles);
             Assert.Equal("bootstrap", payload.TenantIdentifier);
             Assert.Null(payload.TenantRole);
+            Assert.False(payload.IsControlPlaneHost);
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
+    public async Task AuthState_ReturnsControlPlanePayload_WhenHostIsConfiguredAsControlPlane()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var factory = new CoreKitAppFactory(tempRoot);
+            using var client = factory.CreateClient();
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/auth/state");
+            request.Headers.Host = "admin.local";
+
+            using var response = await client.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            var payload = await response.Content.ReadFromJsonAsync<AuthStateResponse>();
+            Assert.NotNull(payload);
+            Assert.False(payload.IsAuthenticated);
+            Assert.Null(payload.TenantIdentifier);
+            Assert.Null(payload.TenantRole);
+            Assert.True(payload.IsControlPlaneHost);
         }
         finally
         {
@@ -109,7 +139,8 @@ public sealed class HostTenantResolutionTests
                         KeyValuePair.Create<string, string?>("ConnectionStrings:IdentityDatabase", $"Data Source={identityPath}"),
                         KeyValuePair.Create<string, string?>("Tenancy:Seed:Identifier", "bootstrap"),
                         KeyValuePair.Create<string, string?>("Tenancy:Seed:Name", "Bootstrap Tenant"),
-                        KeyValuePair.Create<string, string?>("Tenancy:Seed:Host", "localhost")
+                        KeyValuePair.Create<string, string?>("Tenancy:Seed:Host", "localhost"),
+                        KeyValuePair.Create<string, string?>("Tenancy:ControlPlaneHosts:0", "admin.local")
                     ]);
                 });
         }
