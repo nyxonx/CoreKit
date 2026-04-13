@@ -12,6 +12,8 @@ Svaki novi modul treba da moze da se uvede bez improvizacije kroz isti skup kora
 - presentation layer koji mapira endpoint-e
 - module class koja povezuje sve zajedno
 
+Application sloj zadrzava contracts, use case orchestration i handlere, dok persistence implementacije ostaju u Infrastructure sloju.
+
 ## Standardni Oblik Modula
 
 Svaki modul koristi istu strukturu:

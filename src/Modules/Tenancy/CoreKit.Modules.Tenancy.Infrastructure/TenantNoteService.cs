@@ -1,8 +1,8 @@
+using CoreKit.Modules.Tenancy.Application;
 using CoreKit.Modules.Tenancy.Domain;
-using CoreKit.Modules.Tenancy.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
-namespace CoreKit.Modules.Tenancy.Application;
+namespace CoreKit.Modules.Tenancy.Infrastructure;
 
 public sealed class TenantNoteService(TenantAppDbContext tenantAppDbContext) : ITenantNoteService
 {
