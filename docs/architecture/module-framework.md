@@ -28,7 +28,7 @@ Svaki modul koristi istu strukturu:
 
 ## Module Contract
 
-Shared contract za host registraciju je `ICoreKitModule` u [ICoreKitModule.cs](C:/Users/nikol/source/repos/nyxonx/CoreKit/src/BuildingBlocks/CoreKit.BuildingBlocks.Presentation/ICoreKitModule.cs).
+Shared contract za host registraciju je `ICoreKitModule` u [ICoreKitModule.cs](../../src/BuildingBlocks/CoreKit.BuildingBlocks.Presentation/ICoreKitModule.cs).
 
 Svaki modul preko njega definise:
 
@@ -39,7 +39,7 @@ Svaki modul preko njega definise:
 - `MapEndpoints(...)`
 - `InitializeAsync(...)`
 
-To omogucava da `AppHost.Server` ne zna detalje svakog modula, vec samo enumerira module iz [CoreKitModuleCatalog.cs](C:/Users/nikol/source/repos/nyxonx/CoreKit/src/CoreKit.AppHost.Server/Extensions/CoreKitModuleCatalog.cs).
+To omogucava da `AppHost.Server` ne zna detalje svakog modula, vec samo enumerira module iz [CoreKitModuleCatalog.cs](../../src/CoreKit.AppHost.Server/Extensions/CoreKitModuleCatalog.cs).
 
 ## Runtime Tok
 
@@ -58,8 +58,8 @@ Trenutni shared startup orchestration je dokumentovan i u `docs/architecture/mod
 
 Postoje dva referentna primera:
 
-- [IdentityModule.cs](C:/Users/nikol/source/repos/nyxonx/CoreKit/src/Modules/Identity/CoreKit.Modules.Identity.Presentation/IdentityModule.cs)
-- [TenancyModule.cs](C:/Users/nikol/source/repos/nyxonx/CoreKit/src/Modules/Tenancy/CoreKit.Modules.Tenancy.Presentation/TenancyModule.cs)
+- [IdentityModule.cs](../../src/Modules/Identity/CoreKit.Modules.Identity.Presentation/IdentityModule.cs)
+- [TenancyModule.cs](../../src/Modules/Tenancy/CoreKit.Modules.Tenancy.Presentation/TenancyModule.cs)
 
 `Identity` pokazuje modul sa specijalizovanim auth endpoint-ima.
 
@@ -85,8 +85,8 @@ Razlog je sto se interni application modeli i public/shared transport contracts 
 
 Primer:
 
-- [TenancyModuleClient.cs](C:/Users/nikol/source/repos/nyxonx/CoreKit/src/CoreKit.AppHost.Client/Services/TenancyModuleClient.cs)
-- [TenancyRpcOperations.cs](C:/Users/nikol/source/repos/nyxonx/CoreKit/src/CoreKit.AppHost.Contracts/Tenancy/TenancyRpcOperations.cs)
+- [TenancyModuleClient.cs](../../src/CoreKit.AppHost.Client/Services/TenancyModuleClient.cs)
+- [TenancyRpcOperations.cs](../../src/CoreKit.AppHost.Contracts/Tenancy/TenancyRpcOperations.cs)
 
 ## Kada Ne Forsirati RPC
 

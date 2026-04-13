@@ -35,7 +35,7 @@ Koristi ovu listu kada dodajes novi modul u `CoreKit`.
 
 ## 6. Host Wiring
 
-- Dodati modul u [CoreKitModuleCatalog.cs](C:/Users/nikol/source/repos/nyxonx/CoreKit/src/CoreKit.AppHost.Server/Extensions/CoreKitModuleCatalog.cs)
+- Dodati modul u [CoreKitModuleCatalog.cs](../../src/CoreKit.AppHost.Server/Extensions/CoreKitModuleCatalog.cs)
 - Potvrditi da se application assembly vidi iz shared pipeline registracije
 - Potvrditi da `InitializeAsync` prolazi pri startu
 

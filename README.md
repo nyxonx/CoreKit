@@ -28,7 +28,7 @@ CoreKit je postavljen kao:
 - Blazor WebAssembly Hosted + Minimal APIs + PWA
 - baza za multi-tenant i white-label resenja
 
-Kljucne odluke su dokumentovane u [`docs/adr`](C:/Users/nikol/source/repos/nyxonx/CoreKit/docs/adr).
+Kljucne odluke su dokumentovane u [`docs/adr`](docs/adr/README.md).
 
 ## Repository Structure
 
@@ -61,4 +61,4 @@ Platforma danas vec pokriva:
 - tenant-aware persistence i tenant provisioning osnovu
 - production-readiness baseline za logging, health, caching i background jobs
 
-Detaljan plan razvoja vodi se u [`docs/roadmap/README.md`](C:/Users/nikol/source/repos/nyxonx/CoreKit/docs/roadmap/README.md).
+Detaljan plan razvoja vodi se u [`docs/roadmap/README.md`](docs/roadmap/README.md).
