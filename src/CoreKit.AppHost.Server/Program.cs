@@ -10,6 +10,11 @@ var app = builder.Build();
 
 await app.Services.InitializeCoreKitModulesAsync(app.Configuration);
 
+if (args.Contains("--provision-only", StringComparer.OrdinalIgnoreCase))
+{
+    return;
+}
+
 app.UseCoreKitAppHost();
 app.MapCoreKitInfrastructureEndpoints();
 

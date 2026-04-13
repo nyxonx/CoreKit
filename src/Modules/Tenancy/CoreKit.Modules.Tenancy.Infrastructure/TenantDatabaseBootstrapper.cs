@@ -1,10 +1,25 @@
+using CoreKit.Modules.Tenancy.Domain;
+
 namespace CoreKit.Modules.Tenancy.Infrastructure;
 
-public sealed class TenantDatabaseBootstrapper(ITenantDbContextFactory tenantDbContextFactory)
+public sealed class TenantDatabaseBootstrapper(
+    ITenantContextAccessor tenantContextAccessor,
+    TenantProvisioningService tenantProvisioningService)
 {
-    public async Task EnsureCreatedAsync(CancellationToken cancellationToken = default)
+    public Task EnsureCreatedAsync(CancellationToken cancellationToken = default)
     {
-        await using var dbContext = tenantDbContextFactory.CreateDbContext();
-        await dbContext.Database.EnsureCreatedAsync(cancellationToken);
+        var tenantContext = tenantContextAccessor.TenantContext
+            ?? throw new InvalidOperationException("Tenant context is not available for database provisioning.");
+
+        return tenantProvisioningService.ProvisionTenantAsync(
+            new TenantCatalogEntry
+            {
+                Identifier = tenantContext.Identifier,
+                Name = tenantContext.Name,
+                Host = tenantContext.Host,
+                IsActive = true,
+                ConnectionString = tenantContext.ConnectionString
+            },
+            cancellationToken);
     }
 }

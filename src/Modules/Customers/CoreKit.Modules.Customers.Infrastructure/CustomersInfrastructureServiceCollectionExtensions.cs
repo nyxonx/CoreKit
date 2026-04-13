@@ -22,6 +22,7 @@ public static class CustomersInfrastructureServiceCollectionExtensions
 
                 return new CustomersDbContext(options);
             });
+        services.AddScoped<ITenantDatabaseMigration, CustomersDatabaseMigration>();
 
         return services;
     }

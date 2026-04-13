@@ -4,6 +4,7 @@ Ovaj modul trenutno pokriva:
 - tenant katalog
 - tenant resolution
 - tenant-aware persistence osnovu
+- startup provisioning i tenant database bootstrap tok
 
 ## Tenant-Aware Persistence Rules
 
@@ -20,3 +21,6 @@ Ovaj modul trenutno pokriva:
 - `TenantConnectionStringProvider` cita connection string iz aktivnog `TenantContext`-a.
 - `TenantDbContextFactory` pravi `TenantAppDbContext` za aktivni tenant.
 - `TenantNoteService` je prvi primer tenant-aware application flow-a.
+- `TenantCatalogMigrationRunner` podize catalog bazu pre runtime rada.
+- `TenantProvisioningService` primenjuje tenant database migracije i seed korake za aktivne tenant-e.
+- `build/provision-local.ps1` pokrece isti provisioning tok bez dizanja web host-a.

@@ -210,7 +210,7 @@ Exit criteria:
 Goal:
 Napraviti ponovljiv obrazac za dodavanje buducih modula.
 
-Status: In progress
+Status: Completed
 
 Tasks:
 
@@ -238,8 +238,7 @@ Exit criteria:
 Goal:
 Proveriti da arhitektura radi na jednoj pravoj poslovnoj funkcionalnosti.
 
-Status: Planned
-Status: In progress
+Status: Completed
 
 Tasks:
 
@@ -264,17 +263,17 @@ Exit criteria:
 Goal:
 Automatizovati podizanje kataloga, tenant baza i upgrade tok.
 
-Status: Planned
+Status: Completed
 
 Tasks:
 
-- `[ ]` Dodati catalog migration runner
-- `[ ]` Dodati tenant migration runner
-- `[ ]` Definisati tenant provisioning flow
-- `[ ]` Dodati inicijalno kreiranje tenant baze
-- `[ ]` Dodati seed osnovnih podataka po tenant-u
-- `[ ]` Dodati startup migration executor gde ima smisla
-- `[ ]` Dodati osnovne deployment skripte
+- `[x]` Dodati catalog migration runner
+- `[x]` Dodati tenant migration runner
+- `[x]` Definisati tenant provisioning flow
+- `[x]` Dodati inicijalno kreiranje tenant baze
+- `[x]` Dodati seed osnovnih podataka po tenant-u
+- `[x]` Dodati startup migration executor gde ima smisla
+- `[x]` Dodati osnovne deployment skripte
 
 Exit criteria:
 - Novi tenant moze da se podigne kontrolisano
@@ -316,12 +315,12 @@ Now:
 - `Phase 4` je zavrsena
 - `Phase 5` je zavrsena
 - `Phase 6` je zavrsena
-- `Phase 7` je aktivna
-- Module framework je kompletiran kroz shared contract, primere i checklistu
-- `Phase 8` je aktivna
-- `Customers` je izabran kao prvi pravi modul i prvi slice je implementiran
-- Sledece potvrdujemo browser flow i secemo commit granicu za prvi `Phase 8` checkpoint
+- `Phase 7` je zavrsena
+- `Phase 8` je zavrsena
+- `Customers` modul radi end-to-end kroz tenant-aware persistence, RPC i UI
+- `Phase 9` je zavrsena
+- Catalog migracije, tenant provisioning i deployment helper tok su standardizovani
+- `Phase 10` je sledeca aktivna faza
 
 After that:
-- Posle toga prvi pravi modul
-- Zatim migrations/provisioning i production readiness
+- Production readiness hardening i operativne osnove

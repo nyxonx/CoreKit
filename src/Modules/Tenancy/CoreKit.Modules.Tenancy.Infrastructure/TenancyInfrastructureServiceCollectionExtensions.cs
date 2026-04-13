@@ -26,8 +26,16 @@ public static class TenancyInfrastructureServiceCollectionExtensions
         services.AddScoped<ITenantDbContextFactory, TenantDbContextFactory>();
         services.AddScoped(
             serviceProvider => serviceProvider.GetRequiredService<ITenantDbContextFactory>().CreateDbContext());
+        services.AddScoped<TenantCatalogMigrationRunner>();
+        services.AddScoped<TenantCatalogSeedService>();
+        services.AddScoped<TenantDatabaseMigrationRunner>();
+        services.AddScoped<TenantSeedDataRunner>();
+        services.AddScoped<TenantProvisioningService>();
         services.AddScoped<TenantDatabaseBootstrapper>();
         services.AddScoped<TenantConfigurationValidator>();
+        services.AddScoped<ITenantDatabaseMigration, TenantMetadataMigration>();
+        services.AddScoped<ITenantDatabaseMigration, TenantNotesDatabaseMigration>();
+        services.AddScoped<ITenantSeedDataContributor, TenantMetadataSeedContributor>();
 
         return services;
     }

@@ -8,4 +8,11 @@ Tipican sadrzaj:
 - migration runner alati
 - deployment helper-i
 
-Za sada je folder placeholder dok ne krene implementacija migracija i automatizacije okruzenja.
+Trenutno sadrzi:
+- `provision-local.ps1` za lokalno pokretanje catalog i tenant provisioning toka bez dizanja web host-a
+
+Tipican lokalni poziv:
+
+```powershell
+.\build\provision-local.ps1
+```

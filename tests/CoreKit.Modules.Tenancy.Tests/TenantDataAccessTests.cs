@@ -1,7 +1,10 @@
 using CoreKit.Modules.Tenancy.Application;
 using CoreKit.Modules.Tenancy.Domain;
 using CoreKit.Modules.Tenancy.Infrastructure;
+using CoreKit.Modules.Customers.Infrastructure;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace CoreKit.Modules.Tenancy.Tests;
@@ -77,6 +80,53 @@ public sealed class TenantDataAccessTests
         }
     }
 
+    [Fact]
+    public async Task TenantProvisioningService_CreatesModuleSchemas_AndSeedsTenantMetadata()
+    {
+        var tempRoot = Path.Combine(Path.GetTempPath(), "corekit-tenant-provisioning-tests", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempRoot);
+
+        try
+        {
+            var databasePath = Path.Combine(tempRoot, "tenant-provisioning.db");
+            await using var provider = CreateProvisioningServices();
+            await using var scope = provider.CreateAsyncScope();
+
+            var provisioningService = scope.ServiceProvider.GetRequiredService<TenantProvisioningService>();
+
+            await provisioningService.ProvisionTenantAsync(
+                new TenantCatalogEntry
+                {
+                    Identifier = "provisioned-tenant",
+                    Name = "Provisioned Tenant",
+                    Host = "provisioned.local",
+                    IsActive = true,
+                    ConnectionString = $"Data Source={databasePath}"
+                });
+
+            await using var connection = new SqliteConnection($"Data Source={databasePath}");
+            await connection.OpenAsync();
+
+            Assert.True(await TableExistsAsync(connection, "Customers"));
+            Assert.True(await TableExistsAsync(connection, "TenantNotes"));
+            Assert.True(await TableExistsAsync(connection, "TenantMetadata"));
+
+            await using var command = connection.CreateCommand();
+            command.CommandText = """SELECT "TenantIdentifier" FROM "TenantMetadata" WHERE "Id" = 1;""";
+
+            var identifier = (string?)await command.ExecuteScalarAsync();
+
+            Assert.Equal("provisioned-tenant", identifier);
+        }
+        finally
+        {
+            if (Directory.Exists(tempRoot))
+            {
+                TryDeleteDirectory(tempRoot);
+            }
+        }
+    }
+
     private static async Task AddNoteAsync(string tenantIdentifier, string connectionString, string value)
     {
         var accessor = new TenantContextAccessor
@@ -92,7 +142,7 @@ public sealed class TenantDataAccessTests
 
         var connectionStringProvider = new TenantConnectionStringProvider(accessor);
         var dbContextFactory = new TenantDbContextFactory(connectionStringProvider);
-        var bootstrapper = new TenantDatabaseBootstrapper(dbContextFactory);
+        var bootstrapper = new TenantDatabaseBootstrapper(accessor, CreateTenantProvisioningService());
 
         await bootstrapper.EnsureCreatedAsync();
 
@@ -143,6 +193,59 @@ public sealed class TenantDataAccessTests
         var dbContext = dbContextFactory.CreateDbContext();
 
         return new TenantNoteService(dbContext);
+    }
+
+    private static ServiceProvider CreateProvisioningServices()
+    {
+        var services = new ServiceCollection();
+
+        services.AddLogging();
+        services.AddScoped<ITenantDatabaseMigration, TenantMetadataMigration>();
+        services.AddScoped<ITenantDatabaseMigration, TenantNotesDatabaseMigration>();
+        services.AddScoped<ITenantDatabaseMigration, CustomersDatabaseMigration>();
+        services.AddScoped<ITenantSeedDataContributor, TenantMetadataSeedContributor>();
+        services.AddScoped<TenantDatabaseMigrationRunner>();
+        services.AddScoped<TenantSeedDataRunner>();
+        services.AddDbContext<TenantCatalogDbContext>(
+            options => options.UseSqlite($"Data Source={Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"))}.catalog.db"));
+        services.AddScoped<TenantProvisioningService>();
+
+        return services.BuildServiceProvider();
+    }
+
+    private static TenantProvisioningService CreateTenantProvisioningService()
+    {
+        var options = new DbContextOptionsBuilder<TenantCatalogDbContext>()
+            .UseSqlite($"Data Source={Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"))}.catalog.db")
+            .Options;
+
+        var dbContext = new TenantCatalogDbContext(options);
+        var migrationRunner = new TenantDatabaseMigrationRunner(
+        [
+            new TenantMetadataMigration(),
+            new TenantNotesDatabaseMigration()
+        ]);
+        var seedRunner = new TenantSeedDataRunner(
+        [
+            new TenantMetadataSeedContributor()
+        ]);
+
+        return new TenantProvisioningService(dbContext, migrationRunner, seedRunner);
+    }
+
+    private static async Task<bool> TableExistsAsync(SqliteConnection connection, string tableName)
+    {
+        await using var command = connection.CreateCommand();
+        command.CommandText =
+            """
+            SELECT COUNT(*)
+            FROM "sqlite_master"
+            WHERE "type" = 'table' AND "name" = $tableName;
+            """;
+        command.Parameters.AddWithValue("$tableName", tableName);
+
+        var result = (long)(await command.ExecuteScalarAsync() ?? 0L);
+        return result > 0;
     }
 
     private static void TryDeleteDirectory(string path)

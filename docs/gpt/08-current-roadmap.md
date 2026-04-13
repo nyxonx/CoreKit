@@ -4,19 +4,18 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 8 - First Real Module
+Phase 10 - Production Readiness
 
 ## Current Task
 
- Potvrditi prvi `Customers` end-to-end slice kroz AppHost browser flow.
+Pokrenuti production readiness hardening preko error handling, logovanja i observability osnova.
 
 ## Next Tasks
 
-- Ručno potvrditi `Customers` ekran kroz AppHost
-- Zatvoriti prvi `Phase 8` commit checkpoint
-- Odlučiti da li sledeci slice ostaje u `Customers` ili biramo drugi pilot use case
+- Standardizovati error handling oko RPC i module pipeline-a
+- Uvesti strukturisano logovanje i prosirene health checkove
+- Definisati prvi production-grade observability slice
 
 ## After That
 
-- Migrations/provisioning
-- Production-grade error handling i observability oko pipeline-a
+- Security hardening, audit logging i background jobs strategija
