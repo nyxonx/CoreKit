@@ -11,4 +11,10 @@ public interface ITenantMembershipAdministrationService
         string userName,
         string role,
         CancellationToken cancellationToken = default);
+
+    Task<TenantMembershipDto?> SetMembershipActivationAsync(
+        string tenantIdentifier,
+        string userName,
+        bool isActive,
+        CancellationToken cancellationToken = default);
 }

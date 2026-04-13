@@ -1,43 +1,22 @@
 @page "/"
-@inject AuthApiClient AuthApiClient
 <PageTitle>CoreKit</PageTitle>
 
 <section class="hero">
     <div class="hero-copy">
         <p class="eyebrow">Phase 13</p>
-        @if (isControlPlaneHost)
-        {
-            <h1>CoreKit is running in control-plane administration mode.</h1>
-            <p class="lead">
-                This host is reserved for global admin workflows such as tenant catalog review and tenant provisioning.
-            </p>
-        }
-        else
-        {
-            <h1>CoreKit is running inside a tenant workspace.</h1>
-            <p class="lead">
-                This host combines hosted auth, tenant resolution, tenant-aware persistence, and tenant-scoped user workflows across modules.
-            </p>
-        }
+        <h1>CoreKit is running inside a tenant workspace.</h1>
+        <p class="lead">
+            This host combines hosted auth, tenant resolution, tenant-aware persistence, and tenant-scoped user workflows across modules.
+        </p>
     </div>
 
     <div class="hero-card">
         <h2>Current focus</h2>
         <ul>
-            @if (isControlPlaneHost)
-            {
-                <li>Hosted login and logout through the server</li>
-                <li>Global admin access on a dedicated host</li>
-                <li>Tenant catalog review and provisioning</li>
-                <li>Clear separation from tenant-scoped administration</li>
-            }
-            else
-            {
-                <li>Hosted login and logout through the server</li>
-                <li>Tenant-aware persistence per request</li>
-                <li>Unified RPC via <code>/api/rpc</code></li>
-                <li>Tenant administration and first real Customers module slice</li>
-            }
+            <li>Hosted login and logout through the server</li>
+            <li>Tenant-aware persistence per request</li>
+            <li>Unified RPC via <code>/api/rpc</code></li>
+            <li>Tenant administration and first real Customers module slice</li>
         </ul>
     </div>
 </section>
@@ -57,35 +36,11 @@
 
     <article class="panel">
         <h2>Host context</h2>
-        @if (isControlPlaneHost)
-        {
-            <p>This host is intended for platform administration and should not carry tenant-scoped business screens.</p>
-        }
-        else
-        {
-            <p>This host is tenant-scoped and is where module UI, tenant data access, and tenant administration belong.</p>
-        }
+        <p>This host is tenant-scoped and is where module UI, tenant data access, and tenant administration belong.</p>
     </article>
 
     <article class="panel">
         <h2>Next milestone</h2>
-        @if (isControlPlaneHost)
-        {
-            <p>Expand platform operations above the new control-plane surface without leaking those workflows into tenant hosts.</p>
-        }
-        else
-        {
-            <p>Expand business modules and tenant-scoped operations on top of the new tenant management baseline.</p>
-        }
+        <p>Expand business modules and tenant-scoped operations on top of the new tenant management baseline.</p>
     </article>
 </section>
-
-@code {
-    private bool isControlPlaneHost;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthApiClient.GetAuthStateAsync();
-        isControlPlaneHost = authState.IsControlPlaneHost;
-    }
-}

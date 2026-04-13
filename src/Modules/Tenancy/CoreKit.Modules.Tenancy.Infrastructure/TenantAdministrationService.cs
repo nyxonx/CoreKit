@@ -70,6 +70,33 @@ public sealed class TenantAdministrationService(
             tenant.IsActive);
     }
 
+    public async Task<TenantCatalogDto?> SetTenantActivationAsync(
+        string tenantIdentifier,
+        bool isActive,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tenantIdentifier);
+
+        var normalizedTenantIdentifier = tenantIdentifier.Trim().ToLowerInvariant();
+        var tenant = await tenantCatalogDbContext.Tenants.SingleOrDefaultAsync(
+            entry => entry.Identifier == normalizedTenantIdentifier,
+            cancellationToken);
+
+        if (tenant is null)
+        {
+            return null;
+        }
+
+        tenant.IsActive = isActive;
+        await tenantCatalogDbContext.SaveChangesAsync(cancellationToken);
+
+        return new TenantCatalogDto(
+            tenant.Identifier,
+            tenant.Name,
+            tenant.Host,
+            tenant.IsActive);
+    }
+
     private string BuildTenantConnectionString(string identifier)
     {
         var configuredDefault = configuration.GetConnectionString("DefaultTenantDatabase");

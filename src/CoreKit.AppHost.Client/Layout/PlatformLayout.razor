@@ -1,0 +1,42 @@
+@inherits LayoutComponentBase
+@inject AuthApiClient AuthApiClient
+
+<div class="platform-shell">
+    <aside class="platform-sidebar">
+        <PlatformNav />
+    </aside>
+
+    <main class="platform-main">
+        <header class="platform-topbar">
+            <div>
+                <p class="eyebrow">CoreKit Control Plane</p>
+                <strong>Platform Administration</strong>
+                <p class="platform-context">Host: @(isControlPlaneHost ? "admin.local" : "unknown")</p>
+            </div>
+            <div>
+                <AuthorizeView>
+                    <Authorized>
+                        <span class="platform-badge">Signed in as @context.User.Identity?.Name</span>
+                    </Authorized>
+                    <NotAuthorized>
+                        <span class="platform-badge platform-badge-muted">Global admin sign-in</span>
+                    </NotAuthorized>
+                </AuthorizeView>
+            </div>
+        </header>
+
+        <article class="platform-content">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    private bool isControlPlaneHost;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthApiClient.GetAuthStateAsync();
+        isControlPlaneHost = authState.IsControlPlaneHost;
+    }
+}

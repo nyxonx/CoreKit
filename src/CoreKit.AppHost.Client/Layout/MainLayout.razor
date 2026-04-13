@@ -11,11 +11,7 @@
             <div>
                 <p class="eyebrow">CoreKit</p>
                 <strong>AppHost Client</strong>
-                @if (isControlPlaneHost)
-                {
-                    <p class="layout-context">Control-plane host</p>
-                }
-                else if (!string.IsNullOrWhiteSpace(currentTenantIdentifier))
+                @if (!string.IsNullOrWhiteSpace(currentTenantIdentifier))
                 {
                     <p class="layout-context">Tenant: @currentTenantIdentifier</p>
                 }
@@ -40,12 +36,10 @@
 
 @code {
     private string? currentTenantIdentifier;
-    private bool isControlPlaneHost;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthApiClient.GetAuthStateAsync();
         currentTenantIdentifier = authState.TenantIdentifier;
-        isControlPlaneHost = authState.IsControlPlaneHost;
     }
 }

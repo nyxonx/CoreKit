@@ -1,18 +1,19 @@
-@page "/login"
+@page "/platform-login"
+@layout PlatformLayout
 @inject AuthApiClient AuthApiClient
 @inject ServerAuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 
-<PageTitle>Login</PageTitle>
+<PageTitle>Platform Login</PageTitle>
 
 <section class="panel login-panel">
-    <p class="eyebrow">Authentication</p>
-    <h1>Sign in to CoreKit</h1>
-    <p>Use the seeded bootstrap account to test tenant-scoped login and administration on the active tenant host.</p>
+    <p class="eyebrow">Control Plane</p>
+    <h1>Sign in to platform administration</h1>
+    <p>Use the global admin account on the control-plane host to manage tenant catalog and provisioning workflows.</p>
 
     @if (!string.IsNullOrWhiteSpace(ReturnUrl))
     {
-        <p class="text-muted">After sign-in, you will return to the page you originally requested.</p>
+        <p class="text-muted">After sign-in, you will return to the platform page you originally requested.</p>
     }
 
     <EditForm Model="@loginRequest" OnValidSubmit="@HandleLoginAsync" class="login-form">
@@ -34,7 +35,7 @@
         </label>
 
         <button class="primary-button" type="submit" disabled="@isSubmitting">
-            @(isSubmitting ? "Signing in..." : "Sign in")
+            @(isSubmitting ? "Signing in..." : "Sign in to control plane")
         </button>
     </EditForm>
 
@@ -44,7 +45,7 @@
     }
 
     <div class="seed-box">
-        <strong>Seed account</strong>
+        <strong>Admin account</strong>
         <p>User name: <code>admin</code></p>
         <p>Password: <code>Admin1234</code></p>
     </div>
@@ -100,13 +101,13 @@
     {
         if (string.IsNullOrWhiteSpace(ReturnUrl))
         {
-            return "/system";
+            return "/platform-admin";
         }
 
         return ReturnUrl.StartsWith("/", StringComparison.Ordinal)
             && !ReturnUrl.StartsWith("//", StringComparison.Ordinal)
             ? ReturnUrl
-            : "/system";
+            : "/platform-admin";
     }
 
     private sealed class LoginFormModel

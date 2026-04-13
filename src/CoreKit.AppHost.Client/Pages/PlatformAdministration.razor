@@ -1,7 +1,9 @@
 @page "/platform-admin"
 @attribute [Authorize(Roles = "Admin")]
+@layout PlatformLayout
 @inject AuthApiClient AuthApiClient
 @inject ITenantAdministrationClient TenantAdministrationClient
+@inject IIdentityAdminModuleClient IdentityAdminModuleClient
 
 <PageTitle>Platform Administration</PageTitle>
 
@@ -142,7 +144,7 @@ else
                 <div class="tenant-catalog-list">
                     @foreach (var tenant in tenants)
                     {
-                        <article class="tenant-catalog-card">
+                        <article class="tenant-catalog-card @(IsSelectedTenant(tenant) ? "tenant-catalog-card-selected" : null)">
                             <div>
                                 <strong>@tenant.Name</strong>
                                 <p class="tenant-catalog-meta">@tenant.Identifier</p>
@@ -152,8 +154,155 @@ else
                                 <span class="tenant-state @(tenant.IsActive ? "tenant-state-active" : "tenant-state-inactive")">
                                     @(tenant.IsActive ? "Active" : "Inactive")
                                 </span>
+                                <button class="secondary-button tenant-select-button" @onclick="() => SelectTenant(tenant)">
+                                    @(IsSelectedTenant(tenant) ? "Selected" : "Open")
+                                </button>
                             </div>
                         </article>
+                    }
+                </div>
+            }
+        </article>
+    </section>
+
+    <section class="grid platform-detail-grid">
+        <article class="panel">
+            <div class="platform-section-header">
+                <div>
+                    <p class="eyebrow">Tenant Detail</p>
+                    <h2>@(selectedTenant?.Name ?? "Select a tenant")</h2>
+                </div>
+            </div>
+
+            @if (selectedTenant is null)
+            {
+                <p>Select a tenant from the catalog to inspect its host, identifier, and current platform status.</p>
+            }
+            else
+            {
+                <dl class="platform-detail-list">
+                    <div>
+                        <dt>Identifier</dt>
+                        <dd><code>@selectedTenant.Identifier</code></dd>
+                    </div>
+                    <div>
+                        <dt>Host</dt>
+                        <dd><code>@selectedTenant.Host</code></dd>
+                    </div>
+                    <div>
+                        <dt>Status</dt>
+                        <dd>@(selectedTenant.IsActive ? "Active" : "Inactive")</dd>
+                    </div>
+                </dl>
+
+                <p class="platform-detail-note">
+                    Platform lifecycle actions and tenant membership management will attach to this selected tenant in the next Phase 14 slices.
+                </p>
+
+                <button class="secondary-button" @onclick="HandleSelectedTenantActivationToggleAsync" disabled="@isTenantActivationSubmitting">
+                    @(isTenantActivationSubmitting
+                        ? "Saving..."
+                        : selectedTenant.IsActive
+                            ? "Deactivate tenant"
+                            : "Activate tenant")
+                </button>
+
+                @if (!string.IsNullOrWhiteSpace(tenantLifecycleMessage))
+                {
+                    <p class="@TenantLifecycleMessageClass">@tenantLifecycleMessage</p>
+                }
+            }
+        </article>
+
+        <article class="panel">
+            <div class="platform-section-header">
+                <div>
+                    <p class="eyebrow">Membership</p>
+                    <h2>Platform tenant access</h2>
+                </div>
+            </div>
+
+            @if (selectedTenant is null)
+            {
+                <p>Choose a tenant first, then platform-level membership management can operate on that tenant safely.</p>
+            }
+            else
+            {
+                <p class="platform-detail-note">
+                    Global admin is working on tenant <code>@selectedTenant.Identifier</code> from the control-plane host.
+                </p>
+
+                <EditForm Model="@this" OnValidSubmit="@HandlePlatformMembershipSubmitAsync" class="platform-form">
+                    <label>
+                        <span>User name</span>
+                        <InputText @bind-Value="platformTargetUserName" />
+                        <small>Assign an existing identity user to the selected tenant.</small>
+                    </label>
+
+                    <label>
+                        <span>Tenant role</span>
+                        <InputSelect @bind-Value="platformSelectedRole">
+                            @foreach (var role in availableRoles)
+                            {
+                                <option value="@role">@role</option>
+                            }
+                        </InputSelect>
+                    </label>
+
+                    <button class="primary-button" type="submit" disabled="@isPlatformMembershipSubmitting">
+                        @(isPlatformMembershipSubmitting ? "Saving..." : "Assign or update membership")
+                    </button>
+                </EditForm>
+
+                @if (!string.IsNullOrWhiteSpace(platformMembershipMessage))
+                {
+                    <p class="@PlatformMembershipMessageClass">@platformMembershipMessage</p>
+                }
+
+                <div class="platform-membership-list">
+                    <div class="platform-section-header">
+                        <div>
+                            <p class="eyebrow">Tenant Memberships</p>
+                            <h3>Current access list</h3>
+                        </div>
+                        <button class="secondary-button" @onclick="LoadSelectedTenantMembershipsAsync" disabled="@isMembershipLoading">
+                            @(isMembershipLoading ? "Refreshing..." : "Refresh")
+                        </button>
+                    </div>
+
+                    @if (isMembershipLoading)
+                    {
+                        <p>Loading memberships...</p>
+                    }
+                    else if (!string.IsNullOrWhiteSpace(membershipLoadError))
+                    {
+                        <p class="error-text">@membershipLoadError</p>
+                    }
+                    else if (selectedTenantMemberships.Count == 0)
+                    {
+                        <p>No memberships yet for this tenant.</p>
+                    }
+                    else
+                    {
+                        <div class="tenant-catalog-list">
+                            @foreach (var membership in selectedTenantMemberships)
+                            {
+                                <article class="tenant-catalog-card">
+                                    <div>
+                                        <strong>@membership.UserName</strong>
+                                        <p class="tenant-catalog-meta">@membership.Role</p>
+                                    </div>
+                                    <div class="tenant-catalog-side">
+                                        <span class="tenant-state @(membership.IsActive ? "tenant-state-active" : "tenant-state-inactive")">
+                                            @(membership.IsActive ? "Active" : "Inactive")
+                                        </span>
+                                        <button class="secondary-button tenant-select-button" @onclick="() => HandleMembershipActivationToggleAsync(membership)" disabled="@isPlatformMembershipSubmitting">
+                                            @(membership.IsActive ? "Deactivate" : "Activate")
+                                        </button>
+                                    </div>
+                                </article>
+                            }
+                        </div>
                     }
                 </div>
             }
@@ -163,21 +312,38 @@ else
 
 @code {
     private readonly List<TenantCatalogDto> tenants = [];
+    private readonly List<TenantMembershipDto> selectedTenantMemberships = [];
+    private readonly string[] availableRoles = [TenantMembershipRoles.Admin, TenantMembershipRoles.Member];
     private string currentTenantIdentifier = string.Empty;
     private string newTenantIdentifier = string.Empty;
     private string newTenantName = string.Empty;
     private string newTenantHost = string.Empty;
+    private string platformTargetUserName = "admin";
+    private string platformSelectedRole = TenantMembershipRoles.Member;
     private string? tenantFormMessage;
     private string? catalogError;
+    private string? platformMembershipMessage;
+    private string? membershipLoadError;
+    private string? tenantLifecycleMessage;
     private bool isCatalogLoading = true;
     private bool isTenantSubmitting;
+    private bool isMembershipLoading;
+    private bool isPlatformMembershipSubmitting;
+    private bool isTenantActivationSubmitting;
     private bool isControlPlaneHost;
     private bool isGlobalAdmin;
     private bool lastCreateSucceeded;
+    private bool lastPlatformMembershipSucceeded;
+    private bool lastTenantLifecycleSucceeded;
+    private TenantCatalogDto? selectedTenant;
 
     private string TenantCountLabel => $"{tenants.Count} tenant{(tenants.Count == 1 ? string.Empty : "s")}";
 
     private string TenantFormMessageClass => lastCreateSucceeded ? "success-text" : "error-text";
+
+    private string PlatformMembershipMessageClass => lastPlatformMembershipSucceeded ? "success-text" : "error-text";
+
+    private string TenantLifecycleMessageClass => lastTenantLifecycleSucceeded ? "success-text" : "error-text";
 
     protected override async Task OnInitializedAsync()
     {
@@ -214,6 +380,22 @@ else
 
         tenants.Clear();
         tenants.AddRange(response.Data ?? []);
+
+        if (selectedTenant is not null)
+        {
+            selectedTenant = tenants.FirstOrDefault(tenant => tenant.Identifier == selectedTenant.Identifier);
+
+            if (selectedTenant is null)
+            {
+                selectedTenantMemberships.Clear();
+                membershipLoadError = null;
+                isMembershipLoading = false;
+            }
+            else
+            {
+                await LoadSelectedTenantMembershipsAsync();
+            }
+        }
     }
 
     private async Task HandleCreateTenantAsync()
@@ -238,6 +420,142 @@ else
         newTenantIdentifier = string.Empty;
         newTenantName = string.Empty;
         newTenantHost = string.Empty;
+
+        await LoadTenantsAsync();
+
+        if (response.Data is not null)
+        {
+            SelectTenant(response.Data);
+        }
+    }
+
+    private void SelectTenant(TenantCatalogDto tenant)
+    {
+        selectedTenant = tenant;
+        _ = InvokeAsync(LoadSelectedTenantMembershipsAsync);
+    }
+
+    private bool IsSelectedTenant(TenantCatalogDto tenant) =>
+        string.Equals(selectedTenant?.Identifier, tenant.Identifier, StringComparison.OrdinalIgnoreCase);
+
+    private async Task LoadSelectedTenantMembershipsAsync()
+    {
+        if (selectedTenant is null)
+        {
+            selectedTenantMemberships.Clear();
+            membershipLoadError = null;
+            isMembershipLoading = false;
+            return;
+        }
+
+        isMembershipLoading = true;
+        membershipLoadError = null;
+
+        var response = await IdentityAdminModuleClient.GetTenantMembershipsForTenantAsync(
+            new GetTenantMembershipsForTenantRpcRequest(selectedTenant.Identifier));
+
+        isMembershipLoading = false;
+
+        if (!response.Succeeded)
+        {
+            membershipLoadError = response.Errors.FirstOrDefault()?.Message ?? "Memberships could not be loaded.";
+            selectedTenantMemberships.Clear();
+            return;
+        }
+
+        selectedTenantMemberships.Clear();
+        selectedTenantMemberships.AddRange(response.Data ?? []);
+    }
+
+    private async Task HandlePlatformMembershipSubmitAsync()
+    {
+        if (selectedTenant is null)
+        {
+            platformMembershipMessage = "Select a tenant before managing membership.";
+            lastPlatformMembershipSucceeded = false;
+            return;
+        }
+
+        isPlatformMembershipSubmitting = true;
+        platformMembershipMessage = null;
+        lastPlatformMembershipSucceeded = false;
+
+        var response = await IdentityAdminModuleClient.UpsertTenantMembershipForTenantAsync(
+            new UpsertTenantMembershipForTenantRpcRequest(
+                selectedTenant.Identifier,
+                platformTargetUserName,
+                platformSelectedRole));
+
+        isPlatformMembershipSubmitting = false;
+
+        if (!response.Succeeded)
+        {
+            platformMembershipMessage = response.Errors.FirstOrDefault()?.Message ?? "Membership could not be saved.";
+            return;
+        }
+
+        lastPlatformMembershipSucceeded = true;
+        platformMembershipMessage =
+            $"Membership saved for '{response.Data?.UserName}' on tenant '{selectedTenant.Identifier}'.";
+        await LoadSelectedTenantMembershipsAsync();
+    }
+
+    private async Task HandleMembershipActivationToggleAsync(TenantMembershipDto membership)
+    {
+        if (selectedTenant is null)
+        {
+            return;
+        }
+
+        isPlatformMembershipSubmitting = true;
+        platformMembershipMessage = null;
+        lastPlatformMembershipSucceeded = false;
+
+        var response = await IdentityAdminModuleClient.SetTenantMembershipActivationForTenantAsync(
+            new SetTenantMembershipActivationForTenantRpcRequest(
+                selectedTenant.Identifier,
+                membership.UserName,
+                !membership.IsActive));
+
+        isPlatformMembershipSubmitting = false;
+
+        if (!response.Succeeded)
+        {
+            platformMembershipMessage = response.Errors.FirstOrDefault()?.Message ?? "Membership state could not be updated.";
+            return;
+        }
+
+        lastPlatformMembershipSucceeded = true;
+        platformMembershipMessage =
+            $"Membership for '{response.Data?.UserName}' is now {((response.Data?.IsActive ?? false) ? "active" : "inactive")}.";
+        await LoadSelectedTenantMembershipsAsync();
+    }
+
+    private async Task HandleSelectedTenantActivationToggleAsync()
+    {
+        if (selectedTenant is null)
+        {
+            return;
+        }
+
+        isTenantActivationSubmitting = true;
+        tenantLifecycleMessage = null;
+        lastTenantLifecycleSucceeded = false;
+
+        var response = await TenantAdministrationClient.SetTenantActivationAsync(
+            new SetTenantActivationRpcRequest(selectedTenant.Identifier, !selectedTenant.IsActive));
+
+        isTenantActivationSubmitting = false;
+
+        if (!response.Succeeded)
+        {
+            tenantLifecycleMessage = response.Errors.FirstOrDefault()?.Message ?? "Tenant state could not be updated.";
+            return;
+        }
+
+        lastTenantLifecycleSucceeded = true;
+        tenantLifecycleMessage =
+            $"Tenant '{response.Data?.Identifier}' is now {((response.Data?.IsActive ?? false) ? "active" : "inactive")}.";
 
         await LoadTenantsAsync();
     }

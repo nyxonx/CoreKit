@@ -1,0 +1,40 @@
+<div class="platform-nav-top">
+    <div class="platform-brand">
+        <a class="platform-brand-link" href="/platform-admin">CoreKit</a>
+        <p>Control-plane operations</p>
+    </div>
+</div>
+
+<nav class="platform-nav">
+    <div class="platform-nav-section">
+        <p class="platform-nav-label">Platform</p>
+        <NavLink class="platform-nav-link" href="" Match="NavLinkMatch.All">
+            <span>Home</span>
+        </NavLink>
+        <NavLink class="platform-nav-link" href="system">
+            <span>System</span>
+        </NavLink>
+        <NavLink class="platform-nav-link" href="platform-admin">
+            <span>Tenant Catalog</span>
+        </NavLink>
+    </div>
+
+    <AuthorizeView>
+        <Authorized>
+            <div class="platform-nav-section">
+                <p class="platform-nav-label">Session</p>
+                <NavLink class="platform-nav-link" href="logout">
+                    <span>Logout</span>
+                </NavLink>
+            </div>
+        </Authorized>
+        <NotAuthorized>
+            <div class="platform-nav-section">
+                <p class="platform-nav-label">Session</p>
+                <NavLink class="platform-nav-link" href="platform-login">
+                    <span>Platform Login</span>
+                </NavLink>
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+</nav>

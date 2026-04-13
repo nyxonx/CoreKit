@@ -86,9 +86,10 @@ public sealed class TenantResolutionTests
         var service = CreateService(dbContext);
         var accessor = new TenantContextAccessor();
         var middleware = new TenantResolutionMiddleware(_ => Task.CompletedTask);
+        var controlPlaneHostOptions = Options.Create(new ControlPlaneHostOptions());
         var httpContext = CreateRequestContext("missing.local");
 
-        await middleware.InvokeAsync(httpContext, service, accessor);
+        await middleware.InvokeAsync(httpContext, service, accessor, controlPlaneHostOptions);
 
         Assert.Equal(StatusCodes.Status404NotFound, httpContext.Response.StatusCode);
 
@@ -117,9 +118,10 @@ public sealed class TenantResolutionTests
         var service = CreateService(dbContext);
         var accessor = new TenantContextAccessor();
         var middleware = new TenantResolutionMiddleware(_ => Task.CompletedTask);
+        var controlPlaneHostOptions = Options.Create(new ControlPlaneHostOptions());
         var httpContext = CreateRequestContext("inactive.local");
 
-        await middleware.InvokeAsync(httpContext, service, accessor);
+        await middleware.InvokeAsync(httpContext, service, accessor, controlPlaneHostOptions);
 
         Assert.Equal(StatusCodes.Status403Forbidden, httpContext.Response.StatusCode);
 
@@ -154,9 +156,10 @@ public sealed class TenantResolutionTests
                 wasNextCalled = true;
                 return Task.CompletedTask;
             });
+        var controlPlaneHostOptions = Options.Create(new ControlPlaneHostOptions());
         var httpContext = CreateRequestContext("localhost");
 
-        await middleware.InvokeAsync(httpContext, service, accessor);
+        await middleware.InvokeAsync(httpContext, service, accessor, controlPlaneHostOptions);
 
         Assert.True(wasNextCalled);
         Assert.NotNull(accessor.TenantContext);

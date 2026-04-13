@@ -10,4 +10,8 @@ public interface ITenantAdministrationClient
     Task<RpcInvocationResult<TenantCatalogDto>> CreateTenantAsync(
         CreateTenantRpcRequest request,
         CancellationToken cancellationToken = default);
+
+    Task<RpcInvocationResult<TenantCatalogDto>> SetTenantActivationAsync(
+        SetTenantActivationRpcRequest request,
+        CancellationToken cancellationToken = default);
 }

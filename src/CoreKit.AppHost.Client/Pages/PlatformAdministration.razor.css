@@ -122,6 +122,11 @@
     background: rgba(247, 249, 252, 0.85);
 }
 
+.tenant-catalog-card-selected {
+    border-color: rgba(23, 55, 82, 0.32);
+    box-shadow: inset 0 0 0 1px rgba(23, 55, 82, 0.08);
+}
+
 .tenant-catalog-meta {
     margin: 0.2rem 0 0;
     color: #64748b;
@@ -131,6 +136,10 @@
     display: grid;
     justify-items: end;
     gap: 0.45rem;
+}
+
+.tenant-select-button {
+    padding: 0.45rem 0.8rem;
 }
 
 .tenant-state {
@@ -154,6 +163,50 @@
     margin-top: 1rem;
     color: #1d5a39;
     font-weight: 600;
+}
+
+.platform-detail-grid {
+    margin-top: 1rem;
+}
+
+.platform-detail-list {
+    margin: 0;
+    display: grid;
+    gap: 0.8rem;
+}
+
+.platform-detail-list dt {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6e7d8d;
+}
+
+.platform-detail-list dd {
+    margin: 0.2rem 0 0;
+    color: #173752;
+}
+
+.platform-detail-note {
+    margin-top: 1rem;
+    color: #5d7083;
+}
+
+.platform-detail-note + .secondary-button {
+    margin-top: 0.25rem;
+}
+
+.platform-membership-list {
+    margin-top: 1.5rem;
+}
+
+.platform-form select {
+    width: 100%;
+    padding: 0.8rem 0.95rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    background: #fff;
 }
 
 @media (min-width: 900px) {

@@ -74,4 +74,42 @@ public sealed class TenantMembershipAdministrationService(AppIdentityDbContext d
             membership.Role,
             membership.IsActive);
     }
+
+    public async Task<TenantMembershipDto?> SetMembershipActivationAsync(
+        string tenantIdentifier,
+        string userName,
+        bool isActive,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tenantIdentifier);
+        ArgumentException.ThrowIfNullOrWhiteSpace(userName);
+
+        var normalizedUserName = userName.Trim();
+        var user = await dbContext.Users.SingleOrDefaultAsync(
+            entity => entity.UserName == normalizedUserName,
+            cancellationToken);
+
+        if (user is null)
+        {
+            return null;
+        }
+
+        var membership = await dbContext.UserTenantMemberships.SingleOrDefaultAsync(
+            entity => entity.UserId == user.Id
+                && entity.TenantIdentifier == tenantIdentifier,
+            cancellationToken);
+
+        if (membership is null)
+        {
+            return null;
+        }
+
+        membership.IsActive = isActive;
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return new TenantMembershipDto(
+            user.UserName ?? user.Id,
+            membership.Role,
+            membership.IsActive);
+    }
 }

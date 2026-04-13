@@ -8,13 +8,13 @@ Phase 14 - Platform Administration Surface And Tenant Lifecycle Management
 
 ## Current Task
 
-Phase 14 prelazi sa osnovnog `platform-admin` baseline-a na zaseban control-plane UX sa tenant lifecycle i platform-level membership upravljanjem po izabranom tenant-u.
+Phase 14 sada ima prvi control-plane UX slice: zaseban platform layout/login, tenant catalog selection/detail, platform-level membership list/upsert baseline za izabrani tenant i prve activate/deactivate tokove za tenant i membership status.
 
 ## Next Tasks
 
-- Uvesti poseban layout i login UX za control-plane host
-- Dodati tenant lifecycle tokove kao sto su activate/deactivate i detaljniji catalog pregled
-- Dodati platform-level membership management i flow za dodelu postojeceg korisnika izabranom tenant-u
+- Prosiriti tenant lifecycle tokove preko detaljnijeg catalog pregleda i sigurnijih guardrail UX koraka
+- Prosiriti platform-level membership management sa jasnijim tenant detail flow-om i eventualnim create-user-to-tenant tokom
+- Nasloniti naredne control-plane tokove na izabrani tenant kontekst unutar `platform-admin` surface-a
 
 ## After That
 

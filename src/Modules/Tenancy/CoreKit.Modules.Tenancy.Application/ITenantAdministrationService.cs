@@ -7,4 +7,9 @@ public interface ITenantAdministrationService
     Task<TenantCatalogDto> CreateTenantAsync(
         CreateTenantRequest request,
         CancellationToken cancellationToken = default);
+
+    Task<TenantCatalogDto?> SetTenantActivationAsync(
+        string tenantIdentifier,
+        bool isActive,
+        CancellationToken cancellationToken = default);
 }

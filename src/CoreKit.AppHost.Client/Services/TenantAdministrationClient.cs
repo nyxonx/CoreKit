@@ -22,4 +22,16 @@ public sealed class TenantAdministrationClient(RpcClient rpcClient)
             request,
             cancellationToken);
     }
+
+    public Task<RpcInvocationResult<TenantCatalogDto>> SetTenantActivationAsync(
+        SetTenantActivationRpcRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        return InvokeAsync<TenantCatalogDto>(
+            TenancyRpcOperations.SetTenantActivation,
+            request,
+            cancellationToken);
+    }
 }

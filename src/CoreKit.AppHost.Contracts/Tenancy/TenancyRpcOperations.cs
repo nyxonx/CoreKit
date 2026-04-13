@@ -9,4 +9,6 @@ public static class TenancyRpcOperations
     public const string GetNotes = "tenancy.notes.list";
 
     public const string GetTenants = "tenancy.catalog.list";
+
+    public const string SetTenantActivation = "tenancy.catalog.activation";
 }
