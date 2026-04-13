@@ -102,9 +102,15 @@ Recommended host integration:
 ## Tests
 
 ```text
-/tests/UnitTests
-/tests/IntegrationTests
+/tests/CoreKit.Modules.[Module].Tests
+/tests/TestInfrastructure
 ```
+
+Current approach:
+
+* test projekti su trenutno organizovani primarno po modulu, ne po globalnoj `UnitTests` / `IntegrationTests` podeli
+* jedan modulski test projekat moze da sadrzi i unit i integration scenarije dok god je scope jasan
+* `TestInfrastructure` sadrzi shared test support tipove koji se koriste iz vise test projekata
 
 ## Documentation
 
