@@ -12,19 +12,19 @@ public sealed class AuthApiClient(HttpClient httpClient)
             var response =
                 await httpClient.GetFromJsonAsync<AuthStateResponse>("/api/auth/state");
 
-            return response ?? new AuthStateResponse(false, null, Array.Empty<string>());
+            return response ?? new AuthStateResponse(false, null, Array.Empty<string>(), null, null);
         }
         catch (HttpRequestException)
         {
-            return new AuthStateResponse(false, null, Array.Empty<string>());
+            return new AuthStateResponse(false, null, Array.Empty<string>(), null, null);
         }
         catch (NotSupportedException)
         {
-            return new AuthStateResponse(false, null, Array.Empty<string>());
+            return new AuthStateResponse(false, null, Array.Empty<string>(), null, null);
         }
         catch (TaskCanceledException)
         {
-            return new AuthStateResponse(false, null, Array.Empty<string>());
+            return new AuthStateResponse(false, null, Array.Empty<string>(), null, null);
         }
     }
 

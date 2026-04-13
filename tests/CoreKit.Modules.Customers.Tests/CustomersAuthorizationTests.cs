@@ -69,6 +69,36 @@ public sealed class CustomersAuthorizationTests
     }
 
     [Fact]
+    public async Task AuthState_ReturnsResolvedTenantAndTenantRole_ForAuthenticatedUser()
+    {
+        var tempRoot = CreateTempRoot();
+
+        try
+        {
+            await using var factory = new CoreKitAppFactory(tempRoot);
+            using var client = factory.CreateClient();
+            var authCookie = await LoginAsync(client, "localhost");
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/auth/state");
+            request.Headers.Host = "localhost";
+            request.Headers.Add("Cookie", authCookie);
+
+            using var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var payload = await response.Content.ReadFromJsonAsync<AuthStateResponse>();
+            Assert.NotNull(payload);
+            Assert.True(payload.IsAuthenticated);
+            Assert.Equal("bootstrap", payload.TenantIdentifier);
+            Assert.Equal(TenantMembershipRoles.Admin, payload.TenantRole);
+        }
+        finally
+        {
+            TryDeleteDirectory(tempRoot);
+        }
+    }
+
+    [Fact]
     public async Task CustomersRpc_ReturnsForbidden_WhenUserLacksMembershipForResolvedTenant()
     {
         var tempRoot = CreateTempRoot();

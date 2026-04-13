@@ -2,10 +2,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using CoreKit.AppHost.Contracts.Authentication;
 using CoreKit.BuildingBlocks.Presentation;
 using CoreKit.Modules.Identity.Domain;
+using CoreKit.Modules.Identity.Infrastructure;
+using CoreKit.Modules.Tenancy.Infrastructure;
 using System.Security.Claims;
 
 namespace CoreKit.Modules.Identity.Presentation;
@@ -89,25 +92,42 @@ public static class IdentityModuleRegistrationExtensions
             async (
                 HttpContext httpContext,
                 ClaimsPrincipal principal,
-                UserManager<AppUser> userManager) =>
+                UserManager<AppUser> userManager,
+                AppIdentityDbContext identityDbContext,
+                ITenantContextAccessor tenantContextAccessor) =>
             {
                 ApplyNoStoreHeaders(httpContext.Response);
 
                 if (principal.Identity?.IsAuthenticated != true)
                 {
-                    return Results.Ok(new AuthStateResponse(false, null, Array.Empty<string>()));
+                    return Results.Ok(new AuthStateResponse(false, null, Array.Empty<string>(), null, null));
                 }
 
                 var user = await userManager.GetUserAsync(principal);
                 var roles = user is null
                     ? Array.Empty<string>()
                     : await userManager.GetRolesAsync(user);
+                var tenantIdentifier = tenantContextAccessor.TenantContext?.Identifier;
+                string? tenantRole = null;
+
+                if (user is not null && !string.IsNullOrWhiteSpace(tenantIdentifier))
+                {
+                    tenantRole = await identityDbContext.UserTenantMemberships
+                        .AsNoTracking()
+                        .Where(membership => membership.UserId == user.Id
+                            && membership.TenantIdentifier == tenantIdentifier
+                            && membership.IsActive)
+                        .Select(membership => membership.Role)
+                        .SingleOrDefaultAsync();
+                }
 
                 return Results.Ok(
                     new AuthStateResponse(
                         true,
                         user?.UserName ?? principal.Identity?.Name,
-                        roles.ToArray()));
+                        roles.ToArray(),
+                        tenantIdentifier,
+                        tenantRole));
             });
 
         return endpoints;

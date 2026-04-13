@@ -8,7 +8,7 @@ Phase 12 - Tenant Membership And Authorization Model
 
 ## Current Task
 
-Phase 12 je zapoceta uvodjenjem membership osnove, shared current execution contract-a, prve tenant role semantike, prvog tenant authorization check-a i audit metadata baseline-a nad `Customers` modulom.
+Phase 12 je zapoceta uvodjenjem membership osnove, shared current execution contract-a, prve tenant role semantike, prvog tenant authorization check-a, tenant-aware auth state surfacing-a i audit metadata baseline-a nad `Customers` modulom.
 
 ## Next Tasks
 

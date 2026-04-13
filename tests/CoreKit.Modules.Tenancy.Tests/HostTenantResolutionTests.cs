@@ -57,6 +57,8 @@ public sealed class HostTenantResolutionTests
             Assert.False(payload.IsAuthenticated);
             Assert.Null(payload.UserName);
             Assert.Empty(payload.Roles);
+            Assert.Equal("bootstrap", payload.TenantIdentifier);
+            Assert.Null(payload.TenantRole);
         }
         finally
         {

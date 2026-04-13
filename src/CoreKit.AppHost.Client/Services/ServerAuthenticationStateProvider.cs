@@ -37,6 +37,16 @@ public sealed class ServerAuthenticationStateProvider(AuthApiClient authApiClien
 
         claims.AddRange(authState.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
+        if (!string.IsNullOrWhiteSpace(authState.TenantIdentifier))
+        {
+            claims.Add(new Claim("corekit:tenant", authState.TenantIdentifier));
+        }
+
+        if (!string.IsNullOrWhiteSpace(authState.TenantRole))
+        {
+            claims.Add(new Claim("corekit:tenant-role", authState.TenantRole));
+        }
+
         var identity = new ClaimsIdentity(claims, authenticationType: "Cookies");
 
         return new AuthenticationState(new ClaimsPrincipal(identity));

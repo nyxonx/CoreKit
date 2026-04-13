@@ -389,6 +389,7 @@ Now:
 - Uvedeni su membership baseline, shared current execution contract i prvi tenant authorization check na `Customers` modulu
 - `Customers` sada nosi i pocetni audit metadata obrazac za `CreatedByUserId`, `ModifiedByUserId`, tenant identitet i UTC timestamp polja
 - `Customers` sada ima i prvu tenant role semantiku: `Member`/`Admin` za read, `Admin` za write
+- Auth state sada iznosi aktivni tenant i tenant rolu do klijenta za tenant-aware UI i dalji authorization flow
 - Sledeci fokus je sirenje istog role/authorization obrasca na naredne module
 
 After that:
