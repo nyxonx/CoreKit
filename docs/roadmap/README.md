@@ -162,7 +162,7 @@ Exit criteria:
 Goal:
 Podesiti tenant-aware persistence i otkloniti rizik mesanja podataka.
 
-Status: In progress
+Status: Completed
 
 Tasks:
 
@@ -185,19 +185,19 @@ Exit criteria:
 Goal:
 Uvesti standardizovan execution pipeline za business operacije prema ADR-003.
 
-Status: Planned
+Status: In progress
 
 Tasks:
 
-- `[ ]` Dodati MediatR
-- `[ ]` Definisati bazne `Command` i `Query` apstrakcije
-- `[ ]` Definisati result model za handlere
-- `[ ]` Dodati validation pipeline behavior
-- `[ ]` Dodati logging pipeline behavior
-- `[ ]` Napraviti `POST /api/rpc` endpoint
-- `[ ]` Implementirati request dispatching
-- `[ ]` Dodati prvi end-to-end sample command
-- `[ ]` Dodati prvi end-to-end sample query
+- `[x]` Dodati MediatR
+- `[x]` Definisati bazne `Command` i `Query` apstrakcije
+- `[x]` Definisati result model za handlere
+- `[x]` Dodati validation pipeline behavior
+- `[x]` Dodati logging pipeline behavior
+- `[x]` Napraviti `POST /api/rpc` endpoint
+- `[x]` Implementirati request dispatching
+- `[x]` Dodati prvi end-to-end sample command
+- `[x]` Dodati prvi end-to-end sample query
 
 Exit criteria:
 - Business operacije prolaze kroz jedinstven pipeline
@@ -309,9 +309,10 @@ Now:
 - `Phase 2` je zavrsena
 - `Phase 3` je zavrsena
 - `Phase 4` je zavrsena
-- `Phase 5` je aktivna
-- Tenant catalog, resolution i tenant-aware persistence osnova su uvedeni
-- Sledece zatvaramo prvi `Phase 5` slice i spremamo prelaz ka `Phase 6`
+- `Phase 5` je zavrsena
+- `Phase 6` je aktivna
+- Unified RPC i CQRS osnova su uvedeni sa tenancy sample command/query tokom
+- Sledece ucvrscujemo RPC client obrazac i pripremamo module framework
 
 After that:
 - Posle toga RPC i CQRS

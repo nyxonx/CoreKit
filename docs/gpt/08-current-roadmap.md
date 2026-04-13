@@ -4,19 +4,19 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 5 - Tenant Data Access
+Phase 6 - CQRS And Unified RPC Pipeline
 
 ## Current Task
 
-Zatvoriti pocetni `Phase 5` slice kroz dokumentaciju i finalnu runtime potvrdu.
+Ucvrstiti prvi CQRS/RPC slice preko `POST /api/rpc` i tenancy sample operation-a.
 
 ## Next Tasks
 
-- Potvrditi `/api/modules/tenancy/data-status` i `/api/modules/tenancy/notes` kroz stvarni host
-- Zatvoriti `Phase 5` commit granicu
-- Pripremiti prelaz na `Phase 6`
+- Dodati prvi klijentski RPC poziv obrazac
+- Prosiriti RPC sample van tenancy demo use case-a
+- Pripremiti module framework na vrhu novog pipeline-a
 
 ## After That
 
-- Unified RPC + CQRS pipeline
 - Module framework + prvi pravi modul
+- Production-grade error handling i observability oko pipeline-a

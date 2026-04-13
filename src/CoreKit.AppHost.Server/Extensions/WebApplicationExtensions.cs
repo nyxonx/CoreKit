@@ -1,3 +1,4 @@
+using CoreKit.AppHost.Server.Rpc;
 using CoreKit.Modules.Tenancy.Infrastructure;
 
 namespace CoreKit.AppHost.Server.Extensions;
@@ -56,6 +57,7 @@ public static class WebApplicationExtensions
             .WithTags("System");
 
         app.MapHealthChecks("/health").WithTags("System");
+        app.MapRpcEndpoints();
         app.MapCoreKitModules();
         app.MapFallbackToFile("index.html");
 
