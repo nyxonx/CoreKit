@@ -393,7 +393,7 @@ Exit criteria:
 Goal:
 Smanjiti mesanje tenant i platform scope-a tako sto se control-plane deo izdvaja iz postojecg tenant AppHost-a u poseban `PlatformAppHost` server + client par, uz zadrzavanje zajednickih modula, contracts sloja i backend capability-ja koji su vec uvedeni.
 
-Status: In Progress
+Status: Completed
 
 Why this phase exists:
 
@@ -423,7 +423,7 @@ Tasks:
 - `[x]` Potvrditi da postojece platform backend capability-je ostaju dostupne kroz novi platform host bez ponovnog mesanja sa tenant hostom
 - `[x]` Uskladiti roadmap, README i high-level arhitekturu sa dual-AppHost modelom
 - `[x]` Dodati build verifikaciju za oba hosta i kasnije test scenarije tamo gde je prakticno
-- `[~]` Proci zavrsni stabilization pass kroz test scenarije i preostali dual-host smoke check kada lokalni test run bude stabilan
+- `[x]` Proci zavrsni stabilization pass kroz test scenarije i preostali dual-host smoke check kada lokalni test run bude stabilan
 
 Suggested execution slices:
 
@@ -443,7 +443,7 @@ Suggested execution slices:
   - Razdvojiti konfiguraciju i bootstrap gde je potrebno
   - Proveriti da middleware i auth shaping vise ne nose nepotreban UI coupling
 - `Phase 14D - Stabilization`
-  - Aktivno / otvoreno
+  - Zavrseno
   - Proci build verifikaciju oba hosta
   - Uskladiti dokumentaciju
   - Ostaviti preostale testove i dual-host smoke check kao zavrsni cleanup
@@ -501,13 +501,13 @@ Now:
 - Dodat je tenant administration UI za aktivni tenant sa membership list/upsert tokom, role-change formom i guardrail porukom za non-admin korisnike
 - Tenant catalog/create-provisioning flow je izdvojen na control-plane platform admin surface umesto da zivi na svakom tenant hostu
 - Dodati su integration testovi i high-level docs alignment za tenant administration baseline
-- `Phase 14` je aktivna
+- `Phase 14` je zavrsena
 - Izdvojen je poseban `CoreKit.PlatformAppHost.Server` + `CoreKit.PlatformAppHost.Client`
 - `platform-admin`, platform login, platform layout i platform servisi su preseljeni u novi platform host
 - Tenant AppHost je vracen na tenant-only UX bez platform ruta i control-plane UI grananja
 - `admin.local` sada predstavlja control-plane host, dok tenant hostovi ostaju na tenant AppHost strani
 - README, architecture docs i solution structure snapshot su uskladjeni sa dual-AppHost modelom
-- Build verifikacija prolazi; otvoren je jos zavrsni stabilization/test pass kada lokalni test run bude stabilan
+- Build verifikacija prolazi i rucni dual-host smoke check je potvrdio da tenant i platform surface rade odvojeno kako je planirano
 
 After that:
 - Nastaviti platform administraciju na cistijoj dual-AppHost osnovi, ukljucujuci sledece tenant lifecycle i identity tokove tek nakon stabilizacije ekstrakcije
