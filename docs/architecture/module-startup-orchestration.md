@@ -8,7 +8,7 @@ Ovaj dokument opisuje zeljeni pravac za startup orkestraciju modula u `CoreKit`.
 
 Kada host direktno poznaje module-specific bootstrap korake, vremenom se:
 
-- povecava coupling izmedju `AppHost.Server` i modula
+- povecava coupling izmedju host entrypoint-a i modula
 - startup logika rasipa po host-u
 - dodavanje novog modula trazi novu improvizaciju
 - teze se proverava da svi moduli prolaze isti startup tok
@@ -22,7 +22,7 @@ Svaki modul treba da ostane iza shared contract-a `ICoreKitModule` i da koristi 
 - `MapEndpoints(...)`
 - `InitializeAsync(...)`
 
-Host treba da orkestrira module genericki kroz katalog kao sto je `CoreKitModuleCatalog`, bez grananja po konkretnim modulima.
+Host treba da orkestrira module genericki kroz katalog kao sto je `CoreKitModuleCatalog`, bez grananja po konkretnim modulima ili po tome da li je host tenant-facing ili platform-facing.
 
 ## Startup Flow
 
@@ -38,12 +38,14 @@ Ovim pristupom startup logika ostaje koncentrisana u module i shared orchestrati
 
 ## Current Shape
 
-Trenutni minimalni Phase 11 oblik je:
+Trenutni oblik nakon izdvajanja platform host-a je:
 
-- `Program.cs` delegira startup bootstrap kroz `InitializeCoreKitAppAsync(...)`
+- i tenant i platform server delegiraju startup bootstrap kroz shared ekstenzije i module catalog
 - shared pipeline enumerira `ICoreKitModule` instance iz kataloga
-- host vise ne zna direktno za `TenantResolutionMiddleware`, vec ga `TenancyModule` prikljucuje kroz `ConfigurePipeline(...)`
+- host vise ne treba da zna module-specific middleware detalje kada ih modul prikljucuje kroz `ConfigurePipeline(...)`
 - svaki modul i dalje zadrzava sopstveni `InitializeAsync(...)` bez host-specific grananja
+
+Tenant i platform host mogu i dalje imati razlicite spoljne route/layout/bootstrap potrebe, ali modulski startup tok treba da ostane isti.
 
 To zadrzava postojeci CoreKit pravac, ali uklanja potrebu da host bootstrap raste kroz module-specific startup odluke.
 

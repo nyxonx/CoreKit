@@ -43,14 +43,16 @@ Svaki modul preko njega definise:
 
 To omogucava da `AppHost.Server` ne zna detalje svakog modula, vec samo enumerira module iz [CoreKitModuleCatalog.cs](../../src/CoreKit.AppHost.Server/Extensions/CoreKitModuleCatalog.cs).
 
+Isti obrazac sada koristi i [CoreKit.PlatformAppHost.Server](../../src/CoreKit.PlatformAppHost.Server), tako da modul ne zavisi od jednog konkretnog host entrypoint-a vec od shared host contract-a.
+
 ## Runtime Tok
 
 Standardni tok je:
 
-1. AppHost ucita katalog modula
+1. host ucita katalog modula
 2. svi moduli registruju svoje servise
 3. moduli po potrebi prikljucuju svoje middleware/pipeline korake kroz shared module hook
-4. AppHost registruje shared CQRS/RPC pipeline nad modulskim application assembly-jima
+4. host registruje shared CQRS/RPC pipeline nad modulskim application assembly-jima
 5. svi moduli mapiraju svoje endpoint-e
 6. shared initialization pipeline izvrsava module bootstrap kroz `InitializeAsync`
 
@@ -78,7 +80,7 @@ Za sada je `Identity` i kontrolisani izuzetak od potpuno cistog domain modela, j
 Kada modul ima klijentski pristup iz WASM-a, koristi se obrazac:
 
 - shared DTO/request/contracts u `CoreKit.AppHost.Contracts`
-- modul-specificki client servis u `CoreKit.AppHost.Client`
+- modul-specificki client servis u odgovarajucem WASM host-u (`CoreKit.AppHost.Client` za tenant surface ili `CoreKit.PlatformAppHost.Client` za platform surface)
 - `RpcClient` kao transportni mehanizam kada je operacija business use case
 
 Ako modul koristi i application DTO i transport DTO za isti use case, oni mogu namerno ostati odvojeni i kada su trenutno istog oblika.
@@ -88,6 +90,7 @@ Razlog je sto se interni application modeli i public/shared transport contracts 
 Primer:
 
 - [TenancyModuleClient.cs](../../src/CoreKit.AppHost.Client/Services/TenancyModuleClient.cs)
+- [TenantAdministrationClient.cs](../../src/CoreKit.PlatformAppHost.Client/Services/TenantAdministrationClient.cs)
 - [TenancyRpcOperations.cs](../../src/CoreKit.AppHost.Contracts/Tenancy/TenancyRpcOperations.cs)
 
 ## Kada Ne Forsirati RPC

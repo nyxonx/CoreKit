@@ -36,20 +36,23 @@ Koristi ovu listu kada dodajes novi modul u `CoreKit`.
 ## 6. Host Wiring
 
 - Dodati modul u [CoreKitModuleCatalog.cs](../../src/CoreKit.AppHost.Server/Extensions/CoreKitModuleCatalog.cs)
+- Ako modul treba da bude dostupan i na platform host-u, proveriti i [CoreKitModuleCatalog.cs](../../src/CoreKit.PlatformAppHost.Server/Extensions/CoreKitModuleCatalog.cs)
 - Potvrditi da se application assembly vidi iz shared pipeline registracije
 - Potvrditi da `InitializeAsync` prolazi pri startu
 
 ## 7. Client Access
 
 - Ako klijent koristi modul, dodati contracts u `CoreKit.AppHost.Contracts`
-- Dodati module-specific client u `CoreKit.AppHost.Client`
+- Dodati module-specific client u odgovarajuci client host:
+  - `CoreKit.AppHost.Client` za tenant UI
+  - `CoreKit.PlatformAppHost.Client` za platform UI
 - Ne koristiti raw RPC operation stringove direktno u UI komponentama
 
 ## 8. Verifikacija
 
 - `dotnet build CoreKit.sln -m:1`
 - relevantni `dotnet test`
-- proveriti da endpoint-i ili RPC operacije rade kroz AppHost
+- proveriti da endpoint-i ili RPC operacije rade kroz odgovarajuci host (`tenant` ili `platform`)
 
 ## 9. Dokumentacija
 

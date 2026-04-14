@@ -14,10 +14,12 @@
 ```text
 /src/CoreKit.AppHost.Server
 /src/CoreKit.AppHost.Client
+/src/CoreKit.PlatformAppHost.Server
+/src/CoreKit.PlatformAppHost.Client
 /src/CoreKit.AppHost.Contracts
 ```
 
-### Server
+### Tenant AppHost
 
 Hosts:
 
@@ -27,15 +29,29 @@ Hosts:
 * Module registrations
 * Middleware
 * Startup orchestration
+* Tenant-scoped UI hosting
+* Active tenant routing and tenant-scoped admin surface
 
-### Client
+Current concrete projects:
+
+* `CoreKit.AppHost.Server`
+* `CoreKit.AppHost.Client`
+
+### Platform AppHost
 
 Hosts:
 
-* Blazor WebAssembly UI
-* PWA configuration
-* Authentication state
-* Shell/Layout
+* Control-plane Minimal APIs
+* Platform auth endpoints
+* RPC endpoint over shared modules/contracts
+* Platform admin UI hosting
+* Dedicated platform layout/navigation
+* Global admin control-plane operations
+
+Current concrete projects:
+
+* `CoreKit.PlatformAppHost.Server`
+* `CoreKit.PlatformAppHost.Client`
 
 ### Contracts
 
@@ -44,6 +60,8 @@ Shared contracts between client/server:
 * DTOs
 * Request/Response models
 * Shared enums/constants
+
+These contracts are shared across both AppHost pairs.
 
 ## Building Blocks
 
@@ -95,9 +113,9 @@ Recommended module contents:
 Recommended host integration:
 
 * module class implementing the shared module contract
-* module added to the AppHost module catalog
+* module added to the relevant AppHost module catalog
 * optional client contracts in `CoreKit.AppHost.Contracts`
-* optional WASM module client in `CoreKit.AppHost.Client`
+* optional WASM module client in `CoreKit.AppHost.Client` and/or `CoreKit.PlatformAppHost.Client`, depending on where the UI surface lives
 
 ## Tests
 
