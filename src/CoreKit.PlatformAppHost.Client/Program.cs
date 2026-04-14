@@ -1,8 +1,8 @@
-using CoreKit.AppHost.Client;
-using CoreKit.AppHost.Client.Services;
+using CoreKit.PlatformAppHost.Client;
+using CoreKit.PlatformAppHost.Client.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -16,9 +16,8 @@ builder.Services.AddScoped(
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthApiClient>();
 builder.Services.AddScoped<RpcClient>();
-builder.Services.AddScoped<ICustomersModuleClient, CustomersModuleClient>();
 builder.Services.AddScoped<IIdentityAdminModuleClient, IdentityAdminModuleClient>();
-builder.Services.AddScoped<ITenancyModuleClient, TenancyModuleClient>();
+builder.Services.AddScoped<ITenantAdministrationClient, TenantAdministrationClient>();
 builder.Services.AddScoped<ServerAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(
     serviceProvider => serviceProvider.GetRequiredService<ServerAuthenticationStateProvider>());

@@ -44,22 +44,11 @@ public sealed class ServerAuthenticationStateProvider(AuthApiClient authApiClien
             claims.Add(new Claim("corekit:tenant-role", authState.TenantRole));
         }
 
-        if (authState.IsControlPlaneHost)
-        {
-            claims.Add(new Claim("corekit:control-plane", "true"));
-        }
-
         var identity = new ClaimsIdentity(claims, authenticationType: "Cookies");
 
         return new AuthenticationState(new ClaimsPrincipal(identity));
     }
 
-    private static ClaimsPrincipal CreateAnonymousPrincipal(AuthStateResponse authState)
-    {
-        var claims = authState.IsControlPlaneHost
-            ? [new Claim("corekit:control-plane", "true")]
-            : Array.Empty<Claim>();
-
-        return new ClaimsPrincipal(new ClaimsIdentity(claims));
-    }
+    private static ClaimsPrincipal CreateAnonymousPrincipal(AuthStateResponse authState) =>
+        new(new ClaimsIdentity());
 }

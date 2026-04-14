@@ -1,6 +1,6 @@
 using CoreKit.AppHost.Contracts.Tenancy;
 
-namespace CoreKit.AppHost.Client.Services;
+namespace CoreKit.PlatformAppHost.Client.Services;
 
 public sealed class TenantAdministrationClient(RpcClient rpcClient)
     : RpcModuleClientBase(rpcClient), ITenantAdministrationClient

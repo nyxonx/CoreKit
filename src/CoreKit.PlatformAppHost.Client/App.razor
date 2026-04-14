@@ -1,0 +1,19 @@
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(PlatformLayout)">
+                <NotAuthorized>
+                    <LayoutView Layout="@typeof(PlatformLayout)">
+                        <section class="platform-panel">
+                            <p class="platform-eyebrow">Access</p>
+                            <h1>Platform sign-in required</h1>
+                            <p>This control-plane host requires an authenticated platform administrator.</p>
+                            <p><a href="/platform-login">Go to platform login</a></p>
+                        </section>
+                    </LayoutView>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+    </Router>
+</CascadingAuthenticationState>

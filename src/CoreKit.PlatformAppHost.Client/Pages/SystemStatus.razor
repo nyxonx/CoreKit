@@ -1,0 +1,35 @@
+@page "/system"
+@attribute [Authorize]
+@layout PlatformLayout
+
+<PageTitle>Platform System</PageTitle>
+
+<section class="panel">
+    <p class="eyebrow">System</p>
+    <h1>Platform host bootstrap status</h1>
+    <p>
+        The dedicated platform apphost is now running as a separate client and server pair so control-plane
+        administration can evolve without leaking back into the tenant host.
+    </p>
+</section>
+
+<section class="grid">
+    <article class="panel">
+        <h2>Platform endpoints</h2>
+        <ul>
+            <li>`/` platform home</li>
+            <li>`/platform-admin` control-plane administration</li>
+            <li>`/api/system/info` platform host metadata</li>
+            <li>`/health` platform host health checks</li>
+        </ul>
+    </article>
+
+    <article class="panel">
+        <h2>Current migration focus</h2>
+        <ul>
+            <li>Move remaining platform-only flows off the tenant host.</li>
+            <li>Keep RPC/contracts shared while host shells stay separated.</li>
+            <li>Clean tenant routing back down to tenant-only concerns.</li>
+        </ul>
+    </article>
+</section>

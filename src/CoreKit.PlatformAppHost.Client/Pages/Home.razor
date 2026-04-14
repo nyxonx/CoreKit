@@ -1,0 +1,35 @@
+@page "/"
+@layout PlatformLayout
+
+<PageTitle>Platform Control Plane</PageTitle>
+
+<section class="platform-hero">
+    <div class="platform-panel">
+        <p class="platform-eyebrow">Phase 14B</p>
+        <h1>Dedicated platform host is active</h1>
+        <p class="platform-lead">
+            The control-plane shell and the real platform administration route now live in a separate client.
+            The next cleanup step is removing the old platform routes from the tenant-facing apphost.
+        </p>
+    </div>
+
+    <div class="platform-grid">
+        <article class="platform-panel">
+            <h2>Platform host responsibilities</h2>
+            <ul>
+                <li>Platform login and session entrypoints.</li>
+                <li>Tenant catalog, provisioning, and lifecycle controls.</li>
+                <li>Global membership management across selected tenants.</li>
+            </ul>
+        </article>
+
+        <article class="platform-panel">
+            <h2>Still shared underneath</h2>
+            <ul>
+                <li>RPC contracts and application handlers.</li>
+                <li>Identity, tenancy, and other module backends.</li>
+                <li>Core building blocks and module registration foundation.</li>
+            </ul>
+        </article>
+    </div>
+</section>

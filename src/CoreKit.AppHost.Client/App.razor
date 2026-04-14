@@ -1,69 +1,35 @@
 @inject NavigationManager NavigationManager
-@inject AuthApiClient AuthApiClient
 
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
         <Found Context="routeData">
-            @if (ShouldRedirectTenantLoginToPlatform(routeData))
-            {
-                <RedirectToPlatformLogin ReturnUrl="@BuildCurrentReturnUrl()" />
-            }
-            else
-            {
-                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                    <NotAuthorized>
-                        <LayoutView Layout="@typeof(MainLayout)">
-                            <section class="panel">
-                                <p class="eyebrow">Authorization</p>
-                                <h1>Sign in required</h1>
-                                <p>You need to sign in before accessing this page.</p>
-                                <p><a href="@BuildLoginUrl()">Go to login</a></p>
-                            </section>
-                        </LayoutView>
-                    </NotAuthorized>
-                </AuthorizeRouteView>
-            }
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <section class="panel">
+                            <p class="eyebrow">Authorization</p>
+                            <h1>Sign in required</h1>
+                            <p>You need to sign in before accessing this page.</p>
+                            <p><a href="@BuildLoginUrl()">Go to login</a></p>
+                        </section>
+                    </LayoutView>
+                </NotAuthorized>
+            </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
     </Router>
 </CascadingAuthenticationState>
 
 @code {
-    private bool isControlPlaneHost;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthApiClient.GetAuthStateAsync();
-        isControlPlaneHost = authState.IsControlPlaneHost;
-    }
-
     private string BuildLoginUrl()
     {
         var currentPath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
-        var loginPath = currentPath.StartsWith("platform-", StringComparison.OrdinalIgnoreCase)
-            ? "/platform-login"
-            : "/login";
 
         if (string.IsNullOrWhiteSpace(currentPath))
         {
-            return loginPath;
+            return "/login";
         }
 
-        return $"{loginPath}?returnUrl={Uri.EscapeDataString($"/{currentPath}")}";
-    }
-
-    private bool ShouldRedirectTenantLoginToPlatform(RouteData routeData) =>
-        isControlPlaneHost && routeData.PageType == typeof(Pages.Login);
-
-    private string BuildCurrentReturnUrl()
-    {
-        var currentPath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
-
-        if (string.IsNullOrWhiteSpace(currentPath))
-        {
-            return "/platform-admin";
-        }
-
-        return $"/{currentPath}";
+        return $"/login?returnUrl={Uri.EscapeDataString($"/{currentPath}")}";
     }
 }
