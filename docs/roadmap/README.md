@@ -388,31 +388,75 @@ Exit criteria:
 
 ---
 
-## Phase 14 - Platform Administration Surface And Tenant Lifecycle Management
+## Phase 14 - Platform AppHost Extraction And Control Plane Foundation
 
 Goal:
-Ucvrstiti novi control-plane pristup kroz poseban platform admin UX, tenant lifecycle operacije i platform-level membership upravljanje po izabranom tenant-u iznad vec uvedenog tenant admin baseline-a.
+Smanjiti mesanje tenant i platform scope-a tako sto se control-plane deo izdvaja iz postojecg tenant AppHost-a u poseban `PlatformAppHost` server + client par, uz zadrzavanje zajednickih modula, contracts sloja i backend capability-ja koji su vec uvedeni.
 
 Status: In Progress
 
+Why this phase exists:
+
+- Trenutni `platform-admin` tokovi rade, ali su uvedeni unutar istog AppHost-a koji hostuje tenant UX
+- Tenant i platform routing, login i auth shaping su poceli da se preplicu kroz specijalne slucajeve
+- Dalje dodavanje feature-a u istom hostu bi povecalo coupling i usporilo buduci razvoj
+- Potrebna je cistija osnova pre sledeceg talasa platform administracije
+
+Implementation strategy:
+
+1. Zadrzati postojeci `CoreKit.AppHost.Server` i `CoreKit.AppHost.Client` kao tenant-facing host tokom tranzicije
+2. Uvesti novi `CoreKit.PlatformAppHost.Server` i `CoreKit.PlatformAppHost.Client`
+3. Premestiti platform login/layout/navigation/page flow u novi platform client
+4. Zadrzati `BuildingBlocks`, `Modules` i `CoreKit.AppHost.Contracts` kao shared osnovu
+5. Ocistiti tenant host od control-plane UI grananja i platform ruta nakon uspesne ekstrakcije
+
 Tasks:
 
-- `[x]` Uvesti poseban layout i navigaciju za `platform-admin` surface
-- `[x]` Uvesti jasniji platform login UX za control-plane host
-- `[x]` Dodati tenant catalog pregled sa detaljnijim tenant prikazom i osnovnim pretragama/filterima kada je prakticno
-- `[x]` Dodati tenant lifecycle operacije kao sto su activate/deactivate za tenant
-- `[x]` Dodati platform-level membership management za izabrani tenant
-- `[x]` Dodati flow za dodelu postojeceg korisnika odabranom tenant-u sa tenant rolom
-- `[x]` Dodati platform UI za promenu role i deaktivaciju/reaktivaciju membership-a po tenant-u
-- `[ ]` Dodati test scenarije za control-plane i platform membership tokove tamo gde je prakticno
-- `[ ]` Uskladiti README i high-level dokumentaciju sa platform administration surface-om
+- `[ ]` Dodati `CoreKit.PlatformAppHost.Client` projekat kao poseban Blazor WebAssembly client za control-plane UI
+- `[ ]` Dodati `CoreKit.PlatformAppHost.Server` projekat koji hostuje samo platform client i njemu potreban server bootstrap
+- `[ ]` Uvesti platform AppHost bootstrap extensione i konfiguraciju odvojeno od tenant AppHost bootstrapa tamo gde to ima smisla
+- `[ ]` Premestiti `platform-admin` page, platform login, platform layout i platform navigaciju iz tenant client-a u novi platform client
+- `[ ]` Premestiti platform-specifine client servise i registracije u novi platform client, uz zadrzavanje shared RPC/contracts osnove
+- `[ ]` Ukloniti platform route handling i control-plane UI branching iz tenant client-a nakon ekstrakcije
+- `[ ]` Svesti tenant client ponovo na tenant-only UX: tenant login, tenant home i tenant administraciju aktivnog tenant-a
+- `[ ]` Podesiti lokalni development setup i host mapiranje tako da `admin.local` gadja platform AppHost, a tenant hostovi tenant AppHost
+- `[ ]` Potvrditi da postojece platform backend capability-je ostaju dostupne kroz novi platform host bez ponovnog mesanja sa tenant hostom
+- `[ ]` Uskladiti roadmap, README i high-level arhitekturu sa dual-AppHost modelom
+- `[ ]` Dodati build verifikaciju za oba hosta i kasnije test scenarije tamo gde je prakticno
+
+Suggested execution slices:
+
+- `Phase 14A - Extraction Skeleton`
+  - Dodati nova platform client/server projekta
+  - Uvesti minimalni bootstrap i local launch konfiguraciju
+  - Potvrditi da `admin.local` moze da sluzi novi platform host
+- `Phase 14B - Platform UI Migration`
+  - Premestiti platform Razor fajlove, layout i login flow
+  - Premestiti platform client servise i DI registracije
+  - Ostaviti tenant UI bez platform route-ova
+- `Phase 14C - Host Cleanup And Separation`
+  - Ocistiti tenant AppHost od `IsControlPlaneHost` UI workaround-a
+  - Razdvojiti konfiguraciju i bootstrap gde je potrebno
+  - Proveriti da middleware i auth shaping vise ne nose nepotreban UI coupling
+- `Phase 14D - Stabilization`
+  - Proci build verifikaciju oba hosta
+  - Uskladiti dokumentaciju
+  - Ostaviti sledece platform feature-e za narednu fazu
+
+Out of scope for this phase:
+
+- Novi veliki platform feature-i izvan vec postojeceg baseline-a
+- `Create user + assign tenant` flow
+- Dublji UX polish izvan onoga sto je potrebno da ekstrakcija bude cista i upotrebljiva
+- Siri admin/business milestone-i koji nisu direktno vezani za razdvajanje hostova
 
 Exit criteria:
 
-- Postoji jasno odvojen platform administration UX na control-plane hostu
-- Global admin moze da pregleda i menja tenant katalog bez ulaska u tenant host
-- Platform admin moze da dodeli postojeceg korisnika izabranom tenant-u i promeni mu tenant rolu
-- Tenant lifecycle i platform membership tokovi imaju proverljiv UI i server-side guardrail-e
+- Postoji poseban platform AppHost server + client za control-plane iskustvo
+- Tenant AppHost vise ne sadrzi platform route-ove, platform login ni platform layout
+- `admin.local` koristi platform host, a tenant hostovi tenant host
+- Shared modules i contracts ostaju jedinstveni bez dupliranja poslovne logike
+- Arhitektura je dovoljno cista da sledeca faza moze da doda platform feature-e bez novog mesanja sa tenant UX-om
 
 ---
 
@@ -452,10 +496,9 @@ Now:
 - Tenant catalog/create-provisioning flow je izdvojen na control-plane platform admin surface umesto da zivi na svakom tenant hostu
 - Dodati su integration testovi i high-level docs alignment za tenant administration baseline
 - `Phase 14` je aktivna
-- `platform-admin` sada ima zaseban layout i login UX na control-plane hostu
-- Dodat je tenant catalog selection/detail baseline sa platform-level membership list/upsert tokom za izabrani tenant
-- Dodat je i prvi tenant lifecycle/status slice kroz activate/deactivate tokove za tenant i membership status
-- Sledeci fokus su test scenariji i docs alignment za siri platform administration surface
+- Dosadasnji platform baseline postoji, ali ga tretiramo kao prelazno stanje unutar tenant AppHost-a
+- Sledeci fokus vise nije sirenje feature-a u istom hostu, nego ekstrakcija u poseban `PlatformAppHost`
+- Prvi cilj je da `admin.local` i control-plane UX odu u poseban server/client par, a tenant host da se vrati na tenant-only odgovornost
 
 After that:
-- Prosiriti tenant admin surface i otvoriti sledeci business/admin milestone na vec uspostavljenom tenant management temelju
+- Nastaviti platform administraciju na cistijoj dual-AppHost osnovi, ukljucujuci sledece tenant lifecycle i identity tokove tek nakon stabilizacije ekstrakcije

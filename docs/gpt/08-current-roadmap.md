@@ -4,18 +4,20 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 14 - Platform Administration Surface And Tenant Lifecycle Management
+Phase 14 - Platform AppHost Extraction And Control Plane Foundation
 
 ## Current Task
 
-Phase 14 sada ima prvi control-plane UX slice: zaseban platform layout/login, tenant catalog selection/detail, platform-level membership list/upsert baseline za izabrani tenant i prve activate/deactivate tokove za tenant i membership status.
+Phase 14 je prelomljena tako da vise ne sirimo `platform-admin` unutar postojeceg tenant AppHost-a, nego izdvajamo control-plane deo u poseban platform server + client. Dosadasnji platform UX i backend baseline ostaju korisni, ali se sada tretiraju kao prelazno stanje koje treba preseliti u novi `PlatformAppHost`.
 
 ## Next Tasks
 
-- Dodati test scenarije za control-plane i platform membership/lifecycle tokove tamo gde je prakticno
-- Uskladiti README i high-level dokumentaciju sa prosirenim platform administration surface-om
-- Nasloniti naredne control-plane tokove na izabrani tenant kontekst unutar `platform-admin` surface-a, ukljucujuci eventualni create-user-to-tenant flow
+- Dodati `CoreKit.PlatformAppHost.Client` i `CoreKit.PlatformAppHost.Server` kao novu host osnovu za `admin.local`
+- Premestiti platform login, layout, navigaciju i `platform-admin` page iz tenant client-a u novi platform client
+- Odcistiti tenant client od control-plane route-ova, redirect helpera i drugog platform UI grananja
+- Razdvojiti bootstrap i konfiguraciju tenant i platform hosta uz zadrzavanje shared modules/contracts osnove
+- Nakon ekstrakcije uraditi build verifikaciju oba hosta i uskladiti dokumentaciju
 
 ## After That
 
-- Sledeci business modul i siri admin surface na stabilnijem tenant management temelju
+- Nastaviti platform feature-e tek na stabilnoj dual-AppHost osnovi, bez daljeg mesanja tenant i control-plane UX-a
