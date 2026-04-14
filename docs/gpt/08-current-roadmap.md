@@ -8,15 +8,13 @@ Phase 14 - Platform AppHost Extraction And Control Plane Foundation
 
 ## Current Task
 
-Phase 14 je prelomljena tako da vise ne sirimo `platform-admin` unutar postojeceg tenant AppHost-a, nego izdvajamo control-plane deo u poseban platform server + client. Dosadasnji platform UX i backend baseline ostaju korisni, ali se sada tretiraju kao prelazno stanje koje treba preseliti u novi `PlatformAppHost`.
+Phase 14 ekstrakcija je prakticno izvedena: control-plane je preseljen u poseban `CoreKit.PlatformAppHost.Server` + `CoreKit.PlatformAppHost.Client`, dok je tenant AppHost vracen na tenant-only odgovornost. Otvoren je jos zavrsni stabilization korak oko test scenarija i dual-host smoke provere kada lokalni test run bude stabilan.
 
 ## Next Tasks
 
-- Dodati `CoreKit.PlatformAppHost.Client` i `CoreKit.PlatformAppHost.Server` kao novu host osnovu za `admin.local`
-- Premestiti platform login, layout, navigaciju i `platform-admin` page iz tenant client-a u novi platform client
-- Odcistiti tenant client od control-plane route-ova, redirect helpera i drugog platform UI grananja
-- Razdvojiti bootstrap i konfiguraciju tenant i platform hosta uz zadrzavanje shared modules/contracts osnove
-- Nakon ekstrakcije uraditi build verifikaciju oba hosta i uskladiti dokumentaciju
+- Ostaviti `Phase 14` na zavrsnom stabilization pass-u dok ne prodjemo pouzdan test run i dual-host smoke proveru
+- Zadrzati dual-AppHost docs alignment kao baseline za narednu fazu
+- Ne siriti nove platform feature-e dok se ekstrakcija ne zatvori i stanje ne bude mirno
 
 ## After That
 

@@ -412,35 +412,41 @@ Implementation strategy:
 
 Tasks:
 
-- `[ ]` Dodati `CoreKit.PlatformAppHost.Client` projekat kao poseban Blazor WebAssembly client za control-plane UI
-- `[ ]` Dodati `CoreKit.PlatformAppHost.Server` projekat koji hostuje samo platform client i njemu potreban server bootstrap
-- `[ ]` Uvesti platform AppHost bootstrap extensione i konfiguraciju odvojeno od tenant AppHost bootstrapa tamo gde to ima smisla
-- `[ ]` Premestiti `platform-admin` page, platform login, platform layout i platform navigaciju iz tenant client-a u novi platform client
-- `[ ]` Premestiti platform-specifine client servise i registracije u novi platform client, uz zadrzavanje shared RPC/contracts osnove
-- `[ ]` Ukloniti platform route handling i control-plane UI branching iz tenant client-a nakon ekstrakcije
-- `[ ]` Svesti tenant client ponovo na tenant-only UX: tenant login, tenant home i tenant administraciju aktivnog tenant-a
-- `[ ]` Podesiti lokalni development setup i host mapiranje tako da `admin.local` gadja platform AppHost, a tenant hostovi tenant AppHost
-- `[ ]` Potvrditi da postojece platform backend capability-je ostaju dostupne kroz novi platform host bez ponovnog mesanja sa tenant hostom
-- `[ ]` Uskladiti roadmap, README i high-level arhitekturu sa dual-AppHost modelom
-- `[ ]` Dodati build verifikaciju za oba hosta i kasnije test scenarije tamo gde je prakticno
+- `[x]` Dodati `CoreKit.PlatformAppHost.Client` projekat kao poseban Blazor WebAssembly client za control-plane UI
+- `[x]` Dodati `CoreKit.PlatformAppHost.Server` projekat koji hostuje samo platform client i njemu potreban server bootstrap
+- `[x]` Uvesti platform AppHost bootstrap extensione i konfiguraciju odvojeno od tenant AppHost bootstrapa tamo gde to ima smisla
+- `[x]` Premestiti `platform-admin` page, platform login, platform layout i platform navigaciju iz tenant client-a u novi platform client
+- `[x]` Premestiti platform-specifine client servise i registracije u novi platform client, uz zadrzavanje shared RPC/contracts osnove
+- `[x]` Ukloniti platform route handling i control-plane UI branching iz tenant client-a nakon ekstrakcije
+- `[x]` Svesti tenant client ponovo na tenant-only UX: tenant login, tenant home i tenant administraciju aktivnog tenant-a
+- `[x]` Podesiti lokalni development setup i host mapiranje tako da `admin.local` gadja platform AppHost, a tenant hostovi tenant AppHost
+- `[x]` Potvrditi da postojece platform backend capability-je ostaju dostupne kroz novi platform host bez ponovnog mesanja sa tenant hostom
+- `[x]` Uskladiti roadmap, README i high-level arhitekturu sa dual-AppHost modelom
+- `[x]` Dodati build verifikaciju za oba hosta i kasnije test scenarije tamo gde je prakticno
+- `[~]` Proci zavrsni stabilization pass kroz test scenarije i preostali dual-host smoke check kada lokalni test run bude stabilan
 
 Suggested execution slices:
 
 - `Phase 14A - Extraction Skeleton`
+  - Zavrseno
   - Dodati nova platform client/server projekta
   - Uvesti minimalni bootstrap i local launch konfiguraciju
   - Potvrditi da `admin.local` moze da sluzi novi platform host
 - `Phase 14B - Platform UI Migration`
+  - Zavrseno
   - Premestiti platform Razor fajlove, layout i login flow
   - Premestiti platform client servise i DI registracije
   - Ostaviti tenant UI bez platform route-ova
 - `Phase 14C - Host Cleanup And Separation`
+  - Zavrseno
   - Ocistiti tenant AppHost od `IsControlPlaneHost` UI workaround-a
   - Razdvojiti konfiguraciju i bootstrap gde je potrebno
   - Proveriti da middleware i auth shaping vise ne nose nepotreban UI coupling
 - `Phase 14D - Stabilization`
+  - Aktivno / otvoreno
   - Proci build verifikaciju oba hosta
   - Uskladiti dokumentaciju
+  - Ostaviti preostale testove i dual-host smoke check kao zavrsni cleanup
   - Ostaviti sledece platform feature-e za narednu fazu
 
 Out of scope for this phase:
@@ -496,9 +502,12 @@ Now:
 - Tenant catalog/create-provisioning flow je izdvojen na control-plane platform admin surface umesto da zivi na svakom tenant hostu
 - Dodati su integration testovi i high-level docs alignment za tenant administration baseline
 - `Phase 14` je aktivna
-- Dosadasnji platform baseline postoji, ali ga tretiramo kao prelazno stanje unutar tenant AppHost-a
-- Sledeci fokus vise nije sirenje feature-a u istom hostu, nego ekstrakcija u poseban `PlatformAppHost`
-- Prvi cilj je da `admin.local` i control-plane UX odu u poseban server/client par, a tenant host da se vrati na tenant-only odgovornost
+- Izdvojen je poseban `CoreKit.PlatformAppHost.Server` + `CoreKit.PlatformAppHost.Client`
+- `platform-admin`, platform login, platform layout i platform servisi su preseljeni u novi platform host
+- Tenant AppHost je vracen na tenant-only UX bez platform ruta i control-plane UI grananja
+- `admin.local` sada predstavlja control-plane host, dok tenant hostovi ostaju na tenant AppHost strani
+- README, architecture docs i solution structure snapshot su uskladjeni sa dual-AppHost modelom
+- Build verifikacija prolazi; otvoren je jos zavrsni stabilization/test pass kada lokalni test run bude stabilan
 
 After that:
 - Nastaviti platform administraciju na cistijoj dual-AppHost osnovi, ukljucujuci sledece tenant lifecycle i identity tokove tek nakon stabilizacije ekstrakcije
