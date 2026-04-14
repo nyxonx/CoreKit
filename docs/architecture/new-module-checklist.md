@@ -35,8 +35,8 @@ Koristi ovu listu kada dodajes novi modul u `CoreKit`.
 
 ## 6. Host Wiring
 
-- Dodati modul u [CoreKitModuleCatalog.cs](../../src/CoreKit.AppHost.Server/Extensions/CoreKitModuleCatalog.cs)
-- Ako modul treba da bude dostupan i na platform host-u, proveriti i [CoreKitModuleCatalog.cs](../../src/CoreKit.PlatformAppHost.Server/Extensions/CoreKitModuleCatalog.cs)
+- Dodati modul u [CoreKitModuleCatalog.cs](../../src/AppHosts/Tenant/CoreKit.AppHost.Server/Extensions/CoreKitModuleCatalog.cs)
+- Ako modul treba da bude dostupan i na platform host-u, proveriti i [CoreKitModuleCatalog.cs](../../src/AppHosts/Platform/CoreKit.PlatformAppHost.Server/Extensions/CoreKitModuleCatalog.cs)
 - Potvrditi da se application assembly vidi iz shared pipeline registracije
 - Potvrditi da `InitializeAsync` prolazi pri startu
 

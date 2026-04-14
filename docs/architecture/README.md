@@ -20,15 +20,15 @@ Tipican sadrzaj:
 CoreKit trenutno koristi dual-AppHost model:
 
 - tenant-facing AppHost:
-  - [CoreKit.AppHost.Server](../../src/CoreKit.AppHost.Server)
-  - [CoreKit.AppHost.Client](../../src/CoreKit.AppHost.Client)
+  - [CoreKit.AppHost.Server](../../src/AppHosts/Tenant/CoreKit.AppHost.Server)
+  - [CoreKit.AppHost.Client](../../src/AppHosts/Tenant/CoreKit.AppHost.Client)
 - platform control-plane AppHost:
-  - [CoreKit.PlatformAppHost.Server](../../src/CoreKit.PlatformAppHost.Server)
-  - [CoreKit.PlatformAppHost.Client](../../src/CoreKit.PlatformAppHost.Client)
+  - [CoreKit.PlatformAppHost.Server](../../src/AppHosts/Platform/CoreKit.PlatformAppHost.Server)
+  - [CoreKit.PlatformAppHost.Client](../../src/AppHosts/Platform/CoreKit.PlatformAppHost.Client)
 
 Oba hosta dele:
 
-- [CoreKit.AppHost.Contracts](../../src/CoreKit.AppHost.Contracts)
+- [CoreKit.AppHost.Contracts](../../src/AppHosts/Shared/CoreKit.AppHost.Contracts)
 - [BuildingBlocks](../../src/BuildingBlocks)
 - [Modules](../../src/Modules)
 

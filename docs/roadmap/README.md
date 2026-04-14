@@ -466,6 +466,32 @@ Exit criteria:
 
 ---
 
+## Phase 15 - AppHost Solution Structure Cleanup
+
+Goal:
+Preurediti `src` strukturu tako da tenant i platform host projekti budu grupisani pod zajednicki `AppHosts` folder, uz minimalan rizik i bez promene poslovne logike ili odgovornosti uvedenih u `Phase 14`.
+
+Status: Completed
+
+Tasks:
+
+- `[x]` Premestiti tenant host projekte pod `src/AppHosts/Tenant`
+- `[x]` Premestiti platform host projekte pod `src/AppHosts/Platform`
+- `[x]` Premestiti `CoreKit.AppHost.Contracts` pod `src/AppHosts/Shared`
+- `[x]` Azurirati `CoreKit.sln` i project reference putanje prema novoj strukturi
+- `[x]` Azurirati docs koje referenciraju stare AppHost putanje
+- `[x]` Potvrditi da `dotnet build CoreKit.sln -m:1` prolazi nakon restrukturiranja
+- `[x]` Odraditi kratki smoke check za tenant i platform startup nakon move-a
+
+Exit criteria:
+
+- Svi AppHost projekti zive pod `src/AppHosts`
+- `src` je organizovan po odgovornosti: `AppHosts`, `BuildingBlocks`, `Modules`
+- Build prolazi bez rucnog krpljenja putanja
+- Dokumentacija prati novu strukturu
+
+---
+
 ## Current Focus
 
 Now:
@@ -508,6 +534,12 @@ Now:
 - `admin.local` sada predstavlja control-plane host, dok tenant hostovi ostaju na tenant AppHost strani
 - README, architecture docs i solution structure snapshot su uskladjeni sa dual-AppHost modelom
 - Build verifikacija prolazi i rucni dual-host smoke check je potvrdio da tenant i platform surface rade odvojeno kako je planirano
+- `Phase 15` je aktivna
+- Sledeci cleanup korak je grupisanje tenant i platform host projekata pod `src/AppHosts`
+- Tenant i platform host projekti su preseljeni pod `src/AppHosts`, a `CoreKit.AppHost.Contracts` pod `src/AppHosts/Shared`
+- `CoreKit.sln`, module/test project reference putanje i docs su uskladjeni sa novom strukturom
+- Build prolazi i startup/smoke proverom je potvrdeno da nova `src/AppHosts` struktura ne uvodi path ili config regresije
+- `Phase 15` je zavrsena
 
 After that:
-- Nastaviti platform administraciju na cistijoj dual-AppHost osnovi, ukljucujuci sledece tenant lifecycle i identity tokove tek nakon stabilizacije ekstrakcije
+- Nastaviti platform administraciju na cistijoj dual-AppHost osnovi tek nakon sto host struktura bude preglednija i stabilna za dalji rad

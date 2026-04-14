@@ -4,18 +4,17 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 14 - Completed
+Phase 15 - Completed
 
 ## Current Task
 
-Phase 14 je zatvorena: control-plane je preseljen u poseban `CoreKit.PlatformAppHost.Server` + `CoreKit.PlatformAppHost.Client`, tenant AppHost je vracen na tenant-only odgovornost, build prolazi, a rucni dual-host smoke check je potvrdio trazeno razdvajanje.
+Phase 15 je zatvorena: tenant i platform host projekti su grupisani pod `src/AppHosts`, shared contracts su pod `src/AppHosts/Shared`, `CoreKit.sln` i reference putanje su uskladjene, build prolazi, a startup/smoke proverom je potvrdeno da nema skrivenih path ili config regresija.
 
 ## Next Tasks
 
-- Definisati i otvoriti sledecu fazu za platform feature-e na cistoj dual-AppHost osnovi
-- Zadrzati dual-AppHost docs alignment kao baseline za narednu fazu
-- Ne vracati tenant i platform UX u isti host
+- Otvoriti sledecu platform feature fazu na uredjenijoj AppHost strukturi
+- Zadrzati `AppHosts/Tenant`, `AppHosts/Platform` i `AppHosts/Shared` kao novu baznu organizaciju
 
 ## After That
 
-- Nastaviti platform feature-e tek na stabilnoj dual-AppHost osnovi, bez daljeg mesanja tenant i control-plane UX-a
+- Otvoriti sledecu platform feature fazu na uredjenijoj AppHost strukturi

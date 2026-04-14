@@ -41,9 +41,9 @@ Svaki modul preko njega definise:
 - `MapEndpoints(...)`
 - `InitializeAsync(...)`
 
-To omogucava da `AppHost.Server` ne zna detalje svakog modula, vec samo enumerira module iz [CoreKitModuleCatalog.cs](../../src/CoreKit.AppHost.Server/Extensions/CoreKitModuleCatalog.cs).
+To omogucava da `AppHost.Server` ne zna detalje svakog modula, vec samo enumerira module iz [CoreKitModuleCatalog.cs](../../src/AppHosts/Tenant/CoreKit.AppHost.Server/Extensions/CoreKitModuleCatalog.cs).
 
-Isti obrazac sada koristi i [CoreKit.PlatformAppHost.Server](../../src/CoreKit.PlatformAppHost.Server), tako da modul ne zavisi od jednog konkretnog host entrypoint-a vec od shared host contract-a.
+Isti obrazac sada koristi i [CoreKit.PlatformAppHost.Server](../../src/AppHosts/Platform/CoreKit.PlatformAppHost.Server), tako da modul ne zavisi od jednog konkretnog host entrypoint-a vec od shared host contract-a.
 
 ## Runtime Tok
 
@@ -89,9 +89,9 @@ Razlog je sto se interni application modeli i public/shared transport contracts 
 
 Primer:
 
-- [TenancyModuleClient.cs](../../src/CoreKit.AppHost.Client/Services/TenancyModuleClient.cs)
-- [TenantAdministrationClient.cs](../../src/CoreKit.PlatformAppHost.Client/Services/TenantAdministrationClient.cs)
-- [TenancyRpcOperations.cs](../../src/CoreKit.AppHost.Contracts/Tenancy/TenancyRpcOperations.cs)
+- [TenancyModuleClient.cs](../../src/AppHosts/Tenant/CoreKit.AppHost.Client/Services/TenancyModuleClient.cs)
+- [TenantAdministrationClient.cs](../../src/AppHosts/Platform/CoreKit.PlatformAppHost.Client/Services/TenantAdministrationClient.cs)
+- [TenancyRpcOperations.cs](../../src/AppHosts/Shared/CoreKit.AppHost.Contracts/Tenancy/TenancyRpcOperations.cs)
 
 ## Kada Ne Forsirati RPC
 

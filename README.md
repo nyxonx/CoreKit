@@ -41,6 +41,9 @@ Kljucne odluke su dokumentovane u [`docs/adr`](docs/adr/README.md).
 ```
 
 - `src/` sadrzi produkcione projekte
+  - `src/AppHosts/` sadrzi tenant/platform host projekte i shared host contracts
+  - `src/BuildingBlocks/` sadrzi shared tehnicke osnove
+  - `src/Modules/` sadrzi business module
 - `tests/` sadrzi test projekte
 - `docs/` sadrzi arhitekturu, ADR-ove, roadmap i AI kontekst
 - `.github/` sadrzi repo smernice

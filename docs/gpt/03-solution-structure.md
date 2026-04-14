@@ -12,11 +12,11 @@
 ## Application Host Projects
 
 ```text
-/src/CoreKit.AppHost.Server
-/src/CoreKit.AppHost.Client
-/src/CoreKit.PlatformAppHost.Server
-/src/CoreKit.PlatformAppHost.Client
-/src/CoreKit.AppHost.Contracts
+/src/AppHosts/Tenant/CoreKit.AppHost.Server
+/src/AppHosts/Tenant/CoreKit.AppHost.Client
+/src/AppHosts/Platform/CoreKit.PlatformAppHost.Server
+/src/AppHosts/Platform/CoreKit.PlatformAppHost.Client
+/src/AppHosts/Shared/CoreKit.AppHost.Contracts
 ```
 
 ### Tenant AppHost
