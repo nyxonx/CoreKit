@@ -5,7 +5,7 @@ using CoreKit.BuildingBlocks.Presentation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace CoreKit.AppHost.Server.Rpc;
+namespace CoreKit.PlatformAppHost.Server.Rpc;
 
 public sealed class RpcDispatcher(
     IMediator mediator,

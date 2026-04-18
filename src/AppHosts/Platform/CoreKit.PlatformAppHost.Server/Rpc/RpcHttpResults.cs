@@ -1,7 +1,7 @@
 using CoreKit.AppHost.Contracts.Rpc;
 using Microsoft.AspNetCore.Http;
 
-namespace CoreKit.AppHost.Server.Rpc;
+namespace CoreKit.PlatformAppHost.Server.Rpc;
 
 internal static class RpcHttpResults
 {

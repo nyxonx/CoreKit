@@ -6,10 +6,10 @@
 
 <section class="panel">
     <p class="eyebrow">System</p>
-    <h1>Platform host bootstrap status</h1>
+    <h1>Platform host status</h1>
     <p>
-        The dedicated platform apphost is now running as a separate client and server pair so control-plane
-        administration can evolve without leaking back into the tenant host.
+        The platform apphost runs as a dedicated client and server pair so control-plane administration
+        can stay separate from tenant-facing application flows.
     </p>
 </section>
 
@@ -25,11 +25,11 @@
     </article>
 
     <article class="panel">
-        <h2>Current migration focus</h2>
+        <h2>Platform host principles</h2>
         <ul>
-            <li>Move remaining platform-only flows off the tenant host.</li>
-            <li>Keep RPC/contracts shared while host shells stay separated.</li>
-            <li>Clean tenant routing back down to tenant-only concerns.</li>
+            <li>Keep tenant and platform responsibilities separated by host.</li>
+            <li>Reuse shared contracts and module backends without mixing UI shells.</li>
+            <li>Keep platform operations focused on global administration concerns.</li>
         </ul>
     </article>
 </section>

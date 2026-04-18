@@ -18,7 +18,7 @@ public sealed class ServerAuthenticationStateProvider(AuthApiClient authApiClien
         NotifyAuthenticationStateChanged(Task.FromResult(CreateAuthenticationState(authState)));
     }
 
-    private static AuthenticationState CreateAuthenticationState(AuthStateResponse response)
+    private static AuthenticationState CreateAuthenticationState(PlatformAuthStateResponse response)
     {
         if (!response.IsAuthenticated)
         {
@@ -35,11 +35,6 @@ public sealed class ServerAuthenticationStateProvider(AuthApiClient authApiClien
         foreach (var role in response.Roles)
         {
             claims.Add(new Claim(ClaimTypes.Role, role));
-        }
-
-        if (response.IsControlPlaneHost)
-        {
-            claims.Add(new Claim("corekit:control-plane", "true"));
         }
 
         return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationType: "server")));

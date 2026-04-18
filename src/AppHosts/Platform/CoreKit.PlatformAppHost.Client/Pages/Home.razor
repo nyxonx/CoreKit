@@ -5,11 +5,11 @@
 
 <section class="platform-hero">
     <div class="platform-panel">
-        <p class="platform-eyebrow">Phase 14B</p>
-        <h1>Dedicated platform host is active</h1>
+        <p class="platform-eyebrow">Control Plane</p>
+        <h1>Dedicated platform host</h1>
         <p class="platform-lead">
-            The control-plane shell and the real platform administration route now live in a separate client.
-            The next cleanup step is removing the old platform routes from the tenant-facing apphost.
+            This host is reserved for platform-wide administration outside of any individual tenant workspace.
+            Use it for tenant catalog, provisioning, lifecycle and global membership operations.
         </p>
     </div>
 
@@ -24,7 +24,7 @@
         </article>
 
         <article class="platform-panel">
-            <h2>Still shared underneath</h2>
+            <h2>Shared platform foundation</h2>
             <ul>
                 <li>RPC contracts and application handlers.</li>
                 <li>Identity, tenancy, and other module backends.</li>

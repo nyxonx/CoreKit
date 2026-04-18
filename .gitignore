@@ -33,6 +33,9 @@ packages/
 src/CoreKit.AppHost.Server/corekit*.db
 src/CoreKit.AppHost.Server/corekit*.db-shm
 src/CoreKit.AppHost.Server/corekit*.db-wal
+localdata/*.db
+localdata/*.db-shm
+localdata/*.db-wal
 
 # OS files
 .DS_Store

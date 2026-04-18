@@ -492,6 +492,33 @@ Exit criteria:
 
 ---
 
+## Phase 16 - Platform AppHost Cleanup And Responsibility Tightening
+
+Goal:
+Procistiti `PlatformAppHost` posle razdvajanja hostova tako da platform client i platform server nose samo ono sto im stvarno pripada, bez tenant-side tranzicionih ostataka i bez nepotrebno sirokih shared DTO i auth surface-a.
+
+Status: Completed
+
+Tasks:
+
+- `[x]` Auditirati `PlatformAppHost.Client` page/layout/service fajlove i evidentirati tranzicione ostatke
+- `[x]` Auditirati `PlatformAppHost.Server` bootstrap, diagnostics i RPC surface i izdvojiti sta treba ostati platform-specific, a sta je samo prelazni copy
+- `[x]` Procistiti platform auth state i auth DTO upotrebu tako da platform client koristi samo podatke koji mu realno trebaju
+- `[x]` Ukloniti tenant-context i control-plane workaround logiku iz platform UI-a tamo gde je sada suvisna
+- `[x]` Uskladiti naming i UI copy da vise ne zvuci kao tranzicija iz starog zajednickog AppHost-a
+- `[x]` Potvrditi da build prolazi posle cleanup-a
+- `[x]` Ostaviti tenant AppHost cleanup kao poseban sledeci slice nakon zavrsenog platform cleanup-a
+
+Exit criteria:
+
+- `PlatformAppHost.Client` i `PlatformAppHost.Server` imaju jasniju i uzu odgovornost
+- Platform auth i shared contracts ne nose nepotrebne tenant/control-plane ostatke bez razloga
+- Platform server bootstrap i copied infrastructure su pregledani i svedeni na opravdan minimum
+- Build prolazi i cleanup ne uvodi regresiju u platform host ponasanje
+- Lokalni tenant/catalog/identity SQLite fajlovi vise ne zive po pojedinacnim AppHost folderima nego u zajednickom `localdata/` prostoru
+
+---
+
 ## Current Focus
 
 Now:
@@ -534,12 +561,14 @@ Now:
 - `admin.local` sada predstavlja control-plane host, dok tenant hostovi ostaju na tenant AppHost strani
 - README, architecture docs i solution structure snapshot su uskladjeni sa dual-AppHost modelom
 - Build verifikacija prolazi i rucni dual-host smoke check je potvrdio da tenant i platform surface rade odvojeno kako je planirano
-- `Phase 15` je aktivna
-- Sledeci cleanup korak je grupisanje tenant i platform host projekata pod `src/AppHosts`
+- `Phase 15` je zavrsena
 - Tenant i platform host projekti su preseljeni pod `src/AppHosts`, a `CoreKit.AppHost.Contracts` pod `src/AppHosts/Shared`
 - `CoreKit.sln`, module/test project reference putanje i docs su uskladjeni sa novom strukturom
 - Build prolazi i startup/smoke proverom je potvrdeno da nova `src/AppHosts` struktura ne uvodi path ili config regresije
-- `Phase 15` je zavrsena
+- `Phase 16` je zavrsena
+- `PlatformAppHost` client i server su procisceni od tranzicionih tenant/control-plane ostataka
+- Platform auth koristi uzi `PlatformAuthStateResponse`, a platform host vise ne registruje tenant-facing `Customers` modul
+- Lokalni SQLite development fajlovi su prebaceni u zajednicki `localdata/` folder umesto da se dupliraju po AppHost projektima
 
 After that:
-- Nastaviti platform administraciju na cistijoj dual-AppHost osnovi tek nakon sto host struktura bude preglednija i stabilna za dalji rad
+- Odabrati sledeci uski slice: tenant AppHost cleanup ili novi platform feature work

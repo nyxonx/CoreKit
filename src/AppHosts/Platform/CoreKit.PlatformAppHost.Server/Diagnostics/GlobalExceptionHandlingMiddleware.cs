@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace CoreKit.AppHost.Server.Diagnostics;
+namespace CoreKit.PlatformAppHost.Server.Diagnostics;
 
 public sealed class GlobalExceptionHandlingMiddleware(
     RequestDelegate next,

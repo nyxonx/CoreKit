@@ -1,5 +1,5 @@
-using CoreKit.AppHost.Server.Diagnostics;
-using CoreKit.AppHost.Server.Rpc;
+using CoreKit.PlatformAppHost.Server.Diagnostics;
+using CoreKit.PlatformAppHost.Server.Rpc;
 using CoreKit.BuildingBlocks.Application;
 using CoreKit.BuildingBlocks.Presentation;
 

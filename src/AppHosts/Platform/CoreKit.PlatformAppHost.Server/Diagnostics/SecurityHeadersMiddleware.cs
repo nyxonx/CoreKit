@@ -1,4 +1,4 @@
-namespace CoreKit.AppHost.Server.Diagnostics;
+namespace CoreKit.PlatformAppHost.Server.Diagnostics;
 
 public sealed class SecurityHeadersMiddleware(RequestDelegate next)
 {

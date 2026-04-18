@@ -1,6 +1,6 @@
 using CoreKit.AppHost.Contracts.Rpc;
 
-namespace CoreKit.AppHost.Server.Rpc;
+namespace CoreKit.PlatformAppHost.Server.Rpc;
 
 public static class RpcEndpointRouteBuilderExtensions
 {

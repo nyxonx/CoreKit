@@ -6,7 +6,6 @@
     <ProjectReference Include="..\..\Shared\CoreKit.AppHost.Contracts\CoreKit.AppHost.Contracts.csproj" />
     <ProjectReference Include="..\CoreKit.PlatformAppHost.Client\CoreKit.PlatformAppHost.Client.csproj" />
     <ProjectReference Include="..\..\..\Modules\Tenancy\CoreKit.Modules.Tenancy.Application\CoreKit.Modules.Tenancy.Application.csproj" />
-    <ProjectReference Include="..\..\..\Modules\Customers\CoreKit.Modules.Customers.Presentation\CoreKit.Modules.Customers.Presentation.csproj" />
     <ProjectReference Include="..\..\..\Modules\Identity\CoreKit.Modules.Identity.Application\CoreKit.Modules.Identity.Application.csproj" />
     <ProjectReference Include="..\..\..\Modules\Identity\CoreKit.Modules.Identity.Infrastructure\CoreKit.Modules.Identity.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\Modules\Identity\CoreKit.Modules.Identity.Presentation\CoreKit.Modules.Identity.Presentation.csproj" />

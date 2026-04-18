@@ -1,6 +1,6 @@
 using System.Text.Json;
-using CoreKit.AppHost.Server.Diagnostics;
-using CoreKit.AppHost.Server.Rpc;
+using CoreKit.PlatformAppHost.Server.Diagnostics;
+using CoreKit.PlatformAppHost.Server.Rpc;
 using CoreKit.BuildingBlocks.Presentation;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;

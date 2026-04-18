@@ -16,16 +16,10 @@
         </p>
 
         <div class="platform-badges">
-            <span class="status-chip @(isControlPlaneHost ? "status-chip-active" : "status-chip-muted")">
-                Host: @(isControlPlaneHost ? "admin.local" : "tenant host")
-            </span>
+            <span class="status-chip status-chip-active">Host: admin.local</span>
             <span class="status-chip @(isGlobalAdmin ? "status-chip-active" : "status-chip-muted")">
                 Access: @(isGlobalAdmin ? "global admin" : "restricted")
             </span>
-            @if (!string.IsNullOrWhiteSpace(currentTenantIdentifier))
-            {
-                <span class="status-chip status-chip-warn">Tenant context: @currentTenantIdentifier</span>
-            }
         </div>
     </div>
 
@@ -39,19 +33,7 @@
     </aside>
 </section>
 
-@if (!isControlPlaneHost)
-{
-    <section class="panel">
-        <h2>Control-plane host required</h2>
-        <p>
-            Tenant catalog and provisioning are available only from the dedicated control-plane host <code>admin.local</code>.
-        </p>
-        <p>
-            Open the app through <code>http://admin.local:&lt;port&gt;/platform-admin</code> and sign in there with a global admin account.
-        </p>
-    </section>
-}
-else if (!isGlobalAdmin)
+@if (!isGlobalAdmin)
 {
     <section class="panel">
         <h2>Global admin access required</h2>
@@ -314,7 +296,6 @@ else
     private readonly List<TenantCatalogDto> tenants = [];
     private readonly List<TenantMembershipDto> selectedTenantMemberships = [];
     private readonly string[] availableRoles = [TenantMembershipRoles.Admin, TenantMembershipRoles.Member];
-    private string currentTenantIdentifier = string.Empty;
     private string newTenantIdentifier = string.Empty;
     private string newTenantName = string.Empty;
     private string newTenantHost = string.Empty;
@@ -330,7 +311,6 @@ else
     private bool isMembershipLoading;
     private bool isPlatformMembershipSubmitting;
     private bool isTenantActivationSubmitting;
-    private bool isControlPlaneHost;
     private bool isGlobalAdmin;
     private bool lastCreateSucceeded;
     private bool lastPlatformMembershipSucceeded;
@@ -348,11 +328,9 @@ else
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthApiClient.GetAuthStateAsync();
-        currentTenantIdentifier = authState.TenantIdentifier ?? string.Empty;
-        isControlPlaneHost = authState.IsControlPlaneHost;
         isGlobalAdmin = authState.Roles.Contains("Admin", StringComparer.OrdinalIgnoreCase);
 
-        if (isControlPlaneHost && isGlobalAdmin)
+        if (isGlobalAdmin)
         {
             await LoadTenantsAsync();
         }

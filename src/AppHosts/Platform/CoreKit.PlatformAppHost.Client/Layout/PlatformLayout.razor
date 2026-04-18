@@ -1,5 +1,4 @@
 @inherits LayoutComponentBase
-@inject AuthApiClient AuthApiClient
 
 <div class="platform-shell">
     <aside class="platform-sidebar">
@@ -11,7 +10,7 @@
             <div>
                 <p class="eyebrow">CoreKit Control Plane</p>
                 <strong>Platform Administration</strong>
-                <p class="platform-context">Host: @(isControlPlaneHost ? "admin.local" : "unknown")</p>
+                <p class="platform-context">Dedicated control-plane host</p>
             </div>
             <div>
                 <AuthorizeView>
@@ -30,13 +29,3 @@
         </article>
     </main>
 </div>
-
-@code {
-    private bool isControlPlaneHost;
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthApiClient.GetAuthStateAsync();
-        isControlPlaneHost = authState.IsControlPlaneHost;
-    }
-}

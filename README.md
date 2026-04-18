@@ -38,6 +38,7 @@ Kljucne odluke su dokumentovane u [`docs/adr`](docs/adr/README.md).
 /docs
 /.github
 /build
+/localdata
 ```
 
 - `src/` sadrzi produkcione projekte
@@ -48,10 +49,11 @@ Kljucne odluke su dokumentovane u [`docs/adr`](docs/adr/README.md).
 - `docs/` sadrzi arhitekturu, ADR-ove, roadmap i AI kontekst
 - `.github/` sadrzi repo smernice
 - `build/` sadrzi build/deployment skripte i pomocne automatizacije
+- `localdata/` sadrzi zajednicke lokalne SQLite fajlove za tenant i platform host tokom razvoja
 
 ## Current Status
 
-Osnovna platforma i roadmap faze `0-12` su zavrsene. `Phase 13` je uvela razdvajanje tenant admin i platform admin surface-a, a `Phase 14` je zapocela izdvajanje platform control-plane dela u poseban AppHost.
+Osnovna platforma i roadmap faze `0-16` su zavrsene. `Phase 13` je uvela razdvajanje tenant admin i platform admin surface-a, `Phase 14` je izdvojila platform control-plane u poseban AppHost, `Phase 15` je grupisala host projekte pod `src/AppHosts`, a `Phase 16` je procistila `PlatformAppHost` od tranzicionih ostataka nastalih tokom tog razdvajanja.
 
 Trenutno stanje repozitorijuma ukljucuje:
 - `Identity` modul za ASP.NET Core Identity i cookie auth tok
@@ -67,6 +69,7 @@ Prakticno to znaci:
 - tenant host sluzi tenant-scoped korisnickom iskustvu i radu nad aktivnim tenant kontekstom
 - platform host sluzi global admin control-plane operacijama kao sto su tenant catalog, provisioning i platform-level membership administracija
 - `admin.local` treba da gadja `CoreKit.PlatformAppHost.Server`, dok tenant hostovi ostaju na tenant AppHost strani
+- oba hosta koriste isti repo-level `localdata/` prostor za lokalne SQLite baze, umesto da prave odvojene kopije po AppHost folderima
 
 Platforma danas vec pokriva:
 - modularni startup kroz module catalog i shared contracts

@@ -1,7 +1,7 @@
 using CoreKit.BuildingBlocks.Presentation;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace CoreKit.AppHost.Server.Diagnostics;
+namespace CoreKit.PlatformAppHost.Server.Diagnostics;
 
 public sealed class BackgroundJobsHealthCheck(CoreKitBackgroundJobRegistry registry) : IHealthCheck
 {

@@ -2,7 +2,7 @@ using CoreKit.Modules.Tenancy.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace CoreKit.AppHost.Server.Diagnostics;
+namespace CoreKit.PlatformAppHost.Server.Diagnostics;
 
 public sealed class TenantCatalogHealthCheck(TenantCatalogDbContext tenantCatalogDbContext) : IHealthCheck
 {

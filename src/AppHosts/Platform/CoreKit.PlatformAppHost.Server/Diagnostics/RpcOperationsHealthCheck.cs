@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace CoreKit.AppHost.Server.Diagnostics;
+namespace CoreKit.PlatformAppHost.Server.Diagnostics;
 
 public sealed class RpcOperationsHealthCheck(Rpc.RpcOperationRegistry operationRegistry) : IHealthCheck
 {

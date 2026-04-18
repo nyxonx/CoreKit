@@ -2,7 +2,7 @@ using System.Reflection;
 using CoreKit.BuildingBlocks.Application;
 using MediatR;
 
-namespace CoreKit.AppHost.Server.Rpc;
+namespace CoreKit.PlatformAppHost.Server.Rpc;
 
 public sealed class RpcOperationRegistry
 {

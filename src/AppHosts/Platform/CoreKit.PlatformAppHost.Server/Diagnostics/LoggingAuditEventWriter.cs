@@ -2,7 +2,7 @@ using System.Security.Claims;
 using CoreKit.BuildingBlocks.Presentation;
 using CoreKit.Modules.Tenancy.Infrastructure;
 
-namespace CoreKit.AppHost.Server.Diagnostics;
+namespace CoreKit.PlatformAppHost.Server.Diagnostics;
 
 public sealed class LoggingAuditEventWriter(
     ILogger<LoggingAuditEventWriter> logger,
