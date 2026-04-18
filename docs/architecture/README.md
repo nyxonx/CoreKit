@@ -59,6 +59,8 @@ Ciljni smer je:
   - `TenantResolutionService` vise ne zavisi direktno od `TenantCatalogDbContext`, vec od registry contract-a
 - remote API model:
   - `PlatformAppHost` izlaze tenant registry endpoint-e
+  - prvi contract baseline je uveden kroz platform-gated tenancy registry endpoint-e
+  - tenant host trenutno koristi `RemoteTenantRegistry`, dok platform host ostaje na lokalnom DB-backed registry adapteru
   - tenant/business hostovi tenant informacije dobijaju preko registry client-a umesto direktnim citanjem catalog persistence sloja
 
 Time se izbegava povratak na jedan shared mega-AppHost, a buduci AppHost parovi dobijaju jasnu i ponovljivu osnovu.

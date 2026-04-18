@@ -558,8 +558,8 @@ Tasks:
 - `[x]` Definisati `TenantRegistry` contract, read modele i pravila za tenant resolution bez direktnog oslanjanja na catalog DB
 - `[ ]` Definisati granicu izmedju centralnog identity/user ownership-a i tenant/business host potrosnje auth i membership podataka
 - `[x]` Isplanirati lokalni adapter kao prelaznu implementaciju iza `TenantRegistry` interfejsa
-- `[ ]` Definisati remote registry API podfazu tako da `PlatformAppHost` ostane jedini owner tenant kataloga
-- `[ ]` Definisati host wiring i template smernice za buduce AppHost parove (`Expenses`, `Members`, `CRM`, itd.)
+- `[~]` Definisati remote registry API podfazu tako da `PlatformAppHost` ostane jedini owner tenant kataloga
+- `[~]` Definisati host wiring i template smernice za buduce AppHost parove (`Expenses`, `Members`, `CRM`, itd.)
 - `[>]` Uskladiti architecture docs i roadmap sa novim modelom
 
 Suggested execution slices:
@@ -577,9 +577,11 @@ Suggested execution slices:
   - Zadrzati DB-backed adapter kao lokalnu/prelaznu implementaciju iza interfejsa
   - Osloboditi tenant host direktnog znanja o catalog persistence detaljima
 - `Phase 18D - Remote Registry API`
+  - Zapoceto
   - Definisati endpoint-e i client adapter za buduci remote registry tok
   - Ostaviti `PlatformAppHost` kao jedini owner tenant kataloga i lifecycle operacija
 - `Phase 18E - Host Wiring And Stabilization`
+  - Zapoceto
   - Definisati obrazac za buduce AppHost parove
   - Proveriti build i osnovni smoke/stabilization tok kad implementacija bude gotova
 
@@ -652,6 +654,8 @@ Now:
 - Sledeci fokus je tenant registry decoupling tako da `PlatformAppHost` ostane jedini owner tenant kataloga
 - `TenantResolutionService` vise ne zavisi direktno od `TenantCatalogDbContext`, vec od `ITenantRegistry`
 - Uvedeni su `TenantRuntimeInfo` read model i lokalni `TenantCatalogTenantRegistry` adapter kao prvi rez
+- `PlatformAppHost` sada izlaze host-gated tenant registry endpoint-e kao prvi remote contract korak
+- Tenant host je konfigurisan da koristi `RemoteTenantRegistry`, dok platform host ostaje na lokalnom registry owner modu
 - Treba eksplicitno definisati i da centralni identity/user store i membership ownership ostaju na platform strani
 - Remote registry API nije poseban kasniji haoticni dodatak, nego planirana podfaza iste arhitektonske teme
 

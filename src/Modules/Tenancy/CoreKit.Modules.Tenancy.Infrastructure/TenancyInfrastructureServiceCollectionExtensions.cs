@@ -32,6 +32,11 @@ public static class TenancyInfrastructureServiceCollectionExtensions
             .Validate(
                 options => options.IntervalMinutes > 0,
                 "Tenant catalog maintenance job interval must be greater than zero.");
+        services.AddOptions<TenantRegistryOptions>()
+            .Bind(configuration.GetSection(TenantRegistryOptions.SectionName))
+            .Validate(
+                options => !options.IsRemoteMode() || !string.IsNullOrWhiteSpace(options.BaseUrl),
+                "Tenant registry remote mode requires a BaseUrl.");
         services.AddOptions<ControlPlaneHostOptions>()
             .Configure(options =>
             {
@@ -40,10 +45,21 @@ public static class TenancyInfrastructureServiceCollectionExtensions
                     ?? [];
             });
 
+        services.AddHttpClient(nameof(RemoteTenantRegistry));
         services.AddDbContext<TenantCatalogDbContext>(
             options => options.UseSqlite(connectionString));
 
-        services.AddScoped<ITenantRegistry, TenantCatalogTenantRegistry>();
+        services.AddScoped<ITenantRegistry>(
+            serviceProvider =>
+            {
+                var registryOptions = serviceProvider.GetRequiredService<IOptions<TenantRegistryOptions>>();
+
+                return registryOptions.Value.IsRemoteMode()
+                    ? serviceProvider.GetRequiredService<RemoteTenantRegistry>()
+                    : serviceProvider.GetRequiredService<TenantCatalogTenantRegistry>();
+            });
+        services.AddScoped<TenantCatalogTenantRegistry>();
+        services.AddScoped<RemoteTenantRegistry>();
         services.AddScoped<TenantResolutionService>();
         services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();
         services.AddScoped<ITenantConnectionStringProvider, TenantConnectionStringProvider>();

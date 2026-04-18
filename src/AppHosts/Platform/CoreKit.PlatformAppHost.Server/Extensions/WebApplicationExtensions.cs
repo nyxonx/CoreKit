@@ -1,7 +1,10 @@
 using System.Text.Json;
+using CoreKit.AppHost.Contracts.Tenancy;
 using CoreKit.PlatformAppHost.Server.Diagnostics;
 using CoreKit.PlatformAppHost.Server.Rpc;
 using CoreKit.BuildingBlocks.Presentation;
+using CoreKit.Modules.Tenancy.Application;
+using CoreKit.Modules.Tenancy.Domain;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
@@ -85,6 +88,36 @@ public static class WebApplicationExtensions
             .WithName("GetPlatformRuntimeInfo")
             .WithTags("System");
 
+        app.MapGet(
+                "/api/platform/tenant-registry/by-host/{host}",
+                async (
+                    string host,
+                    ITenantRegistry tenantRegistry,
+                    CancellationToken cancellationToken) =>
+                {
+                    var tenant = await tenantRegistry.GetByHostAsync(host, cancellationToken);
+                    return tenant is null
+                        ? Results.NotFound()
+                        : Results.Ok(ToRegistryResponse(tenant));
+                })
+            .WithName("GetPlatformTenantRegistryByHost")
+            .WithTags("Platform");
+
+        app.MapGet(
+                "/api/platform/tenant-registry/by-identifier/{identifier}",
+                async (
+                    string identifier,
+                    ITenantRegistry tenantRegistry,
+                    CancellationToken cancellationToken) =>
+                {
+                    var tenant = await tenantRegistry.GetByIdentifierAsync(identifier, cancellationToken);
+                    return tenant is null
+                        ? Results.NotFound()
+                        : Results.Ok(ToRegistryResponse(tenant));
+                })
+            .WithName("GetPlatformTenantRegistryByIdentifier")
+            .WithTags("Platform");
+
         app.MapHealthChecks(
                 "/health",
                 new HealthCheckOptions
@@ -97,6 +130,16 @@ public static class WebApplicationExtensions
         app.MapFallbackToFile("index.html");
 
         return app;
+    }
+
+    private static TenantRegistryItemResponse ToRegistryResponse(TenantRuntimeInfo tenant)
+    {
+        return new TenantRegistryItemResponse(
+            tenant.Identifier,
+            tenant.Name,
+            tenant.Host,
+            tenant.IsActive,
+            tenant.ConnectionString);
     }
 
     private static Task WriteHealthResponseAsync(HttpContext context, HealthReport report)
