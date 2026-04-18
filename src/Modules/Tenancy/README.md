@@ -24,4 +24,5 @@ Ovaj modul trenutno pokriva:
 - `TenantCatalogMigrationRunner` podize catalog bazu pre runtime rada.
 - `TenantProvisioningService` primenjuje tenant database migracije i seed korake za aktivne tenant-e.
 - `build/provision-local.ps1` pokrece isti provisioning tok bez dizanja web host-a.
-- `TenantResolutionService` koristi kratki in-memory cache za host/identifier lookup iz tenant kataloga.
+- `TenantResolutionService` sada radi kroz `ITenantRegistry` contract umesto direktno kroz catalog persistence sloj.
+- `TenantCatalogTenantRegistry` je trenutni lokalni DB-backed adapter i koristi kratki in-memory cache za host/identifier lookup.

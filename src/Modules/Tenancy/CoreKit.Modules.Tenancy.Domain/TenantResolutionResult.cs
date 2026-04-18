@@ -3,9 +3,9 @@ namespace CoreKit.Modules.Tenancy.Domain;
 public sealed record TenantResolutionResult(
     bool IsResolved,
     string? FailureReason,
-    TenantCatalogEntry? Tenant)
+    TenantRuntimeInfo? Tenant)
 {
-    public static TenantResolutionResult Success(TenantCatalogEntry tenant) =>
+    public static TenantResolutionResult Success(TenantRuntimeInfo tenant) =>
         new(true, null, tenant);
 
     public static TenantResolutionResult Failure(string failureReason) =>

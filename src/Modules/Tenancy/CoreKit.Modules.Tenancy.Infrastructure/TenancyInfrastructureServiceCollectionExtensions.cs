@@ -43,6 +43,7 @@ public static class TenancyInfrastructureServiceCollectionExtensions
         services.AddDbContext<TenantCatalogDbContext>(
             options => options.UseSqlite(connectionString));
 
+        services.AddScoped<ITenantRegistry, TenantCatalogTenantRegistry>();
         services.AddScoped<TenantResolutionService>();
         services.AddScoped<ITenantContextAccessor, TenantContextAccessor>();
         services.AddScoped<ITenantConnectionStringProvider, TenantConnectionStringProvider>();

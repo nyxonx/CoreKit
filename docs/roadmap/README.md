@@ -554,13 +554,13 @@ Status: In Progress
 
 Tasks:
 
-- `[>]` Definisati ciljnu arhitekturu i granice odgovornosti izmedju `PlatformAppHost` i tenant/business AppHost-ova
-- `[ ]` Definisati `TenantRegistry` contract, read modele i pravila za tenant resolution bez direktnog oslanjanja na catalog DB
+- `[x]` Definisati ciljnu arhitekturu i granice odgovornosti izmedju `PlatformAppHost` i tenant/business AppHost-ova
+- `[x]` Definisati `TenantRegistry` contract, read modele i pravila za tenant resolution bez direktnog oslanjanja na catalog DB
 - `[ ]` Definisati granicu izmedju centralnog identity/user ownership-a i tenant/business host potrosnje auth i membership podataka
-- `[ ]` Isplanirati lokalni adapter kao prelaznu implementaciju iza `TenantRegistry` interfejsa
+- `[x]` Isplanirati lokalni adapter kao prelaznu implementaciju iza `TenantRegistry` interfejsa
 - `[ ]` Definisati remote registry API podfazu tako da `PlatformAppHost` ostane jedini owner tenant kataloga
 - `[ ]` Definisati host wiring i template smernice za buduce AppHost parove (`Expenses`, `Members`, `CRM`, itd.)
-- `[ ]` Uskladiti architecture docs i roadmap sa novim modelom
+- `[>]` Uskladiti architecture docs i roadmap sa novim modelom
 
 Suggested execution slices:
 
@@ -569,9 +569,11 @@ Suggested execution slices:
   - Dokumentovati sta hostovi smeju i ne smeju da znaju direktno
   - Definisati da `PlatformAppHost` ostaje owner centralnog identity/user store-a i platform membership administracije
 - `Phase 18B - Tenant Registry Contract`
+  - Zavrseno
   - Uvesti `ITenantRegistry`
   - Definisati DTO/read model za resolution i tenant runtime podatke
 - `Phase 18C - Local Adapter`
+  - Zapoceto
   - Zadrzati DB-backed adapter kao lokalnu/prelaznu implementaciju iza interfejsa
   - Osloboditi tenant host direktnog znanja o catalog persistence detaljima
 - `Phase 18D - Remote Registry API`
@@ -648,7 +650,8 @@ Now:
 - Build prolazi i create-tenant smoke proverom je potvrdeno da nove tenant baze zavrsavaju u `localdata/`
 - `Phase 18` je aktivna
 - Sledeci fokus je tenant registry decoupling tako da `PlatformAppHost` ostane jedini owner tenant kataloga
-- Treba definisati kako tenant/business hostovi dobijaju tenant informacije bez direktnog oslanjanja na catalog DB
+- `TenantResolutionService` vise ne zavisi direktno od `TenantCatalogDbContext`, vec od `ITenantRegistry`
+- Uvedeni su `TenantRuntimeInfo` read model i lokalni `TenantCatalogTenantRegistry` adapter kao prvi rez
 - Treba eksplicitno definisati i da centralni identity/user store i membership ownership ostaju na platform strani
 - Remote registry API nije poseban kasniji haoticni dodatak, nego planirana podfaza iste arhitektonske teme
 

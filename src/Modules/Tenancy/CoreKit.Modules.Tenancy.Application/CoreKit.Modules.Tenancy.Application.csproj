@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\CoreKit.BuildingBlocks.Application\CoreKit.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\CoreKit.Modules.Tenancy.Domain\CoreKit.Modules.Tenancy.Domain.csproj" />
   </ItemGroup>
 
 </Project>

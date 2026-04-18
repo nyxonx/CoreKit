@@ -8,14 +8,13 @@ Phase 18 - Tenant Registry Decoupling And Multi-AppHost Foundation
 
 ## Current Task
 
-Definisati ciljnu arhitekturu u kojoj je `PlatformAppHost` jedini owner tenant kataloga, dok tenant/business AppHost-ovi tenant informacije dobijaju kroz `TenantRegistry` sloj, uz jasno planiran i dokumentovan put i za buduci remote API model.
+Uveden je prvi `TenantRegistry` baseline: tenant resolution vise ne zavisi direktno od `TenantCatalogDbContext`, vec od `ITenantRegistry` contract-a i lokalnog DB-backed adaptera. Sledeci korak je da na tom cistijem rezu definisemo remote registry API pravac i dalje host wiring granice.
 
 ## Next Tasks
 
-- Definisati odgovornosti `PlatformAppHost` i tenant/business AppHost-ova
-- Uvesti `TenantRegistry` contract i read modele koji odvajaju hostove od direktnog pristupa catalog bazi
 - Definisati granicu izmedju centralnog identity/user ownership-a i tenant/business host potrosnje auth i membership podataka
-- Isplanirati lokalni adapter, remote API podfazu i stabilizaciju kao deo iste zaokruzene arhitektonske faze
+- Definisati remote registry API podfazu iznad postojeceg `TenantRegistry` contract-a
+- Isplanirati host wiring i stabilizaciju na osnovu novog registry sloja
 
 ## After That
 

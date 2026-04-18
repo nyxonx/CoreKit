@@ -255,8 +255,9 @@ public sealed class TenantResolutionTests
             {
                 TtlSeconds = 60
             });
+        var tenantRegistry = new TenantCatalogTenantRegistry(dbContext, memoryCache, options);
 
-        return new TenantResolutionService(dbContext, memoryCache, options);
+        return new TenantResolutionService(tenantRegistry);
     }
 
     private sealed record TenantErrorResponse(string error, string detail);
