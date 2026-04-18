@@ -33,3 +33,28 @@ Oba hosta dele:
 - [Modules](../../src/Modules)
 
 To znaci da poslovna i modulska logika ostaju zajednicke, dok su host bootstrap, routing, layout i administrativni surface-i odvojeni po odgovornosti.
+
+## Ciljni Multi-AppHost Pravac
+
+Trenutni dual-AppHost model nije krajnja granica sistema, vec osnova za buduci model sa vise zasebnih AppHost parova.
+
+Ciljni smer je:
+
+- `PlatformAppHost` ostaje jedini owner tenant kataloga, tenant provisioning-a i tenant lifecycle operacija
+- svaki poslovni proizvod ili app surface moze imati svoj poseban AppHost par
+  - primeri:
+    - `ExpensesAppHost.Server/Client`
+    - `MembersAppHost.Server/Client`
+    - `CrmAppHost.Server/Client`
+- tenant/business AppHost-ovi ne treba dugorocno direktno da zavise od catalog baze
+- tenant resolution i runtime tenant podaci treba da idu kroz `TenantRegistry` sloj
+
+`TenantRegistry` pravac je planiran u dve implementacione etape:
+
+- lokalni adapter:
+  - prelazna implementacija iza interfejsa, korisna za lokalni razvoj i postepenu ekstrakciju
+- remote API model:
+  - `PlatformAppHost` izlaže tenant registry endpoint-e
+  - tenant/business hostovi tenant informacije dobijaju preko registry client-a umesto direktnim citanjem catalog persistence sloja
+
+Time se izbegava povratak na jedan shared mega-AppHost, a buduci AppHost parovi dobijaju jasnu i ponovljivu osnovu.

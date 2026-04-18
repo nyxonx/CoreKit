@@ -545,6 +545,53 @@ Exit criteria:
 
 ---
 
+## Phase 18 - Tenant Registry Decoupling And Multi-AppHost Foundation
+
+Goal:
+Uspostaviti arhitekturu u kojoj je `PlatformAppHost` jedini owner tenant kataloga, dok tenant-facing i buduci business AppHost-ovi tenant informacije dobijaju kroz `TenantRegistry` sloj umesto kroz direktan pristup catalog bazi, uz jasno definisan i planiran put i za buduci remote API model.
+
+Status: In Progress
+
+Tasks:
+
+- `[>]` Definisati ciljnu arhitekturu i granice odgovornosti izmedju `PlatformAppHost` i tenant/business AppHost-ova
+- `[ ]` Definisati `TenantRegistry` contract, read modele i pravila za tenant resolution bez direktnog oslanjanja na catalog DB
+- `[ ]` Definisati granicu izmedju centralnog identity/user ownership-a i tenant/business host potrosnje auth i membership podataka
+- `[ ]` Isplanirati lokalni adapter kao prelaznu implementaciju iza `TenantRegistry` interfejsa
+- `[ ]` Definisati remote registry API podfazu tako da `PlatformAppHost` ostane jedini owner tenant kataloga
+- `[ ]` Definisati host wiring i template smernice za buduce AppHost parove (`Expenses`, `Members`, `CRM`, itd.)
+- `[ ]` Uskladiti architecture docs i roadmap sa novim modelom
+
+Suggested execution slices:
+
+- `Phase 18A - Architecture And Boundaries`
+  - Definisati sta je owner `PlatformAppHost`, a sta je odgovornost tenant/business hostova
+  - Dokumentovati sta hostovi smeju i ne smeju da znaju direktno
+  - Definisati da `PlatformAppHost` ostaje owner centralnog identity/user store-a i platform membership administracije
+- `Phase 18B - Tenant Registry Contract`
+  - Uvesti `ITenantRegistry`
+  - Definisati DTO/read model za resolution i tenant runtime podatke
+- `Phase 18C - Local Adapter`
+  - Zadrzati DB-backed adapter kao lokalnu/prelaznu implementaciju iza interfejsa
+  - Osloboditi tenant host direktnog znanja o catalog persistence detaljima
+- `Phase 18D - Remote Registry API`
+  - Definisati endpoint-e i client adapter za buduci remote registry tok
+  - Ostaviti `PlatformAppHost` kao jedini owner tenant kataloga i lifecycle operacija
+- `Phase 18E - Host Wiring And Stabilization`
+  - Definisati obrazac za buduce AppHost parove
+  - Proveriti build i osnovni smoke/stabilization tok kad implementacija bude gotova
+
+Exit criteria:
+
+- `PlatformAppHost` je jasno definisan kao jedini owner tenant kataloga i tenant lifecycle operacija
+- `PlatformAppHost` je jasno definisan kao owner centralnog identity/user store-a i platform-level membership administracije
+- Tenant/business AppHost-ovi vise ne zavise arhitektonski od direktnog pristupa catalog bazi
+- Tenant/business AppHost-ovi ne postaju owner ni tenant kataloga ni centralnog user store-a
+- Postoji jasan `TenantRegistry` contract sa planom za lokalni adapter i remote API model
+- Buduci AppHost parovi imaju dokumentovan obrazac bez vracanja na shared mega-AppHost pristup
+
+---
+
 ## Current Focus
 
 Now:
@@ -599,6 +646,11 @@ Now:
 - `Tenancy:DatabaseRoot` je sada jedini izvor za lokalni folder baza, a host config cuva samo imena fajlova
 - Startup vise ne seeduje demo tenant-e, pa clean run pocinje bez tenant-a dok se prvi tenant ne kreira kroz `platform-admin`
 - Build prolazi i create-tenant smoke proverom je potvrdeno da nove tenant baze zavrsavaju u `localdata/`
+- `Phase 18` je aktivna
+- Sledeci fokus je tenant registry decoupling tako da `PlatformAppHost` ostane jedini owner tenant kataloga
+- Treba definisati kako tenant/business hostovi dobijaju tenant informacije bez direktnog oslanjanja na catalog DB
+- Treba eksplicitno definisati i da centralni identity/user store i membership ownership ostaju na platform strani
+- Remote registry API nije poseban kasniji haoticni dodatak, nego planirana podfaza iste arhitektonske teme
 
 After that:
-- Definisati sledecu arhitektonsku fazu za vise AppHost parova uz centralni platform/catalog owner
+- Krenuti u implementacione podfaze za tenant registry i multi-AppHost foundation
