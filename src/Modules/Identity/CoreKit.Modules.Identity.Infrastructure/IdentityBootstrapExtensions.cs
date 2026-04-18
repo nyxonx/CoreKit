@@ -62,25 +62,6 @@ public static class IdentityBootstrapExtensions
             adminUser = existingUser;
         }
 
-        var bootstrapTenantIdentifier = configuration["Tenancy:Seed:Identifier"] ?? "bootstrap";
-        var membershipExists = await dbContext.UserTenantMemberships.AnyAsync(
-            membership => membership.UserId == adminUser.Id
-                && membership.TenantIdentifier == bootstrapTenantIdentifier,
-            cancellationToken);
-
-        if (!membershipExists)
-        {
-            dbContext.UserTenantMemberships.Add(
-                new AppUserTenantMembership
-                {
-                    UserId = adminUser.Id,
-                    TenantIdentifier = bootstrapTenantIdentifier,
-                    Role = adminRoleName,
-                    IsActive = true
-                });
-
-            await dbContext.SaveChangesAsync(cancellationToken);
-        }
     }
 
     private static async Task EnsureMembershipSchemaAsync(

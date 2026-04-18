@@ -19,7 +19,7 @@ public static class TenancyBootstrapExtensions
         await catalogMigrationRunner.MigrateAsync(cancellationToken);
 
         var catalogSeedService = scope.ServiceProvider.GetRequiredService<TenantCatalogSeedService>();
-        await catalogSeedService.SeedAsync(configuration, cancellationToken);
+        await catalogSeedService.SeedAsync(cancellationToken);
 
         var validator = scope.ServiceProvider.GetRequiredService<TenantConfigurationValidator>();
         await validator.ValidateAsync(cancellationToken);

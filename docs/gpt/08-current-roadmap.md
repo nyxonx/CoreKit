@@ -4,18 +4,18 @@ Detaljan roadmap se vodi u `docs/roadmap/README.md`.
 
 ## Current Phase
 
-Phase 16 - Completed
+Phase 17 - Completed
 
 ## Current Task
 
-`PlatformAppHost` cleanup je zavrsen: platform client i platform server su procisceni od tranzicionih tenant/control-plane workaround ostataka, platform auth koristi uzi DTO, `Customers` vise nije registrovan u platform hostu, a lokalne SQLite baze su prebacene u zajednicki `localdata/` folder na nivou repozitorijuma.
+Lokalna SQLite konfiguracija je prociscena: `Tenancy:DatabaseRoot` je jedini izvor za folder baza, connection string kljucevi cuvaju samo imena fajlova, seed tenant-i su uklonjeni, a clean startup sada krece bez tenant-a dok se prvi tenant kreira kroz `platform-admin`.
 
 ## Next Tasks
 
-- Odluciti da li slede tenant AppHost cleanup ili novi platform feature slice
-- Po potrebi izdvojiti shared server infrastructure (`Diagnostics` / `Rpc`) kao zaseban refactor
-- Nastaviti samo na cistijoj dual-AppHost osnovi bez vracanja platform logike u tenant host
+- Definisati ciljnu arhitekturu za vise zasebnih AppHost parova uz centralni platform/catalog owner
+- Razdvojiti sta tenant-facing hostovi moraju znati direktno, a sta treba ici kroz buduci tenant registry sloj
+- Otvoriti sledecu fazu sa jasno ogranicenim scope-om za tu arhitektonsku ekstrakciju
 
 ## After That
 
-- Otvoriti sledecu fazu sa jasno suzenim scope-om: tenant cleanup ili novi platform feature work
+- Krenuti u sledecu arhitektonsku fazu na cistijem startup i local data modelu

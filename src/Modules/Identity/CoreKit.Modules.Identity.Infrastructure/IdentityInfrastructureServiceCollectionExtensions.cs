@@ -19,9 +19,10 @@ public static class IdentityInfrastructureServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
 
-        var connectionString =
-            configuration.GetConnectionString("IdentityDatabase")
-            ?? "Data Source=corekit.identity.db";
+        var connectionString = LocalSqliteConnectionStringResolver.Resolve(
+            configuration,
+            "IdentityDatabase",
+            "corekit.identity.db");
 
         services.AddDbContext<AppIdentityDbContext>(
             options => options.UseSqlite(connectionString));

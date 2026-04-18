@@ -99,16 +99,8 @@ public sealed class TenantAdministrationService(
 
     private string BuildTenantConnectionString(string identifier)
     {
-        var configuredDefault = configuration.GetConnectionString("DefaultTenantDatabase");
-        const string fallback = "Data Source=corekit.bootstrap.tenant.db";
-
-        var baseConnection = configuredDefault ?? fallback;
-
-        if (!baseConnection.StartsWith("Data Source=", StringComparison.OrdinalIgnoreCase))
-        {
-            return $"Data Source=corekit.{identifier}.tenant.db";
-        }
-
-        return $"Data Source=corekit.{identifier}.tenant.db";
+        return LocalSqliteConnectionStringResolver.ResolveFileName(
+            configuration,
+            $"corekit.{identifier}.tenant.db");
     }
 }

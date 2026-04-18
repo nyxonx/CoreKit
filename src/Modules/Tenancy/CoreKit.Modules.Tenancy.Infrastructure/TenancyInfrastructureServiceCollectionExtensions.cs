@@ -16,9 +16,10 @@ public static class TenancyInfrastructureServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
 
-        var connectionString =
-            configuration.GetConnectionString("TenantCatalogDatabase")
-            ?? "Data Source=corekit.catalog.db";
+        var connectionString = LocalSqliteConnectionStringResolver.Resolve(
+            configuration,
+            "TenantCatalogDatabase",
+            "corekit.catalog.db");
 
         services.AddMemoryCache();
         services.AddOptions<TenantCatalogCacheOptions>()

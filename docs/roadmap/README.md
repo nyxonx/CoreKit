@@ -519,6 +519,32 @@ Exit criteria:
 
 ---
 
+## Phase 17 - Local Database Configuration Cleanup
+
+Goal:
+Procistiti lokalnu SQLite konfiguraciju tako da `Tenancy:DatabaseRoot` bude jedini izvor za folder u kome zive baze, dok se kroz config kljuceve navode samo imena fajlova i centralno sastavljaju connection stringovi za catalog, identity, seed i provisioning tokove.
+
+Status: Completed
+
+Tasks:
+
+- `[x]` Uvesti centralni resolver za lokalne SQLite connection stringove
+- `[x]` Prebaciti tenant catalog i identity bootstrap da se naslanjaju na `DatabaseRoot`
+- `[x]` Prebaciti seed i create-tenant provisioning tokove da grade connection stringove iz `DatabaseRoot`
+- `[x]` Ukloniti dupliranje `../../../../localdata/...` iz host `appsettings.json` fajlova
+- `[x]` Potvrditi da build prolazi posle cleanup-a
+- `[x]` Rucno proveriti da novi tenant i dalje kreira bazu u `localdata/`
+
+Exit criteria:
+
+- `Tenancy:DatabaseRoot` je jedini izvor za lokalni folder baza
+- Host `appsettings.json` ne dupliraju putanju kroz pune relativne SQLite connection stringove
+- Tenant catalog, identity, seed i provisioning koriste isto pravilo za lokalne SQLite putanje
+- Build prolazi i novi tenant vise ne zavrsava bazu u AppHost folderu
+- Startup vise ne seeduje `bootstrap`, `contoso` ni `fabrikam`, vec katalog krece prazan dok se tenant-i ne kreiraju kroz platform admin
+
+---
+
 ## Current Focus
 
 Now:
@@ -569,6 +595,10 @@ Now:
 - `PlatformAppHost` client i server su procisceni od tranzicionih tenant/control-plane ostataka
 - Platform auth koristi uzi `PlatformAuthStateResponse`, a platform host vise ne registruje tenant-facing `Customers` modul
 - Lokalni SQLite development fajlovi su prebaceni u zajednicki `localdata/` folder umesto da se dupliraju po AppHost projektima
+- `Phase 17` je zavrsena
+- `Tenancy:DatabaseRoot` je sada jedini izvor za lokalni folder baza, a host config cuva samo imena fajlova
+- Startup vise ne seeduje demo tenant-e, pa clean run pocinje bez tenant-a dok se prvi tenant ne kreira kroz `platform-admin`
+- Build prolazi i create-tenant smoke proverom je potvrdeno da nove tenant baze zavrsavaju u `localdata/`
 
 After that:
-- Odabrati sledeci uski slice: tenant AppHost cleanup ili novi platform feature work
+- Definisati sledecu arhitektonsku fazu za vise AppHost parova uz centralni platform/catalog owner
